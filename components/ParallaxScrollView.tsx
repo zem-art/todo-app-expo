@@ -1,5 +1,5 @@
 import type { PropsWithChildren, ReactElement } from 'react';
-import { StyleSheet, useColorScheme } from 'react-native';
+import { StyleSheet, useColorScheme, View } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedRef,
@@ -10,18 +10,15 @@ import Animated, {
 import { ThemedView } from '@/components/ThemedView';
 import { useBottomTabOverflow } from '@/components/ui/TabBarBackground';
 
-const HEADER_HEIGHT = 250;
+// const HEADER_HEIGHT = 100;
 
 type Props = PropsWithChildren<{
-  headerImage: ReactElement;
-  headerBackgroundColor: { dark: string; light: string };
+  header: ReactElement;
+  isDarkMode? : boolean;
+  HEADER_HEIGHT? :number;
 }>;
 
-export default function ParallaxScrollView({
-  children,
-  headerImage,
-  headerBackgroundColor,
-}: Props) {
+export default function ParallaxScrollView({ children, header, isDarkMode, HEADER_HEIGHT=130 }: Props ) {
   const colorScheme = useColorScheme() ?? 'light';
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
@@ -53,12 +50,12 @@ export default function ParallaxScrollView({
         <Animated.View
           style={[
             styles.header,
-            { backgroundColor: headerBackgroundColor[colorScheme] },
             headerAnimatedStyle,
+            { height: HEADER_HEIGHT }
           ]}>
-          {headerImage}
+          {header}
         </Animated.View>
-        <ThemedView style={styles.content}>{children}</ThemedView>
+        <ThemedView style={styles.content} isDarkMode={isDarkMode}>{children}</ThemedView>
       </Animated.ScrollView>
     </ThemedView>
   );
@@ -69,13 +66,45 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    height: HEADER_HEIGHT,
     overflow: 'hidden',
   },
   content: {
     flex: 1,
-    padding: 32,
+    padding: 20,
     gap: 16,
     overflow: 'hidden',
   },
+
+  // headerContent: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  // headerText: {
+  //   fontSize: 18,
+  //   fontWeight: 'bold',
+  //   color: '#fff',
+  // },
+  // taskCard: {
+  //   backgroundColor: '#F76C6A',
+  //   borderRadius: 10,
+  //   padding: 20,
+  //   marginBottom: 16,
+  // },
+  // taskTitle: {
+  //   fontSize: 16,
+  //   fontWeight: 'bold',
+  //   color: '#fff',
+  // },
+  // taskDescription: {
+  //   fontSize: 14,
+  //   color: '#fff',
+  //   marginTop: 4,
+  // },
+  // taskDate: {
+  //   fontSize: 12,
+  //   color: '#fff',
+  //   marginTop: 8,
+  //   fontStyle: 'italic',
+  // },
 });

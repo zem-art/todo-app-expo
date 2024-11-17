@@ -1,43 +1,67 @@
-// This file is a fallback for using MaterialIcons on Android and web.
-
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolWeight } from 'expo-symbols';
 import React from 'react';
-import { OpaqueColorValue, StyleProp, ViewStyle } from 'react-native';
+import { StyleProp, TextStyle } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Feather from '@expo/vector-icons/Feather';
 
-// Add your SFSymbol to MaterialIcons mappings here.
-const MAPPING = {
-  // See MaterialIcons here: https://icons.expo.fyi
-  // See SF Symbols in the SF Symbols app on Mac.
-  'house.fill': 'home',
-  'paperplane.fill': 'send',
-  'chevron.left.forwardslash.chevron.right': 'code',
-  'chevron.right': 'chevron-right',
-} as Partial<
-  Record<
-    import('expo-symbols').SymbolViewProps['name'],
-    React.ComponentProps<typeof MaterialIcons>['name']
-  >
->;
+// Mapping sederhana untuk icon
+const IconMap = {
+  MaterialIcons: {
+    home: 'home',
+    send: 'send',
+    code: 'code',
+    right: 'chevron-right',
+  },
+  AntDesign: {
+    up: 'arrowup',
+    down: 'arrowdown',
+    home : 'home',
+  },
+  FontAwesome: {
+    like: 'thumbs-o-up',
+    dislike: 'thumbs-o-down',
+  },
+  FontAwesome6 : {
+    clock : 'clock',
+  },
+  Feather : {
+    settings : 'settings',
+    plus : 'plus',
+    filter : 'filter'
+  }
+} as const;
 
-export type IconSymbolName = keyof typeof MAPPING;
+// Library components
+const Libraries = {
+  MaterialIcons,
+  AntDesign,
+  FontAwesome,
+  FontAwesome6,
+  Feather,
+} as const;
 
-/**
- * An icon component that uses native SFSymbols on iOS, and MaterialIcons on Android and web. This ensures a consistent look across platforms, and optimal resource usage.
- *
- * Icon `name`s are based on SFSymbols and require manual mapping to MaterialIcons.
- */
-export function IconSymbol({
+type LibraryType = keyof typeof Libraries;
+type IconNameType<T extends LibraryType> = keyof typeof IconMap[T];
+
+interface IconProps<T extends LibraryType> {
+  lib?: T;
+  name: IconNameType<T>;
+  size?: number;
+  color: string;
+  style?: StyleProp<TextStyle>;
+}
+
+export function IconSymbol<T extends LibraryType = 'MaterialIcons'>({
+  lib = 'MaterialIcons' as T,
   name,
   size = 24,
   color,
   style,
-}: {
-  name: IconSymbolName;
-  size?: number;
-  color: string | OpaqueColorValue;
-  style?: StyleProp<ViewStyle>;
-  weight?: SymbolWeight;
-}) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
+}: IconProps<T>) {
+  const Component = Libraries[lib];
+  const iconName = IconMap[lib][name];
+
+  return <Component name={iconName as any} size={size} color={color} style={style} />;
 }
