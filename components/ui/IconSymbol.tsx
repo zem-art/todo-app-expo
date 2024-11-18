@@ -5,6 +5,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Feather from '@expo/vector-icons/Feather';
+import Entypo from '@expo/vector-icons/Entypo';
 
 // Mapping sederhana untuk icon
 const IconMap = {
@@ -13,12 +14,14 @@ const IconMap = {
     send: 'send',
     code: 'code',
     right: 'chevron-right',
+    darkMode : 'dark-mode',
   },
   AntDesign: {
     up: 'arrowup',
     down: 'arrowdown',
     home: 'home',
     check: 'check',
+    arrowleft : 'arrowleft',
   },
   FontAwesome: {
     like: 'thumbs-o-up',
@@ -32,6 +35,9 @@ const IconMap = {
     plus: 'plus',
     filter: 'filter',
   },
+  Entypo : {
+    lightMode : 'light-up'
+  }
 } as const;
 
 // Library components
@@ -41,6 +47,7 @@ const Libraries = {
   FontAwesome,
   FontAwesome6,
   Feather,
+  Entypo,
 } as const;
 
 type LibraryType = keyof typeof Libraries;

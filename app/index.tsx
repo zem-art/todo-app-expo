@@ -4,6 +4,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Alert, FlatList, Image, Pressable, StyleSheet, Switch, Text, View, VirtualizedList  } from 'react-native';
 import dummy from "@/test.json";
+import { ThemedText } from '@/components/ThemedText';
 
 export default function Index() {
   const [todos, setTodos] = useState(dummy)
@@ -20,9 +21,9 @@ export default function Index() {
       HEADER_HEIGHT={60}
       header={
         <View style={[styles.header, { backgroundColor: !isDarkMode ? '#F0F0F0' : '#1C1C1C' }]}>
-          <Text style={[styles.textTitle, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]}>
+          <ThemedText style={[styles.textTitle, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]}>
             TO DO LIST
-          </Text>
+          </ThemedText>
           <View style={{ flexDirection : 'row'}}>
             <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => Alert.alert('Filter pressed')}>
               <IconSymbol lib="Feather" name="filter" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
@@ -77,6 +78,11 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
+  container : {
+    flex : 1,
+    height : '3%',
+    paddingTop : 25,
+  },
   header : {
     position : 'absolute',
     justifyContent : 'space-between',
@@ -86,14 +92,11 @@ const styles = StyleSheet.create({
     paddingHorizontal : '4%',
     padding : '5%',
   },
-  textTitle : {},
+  textTitle : {
+    fontWeight : 'bold',
+  },
   buttonSettings: {
     alignItems: 'center',
-  },
-  container : {
-    flex : 1,
-    height : '3%',
-    paddingTop : 25,
   },
   content: {},
   reactLogo: {
