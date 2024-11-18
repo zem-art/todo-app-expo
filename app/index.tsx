@@ -1,3 +1,4 @@
+import { Link } from 'expo-router';
 import React, { useState } from 'react'
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
@@ -14,7 +15,6 @@ export default function Index() {
 
   return (
     <View style={[styles.container, { backgroundColor: !isDarkMode ? '#A6AEBF' : '#272727' }]}>
-    {/* Header */}
     <ParallaxScrollView
       isDarkMode={isDarkMode}
       HEADER_HEIGHT={60}
@@ -27,9 +27,11 @@ export default function Index() {
             <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => Alert.alert('Filter pressed')}>
               <IconSymbol lib="Feather" name="filter" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
             </Pressable>
-            <Pressable style={styles.buttonSettings} onPress={() => Alert.alert('Settings pressed')}>
-              <IconSymbol lib="Feather" name="settings" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
-            </Pressable>
+            <Link href="/settings" asChild>
+              <Pressable style={[styles.buttonSettings]}>
+                <IconSymbol lib="Feather" name="settings" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+              </Pressable>
+            </Link>
           </View>
         </View>
       }

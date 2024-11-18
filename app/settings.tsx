@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
-export const Settings = () => {
+export default function Settings() {
     const [isDarkMode, setIsDarkMode] = useState(false);
     return (
         <View style={[styles.container, { backgroundColor: !isDarkMode ? '#F0F0F0' : '#272727' }]}>
-
+            <Text> Hello</Text>
         </View>
     )
 }
