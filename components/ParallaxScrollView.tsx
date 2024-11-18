@@ -19,7 +19,6 @@ type Props = PropsWithChildren<{
 }>;
 
 export default function ParallaxScrollView({ children, header, isDarkMode, HEADER_HEIGHT=130 }: Props ) {
-  const colorScheme = useColorScheme() ?? 'light';
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
   const bottom = useBottomTabOverflow();
@@ -50,12 +49,14 @@ export default function ParallaxScrollView({ children, header, isDarkMode, HEADE
         <Animated.View
           style={[
             styles.header,
+            { height: HEADER_HEIGHT },
             headerAnimatedStyle,
-            { height: HEADER_HEIGHT }
           ]}>
           {header}
         </Animated.View>
-        <ThemedView style={styles.content} isDarkMode={isDarkMode}>{children}</ThemedView>
+        <ThemedView style={styles.content} isDarkMode={isDarkMode}>
+          {children}
+        </ThemedView>
       </Animated.ScrollView>
     </ThemedView>
   );
@@ -74,37 +75,4 @@ const styles = StyleSheet.create({
     gap: 16,
     overflow: 'hidden',
   },
-
-  // headerContent: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  // headerText: {
-  //   fontSize: 18,
-  //   fontWeight: 'bold',
-  //   color: '#fff',
-  // },
-  // taskCard: {
-  //   backgroundColor: '#F76C6A',
-  //   borderRadius: 10,
-  //   padding: 20,
-  //   marginBottom: 16,
-  // },
-  // taskTitle: {
-  //   fontSize: 16,
-  //   fontWeight: 'bold',
-  //   color: '#fff',
-  // },
-  // taskDescription: {
-  //   fontSize: 14,
-  //   color: '#fff',
-  //   marginTop: 4,
-  // },
-  // taskDate: {
-  //   fontSize: 12,
-  //   color: '#fff',
-  //   marginTop: 8,
-  //   fontStyle: 'italic',
-  // },
 });

@@ -1,1 +1,162 @@
-[{"id":"1","title":"Design Logo","description":"Make logo for the mini project","createdAt":"1 Sept 2021"},{"id":"2","title":"Make UI Design","description":"Make UI design for the mini project, post figma link to Trello","createdAt":"1 Sept 2021"},{"id":"3","title":"Develop Frontend","description":"Build frontend components using React Native","createdAt":"2 Sept 2021"},{"id":"4","title":"Setup Backend API","description":"Create RESTful API endpoints using Express.js","createdAt":"2 Sept 2021"},{"id":"5","title":"Database Design","description":"Design and implement MongoDB schemas","createdAt":"3 Sept 2021"},{"id":"6","title":"User Authentication","description":"Implement JWT authentication system","createdAt":"3 Sept 2021"},{"id":"7","title":"Testing","description":"Write unit tests for components and APIs","createdAt":"4 Sept 2021"},{"id":"8","title":"Documentation","description":"Create API documentation using Swagger","createdAt":"4 Sept 2021"},{"id":"9","title":"Deploy Backend","description":"Deploy backend to Heroku","createdAt":"5 Sept 2021"},{"id":"10","title":"Deploy Frontend","description":"Deploy frontend to Vercel","createdAt":"5 Sept 2021"},{"id":"11","title":"Code Review","description":"Review and refactor code for better performance","createdAt":"6 Sept 2021"},{"id":"12","title":"Bug Fixing","description":"Fix reported bugs and issues","createdAt":"6 Sept 2021"},{"id":"13","title":"Performance Optimization","description":"Optimize app performance and loading times","createdAt":"7 Sept 2021"},{"id":"14","title":"SEO Implementation","description":"Implement SEO best practices","createdAt":"7 Sept 2021"},{"id":"15","title":"Analytics Setup","description":"Set up Google Analytics tracking","createdAt":"8 Sept 2021"},{"id":"16","title":"User Testing","description":"Conduct user testing sessions","createdAt":"8 Sept 2021"},{"id":"17","title":"Security Audit","description":"Perform security audit and fix vulnerabilities","createdAt":"9 Sept 2021"},{"id":"18","title":"Content Creation","description":"Create content for landing page","createdAt":"9 Sept 2021"},{"id":"19","title":"Email Integration","description":"Implement email notification system","createdAt":"10 Sept 2021"},{"id":"20","title":"Final Review","description":"Complete final review before launch","createdAt":"10 Sept 2021"}]
+[
+    {
+        "id": "1",
+        "title": "Design Logo",
+        "description": "Make logo for the mini project",
+        "createdAt": "1 Sept 2021",
+        "completed": true,
+        "status": "completed"
+    },
+    {
+        "id": "2",
+        "title": "Make UI Design",
+        "description": "Make UI design for the mini project, post figma link to Trello",
+        "createdAt": "1 Sept 2021",
+        "completed": false,
+        "status": "open"
+    },
+    {
+        "id": "3",
+        "title": "Develop Frontend",
+        "description": "Build frontend components using React Native",
+        "createdAt": "2 Sept 2021",
+        "completed": false,
+        "status": "on-track"
+    },
+    {
+        "id": "4",
+        "title": "Setup Backend API",
+        "description": "Create RESTful API endpoints using Express.js",
+        "createdAt": "2 Sept 2021",
+        "completed": true,
+        "status": "completed"
+    },
+    {
+        "id": "5",
+        "title": "Database Design",
+        "description": "Design and implement MongoDB schemas",
+        "createdAt": "3 Sept 2021",
+        "completed": false,
+        "status": "open"
+    },
+    {
+        "id": "6",
+        "title": "User Authentication",
+        "description": "Implement JWT authentication system",
+        "createdAt": "3 Sept 2021",
+        "completed": false,
+        "status": "on-track"
+    },
+    {
+        "id": "7",
+        "title": "Testing",
+        "description": "Write unit tests for components and APIs",
+        "createdAt": "4 Sept 2021",
+        "completed": true,
+        "status": "completed"
+    },
+    {
+        "id": "8",
+        "title": "Documentation",
+        "description": "Create API documentation using Swagger",
+        "createdAt": "4 Sept 2021",
+        "completed": false,
+        "status": "open"
+    },
+    {
+        "id": "9",
+        "title": "Deploy Backend",
+        "description": "Deploy backend to Heroku",
+        "createdAt": "5 Sept 2021",
+        "completed": false,
+        "status": "on-track"
+    },
+    {
+        "id": "10",
+        "title": "Deploy Frontend",
+        "description": "Deploy frontend to Vercel",
+        "createdAt": "5 Sept 2021",
+        "completed": true,
+        "status": "completed"
+    },
+    {
+        "id": "11",
+        "title": "Code Review",
+        "description": "Review and refactor code for better performance",
+        "createdAt": "6 Sept 2021",
+        "completed": false,
+        "status": "open"
+    },
+    {
+        "id": "12",
+        "title": "Bug Fixing",
+        "description": "Fix reported bugs and issues",
+        "createdAt": "6 Sept 2021",
+        "completed": false,
+        "status": "on-track"
+    },
+    {
+        "id": "13",
+        "title": "Performance Optimization",
+        "description": "Optimize app performance and loading times",
+        "createdAt": "7 Sept 2021",
+        "completed": true,
+        "status": "completed"
+    },
+    {
+        "id": "14",
+        "title": "SEO Implementation",
+        "description": "Implement SEO best practices",
+        "createdAt": "7 Sept 2021",
+        "completed": false,
+        "status": "open"
+    },
+    {
+        "id": "15",
+        "title": "Analytics Setup",
+        "description": "Set up Google Analytics tracking",
+        "createdAt": "8 Sept 2021",
+        "completed": false,
+        "status": "on-track"
+    },
+    {
+        "id": "16",
+        "title": "User Testing",
+        "description": "Conduct user testing sessions",
+        "createdAt": "8 Sept 2021",
+        "completed": true,
+        "status": "completed"
+    },
+    {
+        "id": "17",
+        "title": "Security Audit",
+        "description": "Perform security audit and fix vulnerabilities",
+        "createdAt": "9 Sept 2021",
+        "completed": false,
+        "status": "open"
+    },
+    {
+        "id": "18",
+        "title": "Content Creation",
+        "description": "Create content for landing page",
+        "createdAt": "9 Sept 2021",
+        "completed": false,
+        "status": "on-track"
+    },
+    {
+        "id": "19",
+        "title": "Email Integration",
+        "description": "Implement email notification system",
+        "createdAt": "10 Sept 2021",
+        "completed": true,
+        "status": "completed"
+    },
+    {
+        "id": "20",
+        "title": "Final Review",
+        "description": "Complete final review before launch",
+        "createdAt": "10 Sept 2021",
+        "completed": false,
+        "status": "open"
+    }
+]

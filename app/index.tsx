@@ -1,29 +1,26 @@
+import React, { useState } from 'react'
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { useState } from "react";
-import { Alert, FlatList, Image, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, FlatList, Image, Pressable, StyleSheet, Switch, Text, View, VirtualizedList  } from 'react-native';
 import dummy from "@/test.json";
 
 export default function Index() {
+  const [todos, setTodos] = useState(dummy)
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
   };
 
-  const todos:any = dummy;
-
   return (
-    <View style={[styles.container, { backgroundColor: !isDarkMode ? '#F0F0F0' : '#272727' }]}>
+    <View style={[styles.container, { backgroundColor: !isDarkMode ? '#A6AEBF' : '#272727' }]}>
     {/* Header */}
     <ParallaxScrollView
       isDarkMode={isDarkMode}
       HEADER_HEIGHT={60}
       header={
-        <View style={[styles.header, { backgroundColor: !isDarkMode ? '#F0F0F0' : '#272727' }]}>
-          <Text style={[styles.textTitle, { color: isDarkMode ? '#F76C6A' : '#F76C6A' }]}>
+        <View style={[styles.header, { backgroundColor: !isDarkMode ? '#F0F0F0' : '#1C1C1C' }]}>
+          <Text style={[styles.textTitle, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]}>
             TO DO LIST
           </Text>
           <View style={{ flexDirection : 'row'}}>
@@ -40,29 +37,37 @@ export default function Index() {
     {/* Main Content */}
     <View style={styles.content}>
       {/* Subtitle */}
-      <Text style={[styles.subTitle, { color: isDarkMode ? '#FFFFFF' : '#272727' }]}>
+      <Text style={[styles.subTitle, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]}>
         LIST OF TODO
       </Text>
 
-      {/* Todo Cards */}
-      <FlatList
-        data={todos}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
+      {todos.map((item, i) => {
+        const bgStatus: string = {
+          completed: '#47663B',
+          'on-track': '#F76C6A',
+        }[item?.status] || '#F79E89';
+        const { title, description, createdAt, completed } = item;
+        return (
+          <View style={[styles.card, { backgroundColor: bgStatus }]} key={i}>
             <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>{item.title}</Text>
-              <IconSymbol lib="FontAwesome6" name="clock" size={15} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+              <Text style={styles.cardTitle}>{title}</Text>
+              <IconSymbol
+                lib={!completed ? "FontAwesome6" : "AntDesign"}
+                name={!completed ? "clock" : "check"}
+                size={15}
+                color={isDarkMode ? '#F0F0F0' : '#272727'}
+              />
             </View>
-            <Text style={styles.cardDescription}>{item.description}</Text>
-            <Text style={styles.cardFooter}>Created at {item.createdAt}</Text>
+            <Text style={styles.cardDescription}>{description}</Text>
+            <Text style={styles.cardFooter}>Created at : {createdAt}</Text>
           </View>
-        )}/>
-      </View>
+        );
+      })}
+    </View>
     </ParallaxScrollView>
 
     {/* Floating Action Button */}
-    <Pressable style={styles.fab} onPress={() => Alert.alert('Add Todo')}>
+    <Pressable style={[styles.fab, { backgroundColor: !isDarkMode ? '#F76C6A' : '#F79E89' }]} onPress={() => Alert.alert('Add Todo')}>
       <IconSymbol lib="Feather" name="plus" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
     </Pressable>
   </View>
@@ -79,25 +84,16 @@ const styles = StyleSheet.create({
     paddingHorizontal : '4%',
     padding : '5%',
   },
-  textTitle : {
-    // fontFamily : ''
-  },
+  textTitle : {},
   buttonSettings: {
     alignItems: 'center',
-    // backgroundColor : 'yellow'
   },
   container : {
     flex : 1,
     height : '3%',
     paddingTop : 25,
   },
-  content: {
-    // flex: 1,
-    // backgroundColor : 'yellow',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // padding: 20,
-  },
+  content: {},
   reactLogo: {
     height: 178,
     width: 290,
@@ -106,34 +102,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
 
-  // container: {
-  //   flex: 1,
-  // },
-  // header: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'center',
-  //   padding: 16,
-  //   borderBottomWidth: 1,
-  //   borderBottomColor: '#E0E0E0',
-  // },
-  // textTitle: {
-  //   fontSize: 18,
-  //   fontWeight: 'bold',
-  // },
-  // buttonSettings: {
-  //   padding: 8,
-  // },
-  // content: {
-  //   padding: 16,
-  // },
   subTitle: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 16,
   },
   card: {
-    backgroundColor: '#F76C6A',
     padding: 16,
     borderRadius: 10,
     marginBottom: 16,
@@ -162,7 +136,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     right: 16,
-    backgroundColor: '#F76C6A',
     height: 56,
     width: 56,
     borderRadius: 28,
@@ -171,3 +144,39 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 });
+
+{/* <VirtualizedList
+  data={todos}
+  keyExtractor={(item) => item.id.toString()} // pastikan id unik dan dalam bentuk string
+  renderItem={({ item }) => (
+    <View style={styles.card}>
+      <View style={styles.cardHeader}>
+        <Text style={styles.cardTitle}>{item.title}</Text>
+        <IconSymbol lib="FontAwesome6" name="clock" size={15} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+      </View>
+      <Text style={styles.cardDescription}>{item.description}</Text>
+      <Text style={styles.cardFooter}>Created at {item.createdAt}</Text>
+    </View>
+  )}
+  initialNumToRender={10}  // render beberapa item pertama saja
+  maxToRenderPerBatch={10}  // mengatur jumlah maksimal item yang dirender per batch
+  windowSize={5}  // mengatur ukuran jendela rendering
+/> */}
+
+{/* <FlatList
+  data={todos}
+  keyExtractor={(item) => item.id}
+  renderItem={({ item }) => (
+    <View style={styles.card}>
+      <View style={styles.cardHeader}>
+        <Text style={styles.cardTitle}>{item.title}</Text>
+        <IconSymbol lib="FontAwesome6" name="clock" size={15} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+      </View>
+      <Text style={styles.cardDescription}>{item.description}</Text>
+      <Text style={styles.cardFooter}>Created at {item.createdAt}</Text>
+    </View>
+  )}
+  initialNumToRender={10}  // render beberapa item pertama saja
+  maxToRenderPerBatch={10}  // mengatur jumlah maksimal item yang dirender per batch
+  windowSize={5}  // mengatur ukuran jendela rendering
+/> */}

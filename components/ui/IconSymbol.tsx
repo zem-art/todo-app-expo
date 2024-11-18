@@ -17,20 +17,21 @@ const IconMap = {
   AntDesign: {
     up: 'arrowup',
     down: 'arrowdown',
-    home : 'home',
+    home: 'home',
+    check: 'check',
   },
   FontAwesome: {
     like: 'thumbs-o-up',
     dislike: 'thumbs-o-down',
   },
-  FontAwesome6 : {
-    clock : 'clock',
+  FontAwesome6: {
+    clock: 'clock',
   },
-  Feather : {
-    settings : 'settings',
-    plus : 'plus',
-    filter : 'filter'
-  }
+  Feather: {
+    settings: 'settings',
+    plus: 'plus',
+    filter: 'filter',
+  },
 } as const;
 
 // Library components
@@ -47,7 +48,8 @@ type IconNameType<T extends LibraryType> = keyof typeof IconMap[T];
 
 interface IconProps<T extends LibraryType> {
   lib?: T;
-  name: IconNameType<T>;
+  name: string;
+  // name: IconNameType<T>;
   size?: number;
   color: string;
   style?: StyleProp<TextStyle>;
@@ -61,7 +63,8 @@ export function IconSymbol<T extends LibraryType = 'MaterialIcons'>({
   style,
 }: IconProps<T>) {
   const Component = Libraries[lib];
-  const iconName = IconMap[lib][name];
+  // const iconName = IconMap[lib][name];
+  const iconName = IconMap[lib]?.[name as keyof typeof IconMap[typeof lib]];
 
-  return <Component name={iconName as any} size={size} color={color} style={style} />;
+  return <Component name={iconName} size={size} color={color} style={style} />;
 }
