@@ -1,16 +1,22 @@
+import React, { useState } from 'react'
+import { Link } from 'expo-router';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import convertToHyphen from '@/utils/string';
-import { Link } from 'expo-router';
-import React, { useState } from 'react'
 import { Alert, Image, Pressable, StyleSheet, View } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux';
+import { setThemeActions } from '@/redux/actions';
 
 export default function Settings() {
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const dispatch = useDispatch();
+    const isDark = useSelector((state:any) => state.SYSTEM_THEME.isDark);
+    const [isDarkMode, setIsDarkMode] = useState(isDark);
+
     const toggleTheme = () => {
-        setIsDarkMode(!isDarkMode);
+        // dispatch(setThemeActions())
+        // setIsDarkMode(!isDarkMode);
     };
 
     return (

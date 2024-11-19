@@ -5,14 +5,12 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Alert, FlatList, Image, Pressable, StyleSheet, Switch, Text, View, VirtualizedList  } from 'react-native';
 import dummy from "@/test.json";
 import { ThemedText } from '@/components/ThemedText';
+import { useSelector } from 'react-redux';
 
 export default function Index() {
-  const [todos, setTodos] = useState(dummy)
-  const [isDarkMode, setIsDarkMode] = useState(true);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+  const theme = useSelector((state:any) => state.SYSTEM_THEME.isDark);
+  const [isDarkMode, setIsDarkMode] = useState(theme);
+  const [todos, setTodos] = useState(dummy);
 
   return (
     <View style={[styles.container, { backgroundColor: !isDarkMode ? '#A6AEBF' : '#272727' }]}>
