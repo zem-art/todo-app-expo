@@ -2,9 +2,10 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import convertToHyphen from '@/utils/string';
 import { Link } from 'expo-router';
 import React, { useState } from 'react'
-import { Image, Pressable, StyleSheet, View } from 'react-native'
+import { Alert, Image, Pressable, StyleSheet, View } from 'react-native'
 
 export default function Settings() {
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -34,8 +35,8 @@ export default function Settings() {
                                 <IconSymbol 
                                     lib={!isDarkMode ? "MaterialIcons" : "Entypo"} 
                                     name={!isDarkMode ? "darkMode" : "lightMode"}
-                                    size={24}
                                     color={isDarkMode ? '#F0F0F0' : '#272727'}
+                                    size={24}
                                 />
                             </Pressable>
                         </View>
@@ -49,7 +50,26 @@ export default function Settings() {
                 <ThemedView style={styles.titleContainer} isDarkMode={isDarkMode}>
                     <ThemedText type="title" isDarkMode={isDarkMode}>Settings</ThemedText>
                 </ThemedView>
-                <ThemedText isDarkMode={isDarkMode}>This app includes example code to help you get started.</ThemedText>
+                <ThemedText style={[styles.textSubtitle]} isDarkMode={isDarkMode}>Customize your app experience.</ThemedText>
+                <ThemedView isDarkMode={isDarkMode} style={[styles.content, { marginTop :20}]}>
+                    <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Full Name</ThemedText>
+                    <ThemedText type='subtitle' style={[styles.textValueContent, { textTransform: 'uppercase', color: isDarkMode ? '#F76C6A' : '#F79E89' }]} isDarkMode={isDarkMode}>{convertToHyphen('ucup surucup')}</ThemedText>
+                </ThemedView>
+                <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
+                    <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Email</ThemedText>
+                    <ThemedText type='subtitle' style={[styles.textValueContent, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]} isDarkMode={isDarkMode}>ucup@gmail.com</ThemedText>
+                </ThemedView>
+                <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
+                    <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Password</ThemedText>
+                    <Pressable onPress={() => Alert.alert('Change Password pressed')}>
+                        <ThemedText type='defaultSemiBold' style={[styles.textValueContent, styles.textLink, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]} isDarkMode={isDarkMode}>change{' '}password</ThemedText>
+                    </Pressable>
+                </ThemedView>
+                <ThemedView style={[styles.pathButton]} isDarkMode={isDarkMode}>
+                    <Pressable style={[styles.ButtonLogout, { backgroundColor: isDarkMode ? '#F76C6A' : '#F79E89' }]} onPress={() => Alert.alert('Logout pressed')}>
+                        <ThemedText style={[styles.textButton]}>log{' '}out</ThemedText>
+                    </Pressable>
+                </ThemedView>
             </ParallaxScrollView>
         </View>
     )
@@ -71,18 +91,18 @@ const styles = StyleSheet.create({
     textTitle: {
         fontWeight : 'bold'
     },
+    textSubtitle: {},
     subHeader: {
         // backgroundColor : 'red',
         flexDirection : 'row',
         alignItems : 'center',
         justifyContent : 'space-between',
         top: 0,
-        height : '15%',
-        paddingHorizontal : 15
+        height: '15%',
+        paddingHorizontal: 15
     },
     button: {
         alignItems: 'center',
-        // backgroundColor : 'red'
     },
     reactLogo: {
         marginTop : 20,
@@ -92,4 +112,45 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 8,
     },
+    content: {
+        alignItems : 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 12,
+        // marginBottom: 20,
+    },
+    textLabelContent: {
+        // fontWeight: 'bold',
+        color: '#A0A0A0',
+    },
+    textValueContent: {
+        fontWeight: 'bold',
+    },
+    pathButton: {
+        marginTop: '8.5%',
+        marginBottom: '2%',
+        height: '100%',
+    },
+    ButtonLogout: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
+    },
+    textButton: {
+        fontSize: 16,
+        lineHeight: 21,
+        fontWeight: 'bold',
+        letterSpacing: 0.25,
+        color: 'white',
+        textTransform: 'uppercase'
+    },
+    textLink: {
+        textTransform: 'capitalize',
+        textDecorationLine: 'underline',
+        lineHeight: 22,
+        // backgroundColor: 'red'
+    }
 })

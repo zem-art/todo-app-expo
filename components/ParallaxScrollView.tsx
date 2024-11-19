@@ -40,7 +40,7 @@ export default function ParallaxScrollView({ children, header, isDarkMode, HEADE
   });
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container]}>
       <Animated.ScrollView
         ref={scrollRef}
         scrollEventThrottle={16}
@@ -54,7 +54,7 @@ export default function ParallaxScrollView({ children, header, isDarkMode, HEADE
           ]}>
           {header}
         </Animated.View>
-        <ThemedView style={styles.content} isDarkMode={isDarkMode}>
+        <ThemedView style={[styles.content]} isDarkMode={isDarkMode}>
           {children}
         </ThemedView>
       </Animated.ScrollView>
