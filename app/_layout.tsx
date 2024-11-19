@@ -5,8 +5,8 @@ import { useEffect } from "react";
 import * as SplashScreen from 'expo-splash-screen';
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { Provider, useSelector } from "react-redux";
-import store from "@/redux/reducer-store";
+import { Provider } from "react-redux";
+import { store } from "@/redux/reducer-store";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

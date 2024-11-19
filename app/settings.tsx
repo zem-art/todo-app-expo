@@ -1,23 +1,40 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import { Alert, BackHandler, Image, Pressable, StyleSheet, View } from 'react-native'
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import convertToHyphen from '@/utils/string';
-import { Alert, Image, Pressable, StyleSheet, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import { setThemeActions } from '@/redux/actions';
+import { AppDispatch, RootState } from '@/redux/reducer-store';
+import convertToHyphen from '@/utils/string';
 
 export default function Settings() {
-    const dispatch = useDispatch();
-    const isDark = useSelector((state:any) => state.SYSTEM_THEME.isDark);
+    const navigation = useNavigation();
+    const isDark = useSelector((state:RootState) => state.THEME.isDark);
+    const dispatch = useDispatch<AppDispatch>();
     const [isDarkMode, setIsDarkMode] = useState(isDark);
 
     const toggleTheme = () => {
-        // dispatch(setThemeActions())
-        // setIsDarkMode(!isDarkMode);
+        dispatch(setThemeActions())
+        setIsDarkMode(!isDarkMode);
     };
+
+    useEffect(() => {
+        const backAction = () => {
+          navigation.goBack(); // Navigasi ke Home
+          return true; // Tangkap aksi back
+        };
+    
+        const backHandler = BackHandler.addEventListener(
+          'hardwareBackPress',
+          backAction
+        );
+    
+        return () => backHandler.remove(); // Bersihkan listener
+      }, [navigation, isDark]);
 
     return (
         <View style={[styles.container, { backgroundColor: !isDarkMode ? '#A6AEBF' : '#272727' }]}>

@@ -1,13 +1,20 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+interface ThemeState {
+  default: boolean;
+  isDark: boolean;
+}
+
+const initialState: ThemeState = {
+  default : false,
+  isDark: false,
+};
 
 const themeSlice = createSlice({
-  name: 'SYSTEM_THEME',
-  initialState: {
-    default : false,
-    isDark : false,
-  },
+  name: 'THEME',
+  initialState,
   reducers: {
-    setTheme: (state, action) => {
+    setTheme: (state, action: PayloadAction<boolean>) => {
       state.default = false;
       state.isDark = action.payload;
     }

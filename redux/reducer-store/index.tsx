@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import themeReducer from '../store/theme-store';
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
-    SYSTEM_THEME: themeReducer,
+    THEME: themeReducer,
   },
 });
 
-export default store;
+export type RootState = ReturnType<typeof store.getState>; // Tipe untuk state global
+export type AppDispatch = typeof store.dispatch; // Tipe untuk dispatch

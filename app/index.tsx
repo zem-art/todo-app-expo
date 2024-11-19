@@ -1,16 +1,30 @@
+import React, { useEffect, useState } from 'react'
 import { Link } from 'expo-router';
-import React, { useState } from 'react'
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Alert, FlatList, Image, Pressable, StyleSheet, Switch, Text, View, VirtualizedList  } from 'react-native';
-import dummy from "@/test.json";
+import { Alert, Pressable, StyleSheet, Text, View, Switch, VirtualizedList, FlatList, Image,  } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/reducer-store';
+import { useNavigation } from '@react-navigation/native';
+import dummy from "@/test.json";
 
 export default function Index() {
-  const theme = useSelector((state:any) => state.SYSTEM_THEME.isDark);
-  const [isDarkMode, setIsDarkMode] = useState(theme);
+  const navigation = useNavigation();
+  const isDark = useSelector((state:RootState) => state.THEME.isDark);
+  const [isDarkMode, setIsDarkMode] = useState(isDark);
   const [todos, setTodos] = useState(dummy);
+  
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // Log makesure state Redux
+      console.log('Refreshed Home State:', isDark); 
+    });
+    setIsDarkMode(isDark)
+    // Clean up listeners when component is unmounted
+    return unsubscribe; 
+  }, [navigation, isDark]);
+  
 
   return (
     <View style={[styles.container, { backgroundColor: !isDarkMode ? '#A6AEBF' : '#272727' }]}>
