@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { Link } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
-import { Alert, BackHandler, Image, Pressable, StyleSheet, View } from 'react-native'
+import { Alert, BackHandler, Image, Pressable, StyleSheet, View } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -10,10 +10,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setThemeActions } from '@/redux/actions';
 import { AppDispatch, RootState } from '@/redux/reducer-store';
 import convertToHyphen from '@/utils/string';
+import { Container } from '@/components/Container';
 
 export default function Settings() {
     const navigation = useNavigation();
-    const isDark = useSelector((state:RootState) => state.THEME.isDark);
+    const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
     const dispatch = useDispatch<AppDispatch>();
     const [isDarkMode, setIsDarkMode] = useState(isDark);
 
@@ -37,7 +38,7 @@ export default function Settings() {
       }, [navigation, isDark]);
 
     return (
-        <View style={[styles.container, { backgroundColor: !isDarkMode ? '#A6AEBF' : '#272727' }]}>
+        <Container style={[styles.container]} isDarkMode={isDarkMode}>
             <ParallaxScrollView
                 isDarkMode={isDarkMode}
                 HEADER_HEIGHT={400}
@@ -46,7 +47,7 @@ export default function Settings() {
                     { backgroundColor: !isDarkMode ? '#F0F0F0' : '#1C1C1C' }
                     ]}>
                         <View style={[styles.subHeader]}>
-                            <Link href="/" style={[styles.button]} asChild>
+                            <Link href="/(app)" style={[styles.button]} asChild>
                                 <Pressable>
                                     <IconSymbol lib="AntDesign" name="arrowleft" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
                                 </Pressable>
@@ -94,16 +95,12 @@ export default function Settings() {
                     </Pressable>
                 </ThemedView>
             </ParallaxScrollView>
-        </View>
+        </Container>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex : 1,
-        height : '3%',
-        paddingTop : 25,
-    },
+    container: {},
     header: {
         height : '100%',
         width : 'auto',

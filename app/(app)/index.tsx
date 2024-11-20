@@ -8,10 +8,11 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/reducer-store';
 import { useNavigation } from '@react-navigation/native';
 import dummy from "@/test.json";
+import { Container } from '@/components/Container';
 
-export default function Index() {
+export default function HomeScreen() {
   const navigation = useNavigation();
-  const isDark = useSelector((state:RootState) => state.THEME.isDark);
+  const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
   const [isDarkMode, setIsDarkMode] = useState(isDark);
   const [todos, setTodos] = useState(dummy);
   
@@ -27,74 +28,70 @@ export default function Index() {
   
 
   return (
-    <View style={[styles.container, { backgroundColor: !isDarkMode ? '#A6AEBF' : '#272727' }]}>
-    <ParallaxScrollView
-      isDarkMode={isDarkMode}
-      HEADER_HEIGHT={60}
-      header={
-        <View style={[styles.header, { backgroundColor: !isDarkMode ? '#F0F0F0' : '#1C1C1C' }]}>
-          <ThemedText style={[styles.textTitle, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]}>
-            TO DO LIST
-          </ThemedText>
-          <View style={{ flexDirection : 'row'}}>
-            <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => Alert.alert('Filter pressed')}>
-              <IconSymbol lib="Feather" name="filter" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
-            </Pressable>
-            <Link href="/settings" asChild>
-              <Pressable style={[styles.buttonSettings]}>
-                <IconSymbol lib="Feather" name="settings" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+    <Container style={[styles.container]} isDarkMode={isDarkMode}>
+      <ParallaxScrollView
+        isDarkMode={isDarkMode}
+        HEADER_HEIGHT={60}
+        header={
+          <View style={[styles.header, { backgroundColor: !isDarkMode ? '#F0F0F0' : '#1C1C1C' }]}>
+            <ThemedText style={[styles.textTitle, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]}>
+              TO DO LIST
+            </ThemedText>
+            <View style={{ flexDirection : 'row'}}>
+              <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => Alert.alert('Filter pressed')}>
+                <IconSymbol lib="Feather" name="filter" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
               </Pressable>
-            </Link>
-          </View>
-        </View>
-      }
-    >
-    {/* Main Content */}
-    <View style={styles.content}>
-      {/* Subtitle */}
-      <Text style={[styles.subTitle, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]}>
-        LIST OF TODO
-      </Text>
-
-      {todos.map((item, i) => {
-        const bgStatus: string = {
-          completed: '#47663B',
-          'on-track': '#F76C6A',
-        }[item?.status] || '#F79E89';
-        const { title, description, createdAt, completed } = item;
-        return (
-          <View style={[styles.card, { backgroundColor: bgStatus }]} key={i}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>{title}</Text>
-              <IconSymbol
-                lib={!completed ? "FontAwesome6" : "AntDesign"}
-                name={!completed ? "clock" : "check"}
-                size={15}
-                color={isDarkMode ? '#F0F0F0' : '#272727'}
-              />
+              <Link href="/settings" asChild>
+                <Pressable style={[styles.buttonSettings]}>
+                  <IconSymbol lib="Feather" name="settings" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+                </Pressable>
+              </Link>
             </View>
-            <Text style={styles.cardDescription}>{description}</Text>
-            <Text style={styles.cardFooter}>Created at : {createdAt}</Text>
           </View>
-        );
-      })}
-    </View>
-    </ParallaxScrollView>
+        }
+      >
+      {/* Main Content */}
+      <View style={styles.content}>
+        {/* Subtitle */}
+        <Text style={[styles.subTitle, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]}>
+          LIST OF TODO
+        </Text>
 
-    {/* Floating Action Button */}
-    <Pressable style={[styles.fab, { backgroundColor: !isDarkMode ? '#F76C6A' : '#F79E89' }]} onPress={() => Alert.alert('Add Todo')}>
-      <IconSymbol lib="Feather" name="plus" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
-    </Pressable>
-  </View>
+        {todos.map((item, i) => {
+          const bgStatus: string = {
+            completed: '#47663B',
+            'on-track': '#F76C6A',
+          }[item?.status] || '#F79E89';
+          const { title, description, createdAt, completed } = item;
+          return (
+            <View style={[styles.card, { backgroundColor: bgStatus }]} key={i}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardTitle}>{title}</Text>
+                <IconSymbol
+                  lib={!completed ? "FontAwesome6" : "AntDesign"}
+                  name={!completed ? "clock" : "check"}
+                  size={15}
+                  color={isDarkMode ? '#F0F0F0' : '#272727'}
+                />
+              </View>
+              <Text style={styles.cardDescription}>{description}</Text>
+              <Text style={styles.cardFooter}>Created at : {createdAt}</Text>
+            </View>
+          );
+        })}
+      </View>
+      </ParallaxScrollView>
+
+      {/* Floating Action Button */}
+      <Pressable style={[styles.fab, { backgroundColor: !isDarkMode ? '#F76C6A' : '#F79E89' }]} onPress={() => Alert.alert('Add Todo')}>
+        <IconSymbol lib="Feather" name="plus" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+      </Pressable>
+  </Container>
   );
 }
 
 const styles = StyleSheet.create({
-  container : {
-    flex : 1,
-    height : '3%',
-    paddingTop : 25,
-  },
+  container : {},
   header : {
     position : 'absolute',
     justifyContent : 'space-between',
