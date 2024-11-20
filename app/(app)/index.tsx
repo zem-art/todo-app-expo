@@ -27,6 +27,15 @@ export default function HomeScreen() {
   }, [navigation, isDark]);
   
 
+  const triggerError = () => {
+    throw new Error("Test error message");
+  };
+
+  const trigger404Error = () => {
+    throw new Error("404: Page not found");
+  };
+
+
   return (
     <Container style={[styles.container]} isDarkMode={isDarkMode}>
       <ParallaxScrollView
@@ -38,7 +47,7 @@ export default function HomeScreen() {
               TO DO LIST
             </ThemedText>
             <View style={{ flexDirection : 'row'}}>
-              <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => Alert.alert('Filter pressed')}>
+              <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => trigger404Error()}>
                 <IconSymbol lib="Feather" name="filter" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
               </Pressable>
               <Link href="/settings" asChild>
