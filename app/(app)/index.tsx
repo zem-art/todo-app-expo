@@ -73,19 +73,21 @@ export default function HomeScreen() {
           }[item?.status] || '#F79E89';
           const { title, description, createdAt, completed } = item;
           return (
-            <View style={[styles.card, { backgroundColor: bgStatus }]} key={i}>
-              <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>{title}</Text>
-                <IconSymbol
-                  lib={!completed ? "FontAwesome6" : "AntDesign"}
-                  name={!completed ? "clock" : "check"}
-                  size={15}
-                  color={isDarkMode ? '#F0F0F0' : '#272727'}
-                />
-              </View>
-              <Text style={styles.cardDescription}>{description}</Text>
-              <Text style={styles.cardFooter}>Created at : {createdAt}</Text>
-            </View>
+            <Pressable style={[styles.card, { backgroundColor: bgStatus }]} key={i} onPress={() => navigation.navigate("/(app)/details")}>
+              {/* <Link href="/details" asChild> */}
+                <View style={styles.cardHeader}>
+                  <Text style={styles.cardTitle}>{title}</Text>
+                  <IconSymbol
+                    lib={!completed ? "FontAwesome6" : "AntDesign"}
+                    name={!completed ? "clock" : "check"}
+                    size={15}
+                    color={isDarkMode ? '#F0F0F0' : '#272727'}
+                    />
+                </View>
+                <Text style={styles.cardDescription}>{description}</Text>
+                <Text style={styles.cardFooter}>Created at : {createdAt}</Text>
+              {/* </Link> */}
+            </Pressable>
           );
         })}
       </View>
