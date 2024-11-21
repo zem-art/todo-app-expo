@@ -5,12 +5,13 @@ export default function HomeLayout() {
     <Stack
       screenOptions={{
         headerShadowVisible: false,
+        headerShown : false,
         animation: "fade_from_bottom"
       }}
     >
-      <Stack.Screen name="index" options={{ headerShown : false }}/>
-      <Stack.Screen name="details" options={{ headerShown : false }}/>
-      <Stack.Screen name="settings/index" options={{ headerShown : false }}/>
+      <Stack.Screen name="index"/>
+      <Stack.Screen name="details"/>
+      <Stack.Screen name="settings/index"/>
     </Stack>
   );
 }

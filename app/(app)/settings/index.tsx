@@ -49,7 +49,7 @@ export default function Settings() {
                         <View style={[styles.subHeader]}>
                             <Link href="/(app)" style={[styles.button]} asChild>
                                 <Pressable>
-                                    <IconSymbol lib="AntDesign" name="arrowleft" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+                                    <IconSymbol lib="AntDesign" name="left" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
                                 </Pressable>
                             </Link>
                             <ThemedText style={[styles.textTitle, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]}>

@@ -21,7 +21,10 @@ const IconMap = {
     down: 'arrowdown',
     home: 'home',
     check: 'check',
-    arrowleft : 'arrowleft',
+    left : 'left',
+    clockcircleo: 'clockcircleo',
+    edit: 'edit',
+    delete: 'delete',
   },
   FontAwesome: {
     like: 'thumbs-o-up',
@@ -58,7 +61,7 @@ interface IconProps<T extends LibraryType> {
   name: string;
   // name: IconNameType<T>;
   size?: number;
-  color: string;
+  color?: string;
   style?: StyleProp<TextStyle>;
 }
 

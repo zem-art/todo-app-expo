@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, Image, StyleSheet, Text, View } from 'react-native';
 
 export default function ErrorScreen({ 
   error, 
@@ -9,6 +9,10 @@ export default function ErrorScreen({
 }) {
   return (
     <View style={styles.containerError}>
+      <Image
+        source={require('@/assets/images/oops.png')}
+        style={[styles.reactLogo]}
+      />
       <Text style={styles.titleError}>Oops! Something went wrong.</Text>
       <Text style={styles.messageError}>
         {error?.message || 'An unexpected error occurred. Please try again later.'}
@@ -45,4 +49,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#555',
   },
+  reactLogo: {
+    height: '30%',
+    width: '60%',
+    marginBottom: 10,
+  }
 });

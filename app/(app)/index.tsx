@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'expo-router';
+import { Container } from '@/components/Container';
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Alert, Pressable, StyleSheet, Text, View, Switch, VirtualizedList, FlatList, Image,  } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, View, Switch, VirtualizedList, FlatList } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/reducer-store';
 import { useNavigation } from '@react-navigation/native';
+import { Link, useRouter } from 'expo-router';
 import dummy from "@/test.json";
-import { Container } from '@/components/Container';
 
 export default function HomeScreen() {
+  const router = useRouter()
   const navigation = useNavigation();
   const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
   const [isDarkMode, setIsDarkMode] = useState(isDark);
@@ -31,10 +32,13 @@ export default function HomeScreen() {
     throw new Error("Test error message");
   };
 
-  const trigger404Error = () => {
-    throw new Error("404: Page not found");
-  };
-
+  const onPressDetail = (parms?:any) => {
+    // console.log(parms);
+    router.push({
+      pathname : '/(app)/details',
+      params : { ...parms }
+    })
+  }
 
   return (
     <Container style={[styles.container]} isDarkMode={isDarkMode}>
@@ -47,7 +51,7 @@ export default function HomeScreen() {
               TO DO LIST
             </ThemedText>
             <View style={{ flexDirection : 'row'}}>
-              <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => trigger404Error()}>
+              <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => triggerError()}>
                 <IconSymbol lib="Feather" name="filter" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
               </Pressable>
               <Link href="/settings" asChild>
@@ -71,22 +75,20 @@ export default function HomeScreen() {
             completed: '#47663B',
             'on-track': '#F76C6A',
           }[item?.status] || '#F79E89';
-          const { title, description, createdAt, completed } = item;
+          const { title, description, createdAt, completed, id } = item;
           return (
-            <Pressable style={[styles.card, { backgroundColor: bgStatus }]} key={i} onPress={() => navigation.navigate("/(app)/details")}>
-              {/* <Link href="/details" asChild> */}
-                <View style={styles.cardHeader}>
-                  <Text style={styles.cardTitle}>{title}</Text>
-                  <IconSymbol
-                    lib={!completed ? "FontAwesome6" : "AntDesign"}
-                    name={!completed ? "clock" : "check"}
-                    size={15}
-                    color={isDarkMode ? '#F0F0F0' : '#272727'}
-                    />
-                </View>
-                <Text style={styles.cardDescription}>{description}</Text>
-                <Text style={styles.cardFooter}>Created at : {createdAt}</Text>
-              {/* </Link> */}
+            <Pressable style={[styles.card, { backgroundColor: bgStatus }]} key={i} onPress={() => onPressDetail(item)}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardTitle}>{title}</Text>
+                <IconSymbol
+                  lib={!completed ? "FontAwesome6" : "AntDesign"}
+                  name={!completed ? "clock" : "check"}
+                  size={15}
+                  color={isDarkMode ? '#F0F0F0' : '#272727'}
+                  />
+              </View>
+              <Text style={styles.cardDescription}>{description}</Text>
+              <Text style={styles.cardFooter}>Created at : {createdAt}</Text>
             </Pressable>
           );
         })}
