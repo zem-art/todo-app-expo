@@ -2,7 +2,7 @@
     {
         "id": "1",
         "title": "Design Logo",
-        "description": "Make logo for the mini project",
+        "description": "Create a visually appealing and unique logo for the mini project. The logo should:\n- Represent the project's theme and goals.\n- Be compatible for use across multiple platforms (web, mobile, and print).\n- Be delivered in various formats such as SVG, PNG, and JPG.",
         "createdAt": "1 Sept 2021",
         "completed": true,
         "status": "completed"
@@ -10,7 +10,7 @@
     {
         "id": "2",
         "title": "Make UI Design",
-        "description": "Make UI design for the mini project, post figma link to Trello",
+        "description": "Develop an intuitive and user-friendly UI design for the mini project. Key steps include:\n1. Researching user personas and usability goals.\n2. Creating wireframes and mockups in Figma.\n3. Sharing the finalized Figma link on Trello for feedback and collaboration.",
         "createdAt": "1 Sept 2021",
         "completed": false,
         "status": "open"
@@ -18,7 +18,7 @@
     {
         "id": "3",
         "title": "Develop Frontend",
-        "description": "Build frontend components using React Native",
+        "description": "Build dynamic and reusable frontend components using React Native. This includes:\n- Setting up the project structure.\n- Implementing core UI features like navigation, forms, and data visualization.\n- Ensuring responsiveness across different device screen sizes.",
         "createdAt": "2 Sept 2021",
         "completed": false,
         "status": "on-track"
@@ -26,7 +26,7 @@
     {
         "id": "4",
         "title": "Setup Backend API",
-        "description": "Create RESTful API endpoints using Express.js",
+        "description": "Develop robust RESTful API endpoints using Express.js. Tasks include:\n- Structuring the backend architecture.\n- Creating CRUD operations for data management.\n- Testing endpoints with tools like Postman or Swagger.",
         "createdAt": "2 Sept 2021",
         "completed": true,
         "status": "completed"
@@ -34,7 +34,7 @@
     {
         "id": "5",
         "title": "Database Design",
-        "description": "Design and implement MongoDB schemas",
+        "description": "Design efficient and scalable MongoDB schemas. The design process involves:\n- Identifying data requirements and relationships.\n- Structuring collections and indexes to optimize performance.\n- Implementing models using Mongoose.",
         "createdAt": "3 Sept 2021",
         "completed": false,
         "status": "open"
@@ -42,7 +42,7 @@
     {
         "id": "6",
         "title": "User Authentication",
-        "description": "Implement JWT authentication system",
+        "description": "Implement a secure JWT-based authentication system, ensuring:\n- User credentials are securely encrypted.\n- Access tokens are issued with appropriate scopes and lifetimes.\n- All routes requiring authentication are properly secured.",
         "createdAt": "3 Sept 2021",
         "completed": false,
         "status": "on-track"
@@ -50,7 +50,7 @@
     {
         "id": "7",
         "title": "Testing",
-        "description": "Write unit tests for components and APIs",
+        "description": "Develop and execute unit tests for both frontend and backend components to ensure:\n- Key functionalities are working as expected.\n- Edge cases and potential failures are handled gracefully.\n- Testing coverage meets or exceeds the project's standard.",
         "createdAt": "4 Sept 2021",
         "completed": true,
         "status": "completed"
@@ -58,7 +58,7 @@
     {
         "id": "8",
         "title": "Documentation",
-        "description": "Create API documentation using Swagger",
+        "description": "Create comprehensive API documentation using Swagger. This should include:\n1. Clear descriptions of all endpoints.\n2. Request and response examples for each endpoint.\n3. Authentication and error-handling details.",
         "createdAt": "4 Sept 2021",
         "completed": false,
         "status": "open"
@@ -66,7 +66,7 @@
     {
         "id": "9",
         "title": "Deploy Backend",
-        "description": "Deploy backend to Heroku",
+        "description": "Deploy the backend services to Heroku. Steps involved:\n- Configuring environment variables for production.\n- Ensuring the server is optimized for deployment.\n- Monitoring deployment logs for troubleshooting.",
         "createdAt": "5 Sept 2021",
         "completed": false,
         "status": "on-track"
@@ -74,7 +74,7 @@
     {
         "id": "10",
         "title": "Deploy Frontend",
-        "description": "Deploy frontend to Vercel",
+        "description": "Launch the frontend application on Vercel. The deployment process includes:\n- Configuring Vercel settings for optimal performance.\n- Linking the deployment with the production backend.\n- Testing the live version for any issues.",
         "createdAt": "5 Sept 2021",
         "completed": true,
         "status": "completed"
@@ -82,7 +82,7 @@
     {
         "id": "11",
         "title": "Code Review",
-        "description": "Review and refactor code for better performance",
+        "description": "Conduct a thorough code review to identify and address potential issues. Focus areas include:\n- Refactoring for better readability and maintainability.\n- Ensuring consistent coding standards across the project.\n- Enhancing code performance where applicable.",
         "createdAt": "6 Sept 2021",
         "completed": false,
         "status": "open"
@@ -90,7 +90,7 @@
     {
         "id": "12",
         "title": "Bug Fixing",
-        "description": "Fix reported bugs and issues",
+        "description": "Address and resolve bugs reported by testers. This involves:\n- Replicating reported issues to understand their causes.\n- Applying appropriate fixes while avoiding regressions.\n- Verifying fixes through rigorous testing.",
         "createdAt": "6 Sept 2021",
         "completed": false,
         "status": "on-track"
@@ -98,7 +98,7 @@
     {
         "id": "13",
         "title": "Performance Optimization",
-        "description": "Optimize app performance and loading times",
+        "description": "Optimize application performance to improve user experience. Tasks include:\n- Minimizing load times by optimizing assets.\n- Improving database query performance.\n- Reducing memory and CPU usage in critical processes.",
         "createdAt": "7 Sept 2021",
         "completed": true,
         "status": "completed"
@@ -106,7 +106,7 @@
     {
         "id": "14",
         "title": "SEO Implementation",
-        "description": "Implement SEO best practices",
+        "description": "Implement SEO best practices to increase the app's search engine visibility. This involves:\n- Adding meta tags and structured data.\n- Ensuring fast page loading speeds.\n- Creating an XML sitemap and robots.txt file.",
         "createdAt": "7 Sept 2021",
         "completed": false,
         "status": "open"
@@ -114,7 +114,7 @@
     {
         "id": "15",
         "title": "Analytics Setup",
-        "description": "Set up Google Analytics tracking",
+        "description": "Integrate Google Analytics tracking into the project. Tasks include:\n1. Setting up a Google Analytics account.\n2. Adding the tracking code to the project.\n3. Configuring goals and events for actionable insights.",
         "createdAt": "8 Sept 2021",
         "completed": false,
         "status": "on-track"
@@ -122,7 +122,7 @@
     {
         "id": "16",
         "title": "User Testing",
-        "description": "Conduct user testing sessions",
+        "description": "Conduct user testing sessions to gather feedback on the application. Key steps:\n- Preparing test scenarios and scripts.\n- Collecting qualitative and quantitative feedback from testers.\n- Using insights to improve usability and functionality.",
         "createdAt": "8 Sept 2021",
         "completed": true,
         "status": "completed"
@@ -130,7 +130,7 @@
     {
         "id": "17",
         "title": "Security Audit",
-        "description": "Perform security audit and fix vulnerabilities",
+        "description": "Perform a security audit to identify and mitigate vulnerabilities. Areas of focus:\n- Validating input sanitization and authentication mechanisms.\n- Conducting penetration tests to simulate potential attacks.\n- Applying security patches and updates as needed.",
         "createdAt": "9 Sept 2021",
         "completed": false,
         "status": "open"
@@ -138,7 +138,7 @@
     {
         "id": "18",
         "title": "Content Creation",
-        "description": "Create content for landing page",
+        "description": "Develop engaging and high-quality content for the landing page. Focus on:\n1. Highlighting the app's features and benefits.\n2. Using SEO-friendly copywriting practices.\n3. Ensuring visual and textual content complement each other.",
         "createdAt": "9 Sept 2021",
         "completed": false,
         "status": "on-track"
@@ -146,7 +146,7 @@
     {
         "id": "19",
         "title": "Email Integration",
-        "description": "Implement email notification system",
+        "description": "Implement an email notification system to improve communication. The process includes:\n- Setting up an SMTP server or email service provider.\n- Designing and testing email templates for different use cases.\n- Integrating the email system into the backend.",
         "createdAt": "10 Sept 2021",
         "completed": true,
         "status": "completed"
@@ -154,7 +154,7 @@
     {
         "id": "20",
         "title": "Final Review",
-        "description": "Complete final review before launch",
+        "description": "Conduct a final review of the project before launch. Steps involved:\n- Verifying all features and functionalities work as expected.\n- Testing across different devices and browsers.\n- Preparing a checklist to ensure a smooth launch process.",
         "createdAt": "10 Sept 2021",
         "completed": false,
         "status": "open"

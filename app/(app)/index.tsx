@@ -76,6 +76,7 @@ export default function HomeScreen() {
             'on-track': '#F76C6A',
           }[item?.status] || '#F79E89';
           const { title, description, createdAt, completed, id } = item;
+          const substr = 70
           return (
             <Pressable style={[styles.card, { backgroundColor: bgStatus }]} key={i} onPress={() => onPressDetail(item)}>
               <View style={styles.cardHeader}>
@@ -87,7 +88,7 @@ export default function HomeScreen() {
                   color={isDarkMode ? '#F0F0F0' : '#272727'}
                   />
               </View>
-              <Text style={styles.cardDescription}>{description}</Text>
+              <Text style={styles.cardDescription}>{description.length < substr ? description : `${description.substring(0, substr)}...`}</Text>
               <Text style={styles.cardFooter}>Created at : {createdAt}</Text>
             </Pressable>
           );
