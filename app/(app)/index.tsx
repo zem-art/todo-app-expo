@@ -2,21 +2,23 @@ import React, { useEffect, useState } from 'react'
 import { Container } from '@/components/Container';
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Alert, Pressable, StyleSheet, Text, View, Switch, VirtualizedList, FlatList } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, View, Switch, VirtualizedList, FlatList, BackHandler } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/reducer-store';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Link, useRouter } from 'expo-router';
 import dummy from "@/test.json";
 
 export default function HomeScreen() {
-  const router = useRouter()
+  const router = useRouter();
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
   const [isDarkMode, setIsDarkMode] = useState(isDark);
   const [todos, setTodos] = useState(dummy);
-  
+
+  // useEffect Theme System
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // Log makesure state Redux
@@ -26,14 +28,37 @@ export default function HomeScreen() {
     // Clean up listeners when component is unmounted
     return unsubscribe; 
   }, [navigation, isDark]);
-  
+
+  // useEffect BackHandller Handphone
+  useEffect(() => {
+    if (isFocused) {
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        handleBackPress
+      );
+      // Cleanup listener when screen is off
+      return () => backHandler.remove();
+    }
+  }, [isFocused]);
+
+  const handleBackPress = () => {
+    Alert.alert(
+      "Exit Application", // Pop-up title
+      "Are you sure you want to exit the application ?", // Message
+      [
+        { text: "Cancel", style: "cancel" }, // Cancel button
+        { text: "Exit", onPress: () => BackHandler.exitApp() } // Exit button
+      ],
+      { cancelable: true } // Close if area outside pop-up is touched
+    );
+    return true; // Prevent default action of back button
+  };
 
   const triggerError = () => {
     throw new Error("Test error message");
   };
 
   const onPressDetail = (parms?:any) => {
-    // console.log(parms);
     router.push({
       pathname : '/(app)/details',
       params : { ...parms }
