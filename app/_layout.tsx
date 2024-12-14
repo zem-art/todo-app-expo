@@ -5,15 +5,14 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen';
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { Provider } from "react-redux";
-import { store } from "@/redux/reducer-store";
+import { Provider, useSelector } from "react-redux";
+import { RootState, store } from "@/redux/reducer-store";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -31,15 +30,25 @@ export default function RootLayout() {
   return (
     <ErrorBoundary>
       <Provider store={store}>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack>
-            <Stack.Screen name="(auth)" options={{ headerShown : false }}/>
-            <Stack.Screen name="(app)" options={{ headerShown : false }}/>
-            <Stack.Screen name="+not-found" options={{ headerShown : false }}/>
-          </Stack>
-          <StatusBar style="auto" />
-        </ThemeProvider>
+        <RootLayoutContent/>
       </Provider>
     </ErrorBoundary>
+  )
+}
+
+function RootLayoutContent() {
+  const colorScheme = useColorScheme();
+  const isLogin = useSelector((state: RootState) => state.AUTH_REDUCER.login)
+  console.log('state redux login ===> :',isLogin) 
+
+  return(
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack initialRouteName={isLogin ? "(app)" : "(auth)"}>
+          <Stack.Screen name="(auth)" options={{ headerShown : false }}/>
+          <Stack.Screen name="(app)" options={{ headerShown : false }}/>
+          <Stack.Screen name="+not-found" options={{ headerShown : false }}/>
+        </Stack>
+        <StatusBar style="auto" />
+    </ThemeProvider>
   )
 }

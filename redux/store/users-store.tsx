@@ -2,11 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UserState {
     data: object;
+    login: boolean;
     meta: object | null; // Tambahan data lainnya
 }
 
 const initialState: UserState = {
     data : {},
+    login: false,
     meta: null,
 };
 
