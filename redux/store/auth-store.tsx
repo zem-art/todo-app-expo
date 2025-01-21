@@ -6,7 +6,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-    login: false,
+    login: true,
     token: '',
 }
 
@@ -15,6 +15,7 @@ const AuthSlice = createSlice({
     initialState,
     reducers : {
         setAuth : (state, action: PayloadAction<{ login : boolean, token: string}>) => {
+            console.log("setAuth triggered with: ", action.payload); 
             state.login = action.payload.login;
             state.token = action.payload.token;
         }

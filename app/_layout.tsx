@@ -38,17 +38,28 @@ export default function RootLayout() {
 
 function RootLayoutContent() {
   const colorScheme = useColorScheme();
+  const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
   const isLogin = useSelector((state: RootState) => state.AUTH_REDUCER.login)
   console.log('state redux login ===> :',isLogin) 
 
+  useEffect(() => {
+    console.log("Redux state updated:", isLogin);
+  }, [isLogin]);
+
   return(
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack initialRouteName={isLogin ? "(app)" : "(auth)"}>
-          <Stack.Screen name="(auth)" options={{ headerShown : false }}/>
-          <Stack.Screen name="(app)" options={{ headerShown : false }}/>
-          <Stack.Screen name="+not-found" options={{ headerShown : false }}/>
-        </Stack>
-        <StatusBar style="auto" />
+    <ThemeProvider value={theme}>
+      <Stack initialRouteName={isLogin ? "(app)" : "(auth)"} screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(app)" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      {/* {isLogin && (
+        <Stack.Screen name="(app)" options={{ headerShown: false }} />
+      )}
+      {!isLogin && (
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      )} */}
+      <Stack.Screen name="+not-found" options={{ headerShown: false }} />
+      </Stack>
+      <StatusBar style="auto" />
     </ThemeProvider>
   )
 }

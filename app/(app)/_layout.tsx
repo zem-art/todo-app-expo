@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 
 export default function HomeLayout() {
+  console.log("Current layout loaded app");
   return (
     <Stack
       screenOptions={{
@@ -9,7 +10,7 @@ export default function HomeLayout() {
         animation: "fade_from_bottom"
       }}
     >
-      <Stack.Screen name="index"/>
+      <Stack.Screen name="home/index.tsx"/>
       <Stack.Screen name="details"/>
       <Stack.Screen name="settings/index"/>
     </Stack>

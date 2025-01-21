@@ -47,7 +47,7 @@ export default function Settings() {
                     { backgroundColor: !isDarkMode ? '#F0F0F0' : '#1C1C1C' }
                     ]}>
                         <View style={[styles.subHeader]}>
-                            <Link href="/(app)" style={[styles.button]} asChild>
+                            <Link href="/home" style={[styles.button]} asChild>
                                 <Pressable>
                                     <IconSymbol lib="AntDesign" name="left" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
                                 </Pressable>
