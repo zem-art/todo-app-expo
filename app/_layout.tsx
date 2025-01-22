@@ -8,7 +8,7 @@ import { StatusBar } from "expo-status-bar";
 import { Provider, useSelector } from "react-redux";
 import { store } from "@/redux/reducer-store";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { AuthProvider, useAuth } from "@/utils/auth-provider";
+import { AuthProvider, useAuth } from "@/context/auth-provider";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

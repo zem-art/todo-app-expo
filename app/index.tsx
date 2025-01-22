@@ -1,6 +1,6 @@
 import { Redirect } from "expo-router";
 import React from "react";
-import { useAuth } from "@/utils/auth-provider";
+import { useAuth } from "@/context/auth-provider";
 
 
 export default function AppIndex() {
