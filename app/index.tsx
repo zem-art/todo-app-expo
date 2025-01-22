@@ -7,6 +7,6 @@ export default function AppIndex() {
   const { isLogin } = useAuth();
 
   return (
-    <Redirect href={isLogin ? "/(home)/home" : "/(auth)/sign_in"} />
+    <Redirect href={isLogin ? "/(home)/home" : "/(auth)/sign-in"} />
   );
 }

@@ -13,14 +13,15 @@ import {
 } from 'react-native';
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Colors } from '@/constants/Colors';
+import { Link } from 'expo-router';
 
-interface LoginFormData {
+interface SignInFormData {
   email: string;
   password: string;
 }
 
 export default function SignIn() {
-  const [formData, setFormData] = useState<LoginFormData>({
+  const [formData, setFormData] = useState<SignInFormData>({
     email: '',
     password: '',
   });
@@ -38,20 +39,20 @@ export default function SignIn() {
         keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
         >
         <ScrollView
-            contentContainerStyle={styles.scrollContent}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-        <View style={styles.content}>
+          <View style={styles.content}>
             <View style={styles.titleContainer}>
-            <Text style={styles.titleText}>T O</Text>
-            <Text style={styles.titleText}>D O</Text>
-            <Text style={styles.titleText}>L I S T</Text>
-            <IconSymbol lib="Ionicons" name="checkboxOutline" size={24} color={Colors.primary} style={styles.checkIcon}/>
+              <Text style={styles.titleText}>T O</Text>
+              <Text style={styles.titleText}>D O</Text>
+              <Text style={styles.titleText}>L I S T</Text>
+              <IconSymbol lib="Ionicons" name="checkboxOutline" size={24} color={Colors.primary} style={styles.checkIcon}/>
             </View>
 
             <View style={styles.formContainer}>
-            <View style={styles.inputContainer}>
+              <View style={styles.inputContainer}>
                 <TextInput
                 style={styles.input}
                 placeholder="Email"
@@ -60,45 +61,47 @@ export default function SignIn() {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 />
-            </View>
+              </View>
 
-            <View style={styles.inputContainer}>
+              <View style={styles.inputContainer}>
                 <TextInput
-                style={[styles.input, styles.passwordInput]}
-                placeholder="Password"
-                value={formData.password}
-                onChangeText={(text) => setFormData({ ...formData, password: text })}
-                secureTextEntry={!showPassword}
+                  style={[styles.input, styles.passwordInput]}
+                  placeholder="Password"
+                  value={formData.password}
+                  onChangeText={(text) => setFormData({ ...formData, password: text })}
+                  secureTextEntry={!showPassword}
                 />
                 <TouchableOpacity
-                style={styles.passwordToggle}
-                onPress={() => setShowPassword(!showPassword)}
-                >
-                <IconSymbol 
-                    lib="Ionicons" 
+                  style={styles.passwordToggle}
+                  onPress={() => setShowPassword(!showPassword)}
+                  >
+                  <IconSymbol 
+                    lib="Ionicons"
                     name={showPassword ? 'eyeOffOutline' : 'eyeOutline'} 
                     size={24} 
                     color={Colors.drakGray}
-                    />
+                  />
                 </TouchableOpacity>
-            </View>
+              </View>
 
-            <TouchableOpacity style={styles.forgotPassword}>
+              <TouchableOpacity style={styles.forgotPassword}>
                 <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
 
-            <TouchableOpacity style={styles.signInButton} onPress={handleLogin}>
+              <TouchableOpacity style={styles.signInButton} onPress={handleLogin}>
                 <Text style={styles.signInText}>SIGN IN</Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
 
-            <View style={styles.signUpContainer}>
+              <View style={styles.signUpContainer}>
                 <Text style={styles.signUpText}>Don't have an account? </Text>
-                <TouchableOpacity>
-                <Text style={styles.signUpLink}>Sign up</Text>
-                </TouchableOpacity>
+                <Link href='/sign-up' asChild>
+                  <TouchableOpacity>
+                    <Text style={styles.signUpLink}>Sign up</Text>
+                  </TouchableOpacity>
+                </Link>
+              </View>
             </View>
-            </View>
-        </View>
+          </View>
       </ScrollView>    
     </KeyboardAvoidingView>
   );
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   titleText: {
-    fontSize: 32,
+    fontSize: 50,
     color: Colors.primary,
     fontWeight: 'bold',
     letterSpacing: 8,
@@ -136,7 +139,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     width: '100%',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
   },
   inputContainer: {
     marginBottom: 15,
