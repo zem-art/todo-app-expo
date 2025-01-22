@@ -10,7 +10,7 @@ export default function HomeLayout() {
         animation: "fade_from_bottom"
       }}
     >
-      <Stack.Screen name="home/index.tsx"/>
+      <Stack.Screen name="home"/>
       <Stack.Screen name="details"/>
       <Stack.Screen name="settings/index"/>
     </Stack>

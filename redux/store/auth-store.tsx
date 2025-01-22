@@ -6,7 +6,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-    login: true,
+    login: false,
     token: '',
 }
 

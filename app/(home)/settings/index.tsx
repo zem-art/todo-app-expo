@@ -11,6 +11,7 @@ import { setThemeActions } from '@/redux/actions';
 import { AppDispatch, RootState } from '@/redux/reducer-store';
 import convertToHyphen from '@/utils/string';
 import { Container } from '@/components/Container';
+import { Colors } from '@/constants/Colors';
 
 export default function Settings() {
     const navigation = useNavigation();
@@ -44,22 +45,22 @@ export default function Settings() {
                 HEADER_HEIGHT={400}
                 header={
                     <View style={[styles.header, 
-                    { backgroundColor: !isDarkMode ? '#F0F0F0' : '#1C1C1C' }
+                    { backgroundColor: !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }
                     ]}>
                         <View style={[styles.subHeader]}>
                             <Link href="/home" style={[styles.button]} asChild>
                                 <Pressable>
-                                    <IconSymbol lib="AntDesign" name="left" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+                                    <IconSymbol lib="AntDesign" name="left" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
                                 </Pressable>
                             </Link>
-                            <ThemedText style={[styles.textTitle, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]}>
+                            <ThemedText style={[styles.textTitle, { color: isDarkMode ? Colors.secondary : Colors.primary }]}>
                                 TO DO LIST
                             </ThemedText>
                             <Pressable style={[styles.button]} onPress={() => toggleTheme()}>
                                 <IconSymbol 
                                     lib={!isDarkMode ? "MaterialIcons" : "Entypo"} 
                                     name={!isDarkMode ? "darkMode" : "lightMode"}
-                                    color={isDarkMode ? '#F0F0F0' : '#272727'}
+                                    color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray}
                                     size={24}
                                 />
                             </Pressable>
@@ -77,20 +78,20 @@ export default function Settings() {
                 <ThemedText style={[styles.textSubtitle]} isDarkMode={isDarkMode}>Customize your app experience.</ThemedText>
                 <ThemedView isDarkMode={isDarkMode} style={[styles.content, { marginTop :20}]}>
                     <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Full Name</ThemedText>
-                    <ThemedText type='subtitle' style={[styles.textValueContent, { textTransform: 'uppercase', color: isDarkMode ? '#F76C6A' : '#F79E89' }]} isDarkMode={isDarkMode}>{convertToHyphen('ucup surucup')}</ThemedText>
+                    <ThemedText type='subtitle' style={[styles.textValueContent, { textTransform: 'uppercase', color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>{convertToHyphen('ucup surucup')}</ThemedText>
                 </ThemedView>
                 <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
                     <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Email</ThemedText>
-                    <ThemedText type='subtitle' style={[styles.textValueContent, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]} isDarkMode={isDarkMode}>ucup@gmail.com</ThemedText>
+                    <ThemedText type='subtitle' style={[styles.textValueContent, { color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>ucup@gmail.com</ThemedText>
                 </ThemedView>
                 <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
                     <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Password</ThemedText>
                     <Pressable onPress={() => Alert.alert('Change Password pressed')}>
-                        <ThemedText type='defaultSemiBold' style={[styles.textValueContent, styles.textLink, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]} isDarkMode={isDarkMode}>change{' '}password</ThemedText>
+                        <ThemedText type='defaultSemiBold' style={[styles.textValueContent, styles.textLink, { color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>change{' '}password</ThemedText>
                     </Pressable>
                 </ThemedView>
                 <ThemedView style={[styles.pathButton]} isDarkMode={isDarkMode}>
-                    <Pressable style={[styles.ButtonLogout, { backgroundColor: isDarkMode ? '#F76C6A' : '#F79E89' }]} onPress={() => Alert.alert('Logout pressed')}>
+                    <Pressable style={[styles.ButtonLogout, { backgroundColor: isDarkMode ? Colors.secondary : Colors.primary }]} onPress={() => Alert.alert('Logout pressed')}>
                         <ThemedText style={[styles.textButton]}>log{' '}out</ThemedText>
                     </Pressable>
                 </ThemedView>
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
     },
     textLabelContent: {
         // fontWeight: 'bold',
-        color: '#A0A0A0',
+        color: Colors.mediumGray,
     },
     textValueContent: {
         fontWeight: 'bold',

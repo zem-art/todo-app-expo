@@ -6,6 +6,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Feather from '@expo/vector-icons/Feather';
 import Entypo from '@expo/vector-icons/Entypo';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 // Mapping sederhana untuk icon
 const IconMap = {
@@ -40,6 +41,11 @@ const IconMap = {
   },
   Entypo : {
     lightMode : 'light-up'
+  },
+  Ionicons : {
+    checkboxOutline : 'checkbox-outline',
+    eyeOffOutline : 'eye-off-outline',
+    eyeOutline : 'eye-outline'
   }
 } as const;
 
@@ -51,6 +57,7 @@ const Libraries = {
   FontAwesome6,
   Feather,
   Entypo,
+  Ionicons,
 } as const;
 
 type LibraryType = keyof typeof Libraries;

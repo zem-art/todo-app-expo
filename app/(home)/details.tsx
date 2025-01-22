@@ -3,6 +3,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Colors } from '@/constants/Colors';
 import { RootState } from '@/redux/reducer-store';
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from 'expo-router/build/hooks';
@@ -42,32 +43,32 @@ export default function DetailsScreen() {
     }
 
     return (
-        <Container style={[styles.container, { backgroundColor : !isDarkMode ? '#F0F0F0' : '#272727' }]} isDarkMode={isDarkMode}>
-            <ThemedView style={[styles.header, { backgroundColor : !isDarkMode ? '#FFFFFF' : '#1C1C1C' }]}>
+        <Container style={[styles.container, { backgroundColor : !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }]} isDarkMode={isDarkMode}>
+            <ThemedView style={[styles.header, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
                 <Pressable style={[styles.buttonBack]} onPress={() => router.back()}>
-                    <IconSymbol lib="AntDesign" name="left" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+                    <IconSymbol lib="AntDesign" name="left" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
                 </Pressable>
-                <ThemedView style={[styles.CrudTodos, { backgroundColor : !isDarkMode ? '#FFFFFF' : '#1C1C1C' }]}>
+                <ThemedView style={[styles.CrudTodos, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
                     <Pressable style={[styles.buttonBack]} onPress={() => handleNavigation('add')}>
-                        <IconSymbol lib="AntDesign" name="clockcircleo" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+                        <IconSymbol lib="AntDesign" name="clockcircleo" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
                     </Pressable>
                     <Pressable style={[styles.buttonBack, { marginHorizontal: 15}]} onPress={() => handleNavigation('edit')}>
-                        <IconSymbol lib="AntDesign" name="edit" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+                        <IconSymbol lib="AntDesign" name="edit" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
                     </Pressable>
                     <Pressable style={[styles.buttonBack, { marginRight : 10}]} onPress={() => handleNavigation('delete')}>
-                        <IconSymbol lib="AntDesign" name="delete" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+                        <IconSymbol lib="AntDesign" name="delete" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
                     </Pressable>
                 </ThemedView>
             </ThemedView>
 
-            <ThemedView style={[styles.content, { backgroundColor : !isDarkMode ? '#FFFFFF' : '#1C1C1C' }]}>
-                <ThemedView style={[styles.created_at, { backgroundColor : !isDarkMode ? '#FFFFFF' : '#1C1C1C' }]}>
+            <ThemedView style={[styles.content, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
+                <ThemedView style={[styles.created_at, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
                     <ThemedText isDarkMode={isDarkMode}>Date : {createdAt}</ThemedText>
                 </ThemedView>
-                <ThemedView style={[styles.contentTitle, { backgroundColor : !isDarkMode ? '#FFFFFF' : '#1C1C1C' }]}>
+                <ThemedView style={[styles.contentTitle, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
                     <ThemedText isDarkMode={isDarkMode} style={[styles.titleContent]}>{title}</ThemedText>
                 </ThemedView>
-                <ThemedView style={[styles.descriptionContent, { backgroundColor : !isDarkMode ? '#FFFFFF' : '#1C1C1C' }]}>
+                <ThemedView style={[styles.descriptionContent, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
                      <ThemedText isDarkMode={isDarkMode} style={[styles.description]}>{description}</ThemedText>
                 </ThemedView>
             </ThemedView>

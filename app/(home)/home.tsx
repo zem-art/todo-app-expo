@@ -9,6 +9,7 @@ import { RootState } from '@/redux/reducer-store';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Link, useRouter } from 'expo-router';
 import dummy from "@/test.json";
+import { Colors } from '@/constants/Colors';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -60,7 +61,7 @@ export default function HomeScreen() {
 
   const onPressDetail = (parms?:any) => {
     router.push({
-      pathname : '/(app)/details',
+      pathname : '/(home)/details',
       params : { ...parms }
     })
   }
@@ -71,17 +72,17 @@ export default function HomeScreen() {
         isDarkMode={isDarkMode}
         HEADER_HEIGHT={60}
         header={
-          <View style={[styles.header, { backgroundColor: !isDarkMode ? '#F0F0F0' : '#1C1C1C' }]}>
-            <ThemedText style={[styles.textTitle, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]}>
+          <View style={[styles.header, { backgroundColor: !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }]}>
+            <ThemedText style={[styles.textTitle, { color: isDarkMode ? Colors.secondary : Colors.primary }]}>
               TO DO LIST
             </ThemedText>
             <View style={{ flexDirection : 'row'}}>
               <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => triggerError()}>
-                <IconSymbol lib="Feather" name="filter" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+                <IconSymbol lib="Feather" name="filter" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
               </Pressable>
               <Link href="/settings" asChild>
                 <Pressable style={[styles.buttonSettings]}>
-                  <IconSymbol lib="Feather" name="settings" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+                  <IconSymbol lib="Feather" name="settings" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
                 </Pressable>
               </Link>
             </View>
@@ -91,15 +92,15 @@ export default function HomeScreen() {
       {/* Main Content */}
       <View style={styles.content}>
         {/* Subtitle */}
-        <Text style={[styles.subTitle, { color: isDarkMode ? '#F76C6A' : '#F79E89' }]}>
+        <Text style={[styles.subTitle, { color: isDarkMode ? Colors.secondary : Colors.primary }]}>
           LIST OF TODO
         </Text>
 
         {todos.map((item, i) => {
           const bgStatus: string = {
-            completed: '#47663B',
-            'on-track': '#F76C6A',
-          }[item?.status] || '#F79E89';
+            completed: Colors.grayishDarkGreen,
+            'on-track': Colors.secondary,
+          }[item?.status] || Colors.primary;
           const { title, description, createdAt, completed, id } = item;
           const substr = 70
           return (
@@ -110,7 +111,7 @@ export default function HomeScreen() {
                   lib={!completed ? "FontAwesome6" : "AntDesign"}
                   name={!completed ? "clock" : "check"}
                   size={15}
-                  color={isDarkMode ? '#F0F0F0' : '#272727'}
+                  color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray}
                   />
               </View>
               <Text style={styles.cardDescription}>{description.length < substr ? description : `${description.substring(0, substr)}...`}</Text>
@@ -122,8 +123,8 @@ export default function HomeScreen() {
       </ParallaxScrollView>
 
       {/* Floating Action Button */}
-      <Pressable style={[styles.fab, { backgroundColor: !isDarkMode ? '#F76C6A' : '#F79E89' }]} onPress={() => Alert.alert('Add Todo')}>
-        <IconSymbol lib="Feather" name="plus" size={24} color={isDarkMode ? '#F0F0F0' : '#272727'} />
+      <Pressable style={[styles.fab, { backgroundColor: !isDarkMode ? Colors.secondary : Colors.primary }]} onPress={() => Alert.alert('Add Todo')}>
+        <IconSymbol lib="Feather" name="plus" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
       </Pressable>
   </Container>
   );
@@ -172,17 +173,17 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   cardTitle: {
-    color: '#FFFFFF',
+    color: Colors.background,
     fontSize: 18,
     fontWeight: 'bold',
   },
   cardDescription: {
-    color: '#FFFFFF',
+    color: Colors.background,
     fontSize: 14,
     marginBottom: 8,
   },
   cardFooter: {
-    color: '#FFFFFF',
+    color: Colors.background,
     fontSize: 12,
   },
   fab: {
