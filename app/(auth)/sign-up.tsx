@@ -29,6 +29,7 @@ export default function SignUp() {
       confirm_password: '',
     });
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
   
     const handleLogin = () => {
       // Implement your login logic here
@@ -64,8 +65,11 @@ export default function SignUp() {
                 keyboardType="default"
                 autoCapitalize="characters"
               />
+            </View>
+
+            <View style={styles.inputContainer}>
               <TextInput
-                style={[styles.input, { marginTop: 15 }]}
+                style={[styles.input]}
                 placeholder="Email"
                 value={formData.email}
                 onChangeText={(text) => setFormData({ ...formData, email: text })}
@@ -96,24 +100,24 @@ export default function SignUp() {
             </View>
 
             <View style={styles.inputContainer}>
-                <TextInput
-                    style={[styles.input, styles.passwordInput]}
-                    placeholder="Confirm Password"
-                    value={formData.confirm_password}
-                    onChangeText={(text) => setFormData({ ...formData, confirm_password: text })}
-                    secureTextEntry={!showPassword}
+              <TextInput
+                  style={[styles.input, styles.passwordInput]}
+                  placeholder="Confirm Password"
+                  value={formData.confirm_password}
+                  onChangeText={(text) => setFormData({ ...formData, confirm_password: text })}
+                  secureTextEntry={!showConfirmPassword}
+              />
+              <TouchableOpacity
+                style={styles.passwordToggle}
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                <IconSymbol 
+                  lib="Ionicons"
+                  name={showConfirmPassword ? 'eyeOffOutline' : 'eyeOutline'} 
+                  size={24} 
+                  color={Colors.drakGray}
                 />
-                <TouchableOpacity
-                    style={styles.passwordToggle}
-                    onPress={() => setShowPassword(!showPassword)}
-                    >
-                    <IconSymbol 
-                    lib="Ionicons"
-                    name={showPassword ? 'eyeOffOutline' : 'eyeOutline'} 
-                    size={24} 
-                    color={Colors.drakGray}
-                    />
-                </TouchableOpacity>
+              </TouchableOpacity>
             </View>
 
             <TouchableOpacity style={styles.signInButton} onPress={handleLogin}>

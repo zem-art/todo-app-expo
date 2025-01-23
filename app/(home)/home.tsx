@@ -10,6 +10,7 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Link, useRouter } from 'expo-router';
 import dummy from "@/test.json";
 import { Colors } from '@/constants/Colors';
+import { useBackHandler } from '@/utils/useBackHandler.utils';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -27,33 +28,14 @@ export default function HomeScreen() {
     });
     setIsDarkMode(isDark)
     // Clean up listeners when component is unmounted
-    return unsubscribe; 
+    return unsubscribe;
   }, [navigation, isDark]);
 
-  // useEffect BackHandller Handphone
-  useEffect(() => {
-    if (isFocused) {
-      const backHandler = BackHandler.addEventListener(
-        'hardwareBackPress',
-        handleBackPress
-      );
-      // Cleanup listener when screen is off
-      return () => backHandler.remove();
-    }
-  }, [isFocused]);
-
-  const handleBackPress = () => {
-    Alert.alert(
-      "Exit Application", // Pop-up title
-      "Are you sure you want to exit the application ?", // Message
-      [
-        { text: "Cancel", style: "cancel" }, // Cancel button
-        { text: "Exit", onPress: () => BackHandler.exitApp() } // Exit button
-      ],
-      { cancelable: true } // Close if area outside pop-up is touched
-    );
-    return true; // Prevent default action of back button
-  };
+  // Using the back handler
+  useBackHandler( isFocused, () => {
+    console.log("Custom exit logic executed!");
+    BackHandler.exitApp(); // Default exit action
+  })
 
   const triggerError = () => {
     throw new Error("Test error message");

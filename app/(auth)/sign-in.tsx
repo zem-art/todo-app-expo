@@ -1,5 +1,5 @@
 // LoginScreen.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,10 +10,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  BackHandler,
 } from 'react-native';
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Colors } from '@/constants/Colors';
 import { Link } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
+import { useDoubleBackPress } from '@/utils/useBackHandler.utils';
 
 interface SignInFormData {
   email: string;
@@ -21,6 +24,7 @@ interface SignInFormData {
 }
 
 export default function SignIn() {
+  const isFocused = useIsFocused();
   const [formData, setFormData] = useState<SignInFormData>({
     email: '',
     password: '',
@@ -31,6 +35,12 @@ export default function SignIn() {
     // Implement your login logic here
     console.log('Login attempt with:', formData);
   };
+
+  // Using the back handler
+  useDoubleBackPress(isFocused, () => {
+    console.log("Custom exit logic executed!");
+    BackHandler.exitApp(); // Default exit action
+  });
 
   return (
     <KeyboardAvoidingView
