@@ -17,6 +17,7 @@ import { Colors } from '@/constants/Colors';
 import { Link } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { useDoubleBackPress } from '@/utils/useBackHandler.utils';
+import { useAuth } from '@/context/auth-provider';
 
 interface SignInFormData {
   email: string;
@@ -24,6 +25,7 @@ interface SignInFormData {
 }
 
 export default function SignIn() {
+  const { setLogin } = useAuth()
   const isFocused = useIsFocused();
   const [formData, setFormData] = useState<SignInFormData>({
     email: '',
@@ -34,6 +36,7 @@ export default function SignIn() {
   const handleLogin = () => {
     // Implement your login logic here
     console.log('Login attempt with:', formData);
+    setLogin(true)
   };
 
   // Using the back handler

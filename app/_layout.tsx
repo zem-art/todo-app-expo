@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useColorScheme } from "@/hooks/useColorScheme.web";
 import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen';
@@ -44,11 +44,14 @@ function RootLayoutContent() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
   // const isLogin = useSelector((state: RootState) => state.AUTH_REDUCER.login)
-  console.log('state Asynstore login ===> :',isLogin)
+  // console.log('state Asynstore login _layout : ',isLogin)
 
-  useEffect(() => {
-    console.log("Asynstore state updated:", isLogin);
-  }, [isLogin]);
+  // useEffect(() => {
+  //   console.log("Asynstore useEffect _layout : ", isLogin);
+  //   if(isLogin){
+  //     router.replace('/(home)/home')
+  //   }
+  // }, [isLogin]);
 
   return(
     <ThemeProvider value={theme}>
