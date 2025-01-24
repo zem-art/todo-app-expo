@@ -10,7 +10,7 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Link, useRouter } from 'expo-router';
 import dummy from "@/test.json";
 import { Colors } from '@/constants/Colors';
-import { useBackHandler } from '@/utils/useBackHandler.utils';
+import { useBackHandler } from '@/utils/helpers/useBackHandler.utils';
 import { useAuth } from '@/context/auth-provider';
 
 export default function HomeScreen() {

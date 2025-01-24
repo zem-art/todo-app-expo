@@ -9,7 +9,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useDispatch, useSelector } from 'react-redux';
 import { setThemeActions } from '@/redux/actions';
 import { AppDispatch, RootState } from '@/redux/reducer-store';
-import convertToHyphen from '@/utils/string';
+import convertToHyphen from '@/utils/helpers/string';
 import { Container } from '@/components/Container';
 import { Colors } from '@/constants/Colors';
 

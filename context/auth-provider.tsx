@@ -35,10 +35,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   // Function to set login status and save token
-  const setLogin = async (value: boolean, token?: string) => {
+  const setLogin = async (value: boolean, token='dummy-token') => {
     try {
       if (value) {
-        await AsyncStorage.setItem("userToken", token || "dummy-token"); // Simpan token
+        await AsyncStorage.setItem("userToken", token); // Simpan token
       } else {
         await AsyncStorage.removeItem("userToken"); // Hapus token
       }

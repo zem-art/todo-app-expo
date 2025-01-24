@@ -11,13 +11,16 @@ import {
   Platform,
   ScrollView,
   BackHandler,
+  ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Colors } from '@/constants/Colors';
 import { Link } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
-import { useDoubleBackPress } from '@/utils/useBackHandler.utils';
+import { useDoubleBackPress } from '@/utils/helpers/useBackHandler.utils';
 import { useAuth } from '@/context/auth-provider';
+import { fetchApi } from '@/utils/helpers/fetchApi.utils';
 
 interface SignInFormData {
   email: string;
@@ -25,18 +28,37 @@ interface SignInFormData {
 }
 
 export default function SignIn() {
-  const { setLogin } = useAuth()
   const isFocused = useIsFocused();
   const [formData, setFormData] = useState<SignInFormData>({
     email: '',
     password: '',
   });
+  const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // Implement your login logic here
     console.log('Login attempt with:', formData);
-    setLogin(true)
+    try {
+      setIsLoading(true)
+      const data = await fetchApi(
+        '/api/auth/v1/mobile/user/sign_in',
+        'POST',
+        {
+          "email": "miku@gmail.com",
+          "password": "miku1234"
+        }
+      )
+      console.log(data)
+    } catch (error) {
+      ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+      console.log('Erorr ==> : ', error)
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 1000);
+    }
+    // setLogin(true)
   };
 
   // Using the back handler
@@ -101,8 +123,12 @@ export default function SignIn() {
                 <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.signInButton} onPress={handleLogin}>
-                <Text style={styles.signInText}>SIGN IN</Text>
+              <TouchableOpacity disabled={isLoading} style={styles.signInButton} onPress={handleLogin}>
+                {isLoading ?
+                  <ActivityIndicator size={'small'} color={Colors.background} /> 
+                :
+                  <Text style={styles.signInText}>SIGN IN</Text>
+                }
               </TouchableOpacity>
 
               <View style={styles.signUpContainer}>
@@ -115,7 +141,7 @@ export default function SignIn() {
               </View>
             </View>
           </View>
-      </ScrollView>    
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
