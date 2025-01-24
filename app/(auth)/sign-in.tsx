@@ -28,6 +28,7 @@ interface SignInFormData {
 }
 
 export default function SignIn() {
+  const { setLogin } = useAuth()
   const isFocused = useIsFocused();
   const [formData, setFormData] = useState<SignInFormData>({
     email: '',
@@ -39,26 +40,26 @@ export default function SignIn() {
   const handleLogin = async () => {
     // Implement your login logic here
     console.log('Login attempt with:', formData);
-    try {
-      setIsLoading(true)
-      const data = await fetchApi(
-        '/api/auth/v1/mobile/user/sign_in',
-        'POST',
-        {
-          "email": "miku@gmail.com",
-          "password": "miku1234"
-        }
-      )
-      console.log(data)
-    } catch (error) {
-      ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
-      console.log('Erorr ==> : ', error)
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false)
-      }, 1000);
-    }
-    // setLogin(true)
+    // try {
+    //   setIsLoading(true)
+    //   const data = await fetchApi(
+    //     '/api/auth/v1/mobile/user/sign_in',
+    //     'POST',
+    //     {
+    //       "email": "miku@gmail.com",
+    //       "password": "miku1234"
+    //     }
+    //   )
+    //   console.log(data)
+    // } catch (error) {
+    //   ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+    //   console.log('Erorr ==> : ', error)
+    // } finally {
+    //   setTimeout(() => {
+    //     setIsLoading(false)
+    //   }, 1000);
+    // }
+    setLogin(true)
   };
 
   // Using the back handler
