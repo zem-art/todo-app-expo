@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
 import LoadingSpinner from "@/components/LoadingSpinner";
-
 interface AuthContextType {
   isLogin: boolean;
   setLogin: (value: boolean) => void;
@@ -12,43 +10,35 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const router = useRouter();
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Cek status login saat komponen pertama kali dimuat
+  // Check login status when component is first loaded
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
         const token = await AsyncStorage.getItem("userToken");
         setIsLogin(!!token);
-
-        if (token) {
-          router.replace("/(home)/home");
-        } else {
-          router.replace("/(auth)/sign-in");
-        }
       } catch (error) {
         console.error("Error checking login status:", error);
       } finally {
-        setIsLoading(false); // Set loading ke false setelah proses selesai
+        setIsLoading(false); // Set loading to false after the process is complete
       }
     };
 
     checkLoginStatus();
-  }, [router]);
+  }, [isLogin]);
 
-  // Tampilkan spinner loading jika masih memuat
+  // Show loading spinner if still loading
   if (isLoading) {
-    // return <LoadingSpinner color="#FF5733" backgroundColor="#f0f0f0" />;
-    return null;
+    return <LoadingSpinner color="#FF5733" backgroundColor="#f0f0f0" />;
   }
 
-  // Fungsi untuk set login status dan menyimpan token
-  const setLogin = async (value: boolean) => {
+  // Function to set login status and save token
+  const setLogin = async (value: boolean, token?: string) => {
     try {
       if (value) {
-        await AsyncStorage.setItem("userToken", "dummy-token"); // Simpan token
+        await AsyncStorage.setItem("userToken", token || "dummy-token"); // Simpan token
       } else {
         await AsyncStorage.removeItem("userToken"); // Hapus token
       }
@@ -58,7 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Fungsi untuk logout dan menghapus token
+  // Function to logout and delete tokens
   const logout = async () => {
     try {
       await AsyncStorage.removeItem("userToken");
@@ -68,7 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Provider untuk menyebarkan state autentikasi ke komponen anak
+  // Provider to propagate authentication state to child components
   return (
     <AuthContext.Provider value={{ isLogin, setLogin, logout }}>
       {children}
@@ -76,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
-// Hook untuk menggunakan context autentikasi
+// Hook for using authentication context
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {

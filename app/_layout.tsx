@@ -43,15 +43,15 @@ function RootLayoutContent() {
   const { isLogin } = useAuth();
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
-  // const isLogin = useSelector((state: RootState) => state.AUTH_REDUCER.login)
-  // console.log('state Asynstore login _layout : ',isLogin)
 
-  // useEffect(() => {
-  //   console.log("Asynstore useEffect _layout : ", isLogin);
-  //   if(isLogin){
-  //     router.replace('/(home)/home')
-  //   }
-  // }, [isLogin]);
+  useEffect(() => {
+    // console.log("Asynstore useEffect _layout : ", isLogin);
+    if(isLogin){
+      router.replace('/(home)/home')
+    } else {
+      router.replace('/(auth)/sign-in')
+    }
+  }, [isLogin]);
 
   return(
     <ThemeProvider value={theme}>

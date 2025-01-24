@@ -11,9 +11,11 @@ import { Link, useRouter } from 'expo-router';
 import dummy from "@/test.json";
 import { Colors } from '@/constants/Colors';
 import { useBackHandler } from '@/utils/useBackHandler.utils';
+import { useAuth } from '@/context/auth-provider';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { logout } = useAuth()
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
@@ -59,7 +61,7 @@ export default function HomeScreen() {
               TO DO LIST
             </ThemedText>
             <View style={{ flexDirection : 'row'}}>
-              <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => triggerError()}>
+              <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => logout()}>
                 <IconSymbol lib="Feather" name="filter" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
               </Pressable>
               <Link href="/settings" asChild>
