@@ -17,7 +17,7 @@ export async function fetchApi(
     try {
       const isFormData = body instanceof FormData;
 
-      const base_url = 'http://127.0.1.1:4000' + url
+      const base_url = 'https://todo.learning-api.my.id' + url
 
       const response = await fetch(base_url, {
         method,

@@ -26,40 +26,60 @@ interface SignInFormData {
   email: string;
   password: string;
 }
+interface FormDataError {
+  email?: string;
+  password?: string;
+}
 
 export default function SignIn() {
-  const { setLogin } = useAuth()
+  const { setLogin } = useAuth();
   const isFocused = useIsFocused();
   const [formData, setFormData] = useState<SignInFormData>({
     email: '',
     password: '',
   });
+  const [formDataError, setFormDataError] = useState<FormDataError>({
+    email: '',
+    password: '',
+  });
+
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  const validateForm = (formData: FormDataError, setFormDataError: (errors: FormDataError) => void) => {
+    const errors: FormDataError = {};
+  
+    if (!formData.email) errors.email = "Email is required";
+    if (!formData.password) errors.password = "Password is required";
+  
+    setFormDataError(errors);
+
+    return Object.keys(errors).length === 0; 
+  };
+
   const handleLogin = async () => {
     // Implement your login logic here
-    console.log('Login attempt with:', formData);
-    // try {
-    //   setIsLoading(true)
-    //   const data = await fetchApi(
-    //     '/api/auth/v1/mobile/user/sign_in',
-    //     'POST',
-    //     {
-    //       "email": "miku@gmail.com",
-    //       "password": "miku1234"
-    //     }
-    //   )
-    //   console.log(data)
-    // } catch (error) {
-    //   ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
-    //   console.log('Erorr ==> : ', error)
-    // } finally {
-    //   setTimeout(() => {
-    //     setIsLoading(false)
-    //   }, 1000);
-    // }
-    setLogin(true)
+
+    // console.log('Login attempt with:', formData);
+    if (!validateForm(formData, setFormDataError)) return;
+
+    try {
+      setIsLoading(true)
+      const data = await fetchApi(
+        '/api/auth/v1/mobile/user/sign_in',
+        'POST',
+        formData,
+      )
+      // console.log(data)
+      if(data.status_code >= 200 && data.status_code <= 204) setLogin(true)
+    } catch (error) {
+      ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+      console.log('Erorr ==> : ', error)
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 500);
+    }
   };
 
   // Using the back handler
@@ -67,6 +87,12 @@ export default function SignIn() {
     console.log("Custom exit logic executed!");
     BackHandler.exitApp(); // Default exit action
   });
+
+  // handle change input text
+  const handleInputChange = (field: keyof SignInFormData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormDataError({})
+  };
 
   return (
     <KeyboardAvoidingView
@@ -90,13 +116,17 @@ export default function SignIn() {
             <View style={styles.formContainer}>
               <View style={styles.inputContainer}>
                 <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={formData.email}
-                onChangeText={(text) => setFormData({ ...formData, email: text })}
-                keyboardType="email-address"
-                autoCapitalize="none"
+                  style={styles.input}
+                  placeholder="Email"
+                  value={formData.email}
+                  onChangeText={(text) => handleInputChange('email', text)}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  editable={!isLoading}
                 />
+                {formDataError.email && 
+                  <Text style={{ color: "red", marginTop:5 }}>{formDataError.email}</Text>
+                }
               </View>
 
               <View style={styles.inputContainer}>
@@ -104,9 +134,13 @@ export default function SignIn() {
                   style={[styles.input, styles.passwordInput]}
                   placeholder="Password"
                   value={formData.password}
-                  onChangeText={(text) => setFormData({ ...formData, password: text })}
+                  onChangeText={(text) => handleInputChange('password', text)}
                   secureTextEntry={!showPassword}
+                  editable={!isLoading}
                 />
+                {formDataError.password && 
+                  <Text style={{ color: "red", marginTop:5 }}>{formDataError.password}</Text>
+                }
                 <TouchableOpacity
                   style={styles.passwordToggle}
                   onPress={() => setShowPassword(!showPassword)}
