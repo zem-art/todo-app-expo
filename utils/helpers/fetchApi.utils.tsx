@@ -1,3 +1,5 @@
+import { ConfigApiURL } from "@/constants/Config";
+
 /**
  * 
  * @param url Endpoint API yang akan dipanggil.
@@ -16,8 +18,9 @@ export async function fetchApi(
   ): Promise<any> {
     try {
       const isFormData = body instanceof FormData;
-
-      const base_url = 'https://todo.learning-api.my.id' + url
+      const BASE_URL = ConfigApiURL.base_url
+      const base_url = BASE_URL + url
+      console.log(base_url)
 
       const response = await fetch(base_url, {
         method,

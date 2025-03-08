@@ -21,6 +21,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { useDoubleBackPress } from '@/utils/helpers/useBackHandler.utils';
 import { useAuth } from '@/context/auth-provider';
 import { fetchApi } from '@/utils/helpers/fetchApi.utils';
+import { ConfigApiURL } from '@/constants/Config';
 
 interface SignInFormData {
   email: string;
@@ -66,7 +67,7 @@ export default function SignIn() {
     try {
       setIsLoading(true)
       const data = await fetchApi(
-        '/api/auth/v1/mobile/user/sign_in',
+        `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`,
         'POST',
         formData,
       )
