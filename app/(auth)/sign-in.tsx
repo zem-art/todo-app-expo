@@ -22,24 +22,17 @@ import { useDoubleBackPress } from '@/utils/helpers/useBackHandler.utils';
 import { useAuth } from '@/context/auth-provider';
 import { fetchApi } from '@/utils/helpers/fetchApi.utils';
 import { ConfigApiURL } from '@/constants/Config';
+import { FormDataSignInError, FormDataSignInPayload } from '@/interfaces/auth';
 
-interface SignInFormData {
-  email: string;
-  password: string;
-}
-interface FormDataError {
-  email?: string;
-  password?: string;
-}
 
 export default function SignIn() {
   const { setLogin } = useAuth();
   const isFocused = useIsFocused();
-  const [formData, setFormData] = useState<SignInFormData>({
+  const [formData, setFormData] = useState<FormDataSignInPayload>({
     email: '',
     password: '',
   });
-  const [formDataError, setFormDataError] = useState<FormDataError>({
+  const [formDataError, setFormDataError] = useState<FormDataSignInError>({
     email: '',
     password: '',
   });
@@ -47,8 +40,8 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const validateForm = (formData: FormDataError, setFormDataError: (errors: FormDataError) => void) => {
-    const errors: FormDataError = {};
+  const validateForm = (formData: FormDataSignInError, setFormDataError: (errors: FormDataSignInError) => void) => {
+    const errors: FormDataSignInError = {};
   
     if (!formData.email) errors.email = "Email is required";
     if (!formData.password) errors.password = "Password is required";
@@ -90,7 +83,7 @@ export default function SignIn() {
   });
 
   // handle change input text
-  const handleInputChange = (field: keyof SignInFormData, value: string) => {
+  const handleInputChange = (field: keyof FormDataSignInPayload, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setFormDataError({})
   };
@@ -126,7 +119,7 @@ export default function SignIn() {
                   editable={!isLoading}
                 />
                 {formDataError.email && 
-                  <Text style={{ color: "red", marginTop:5 }}>{formDataError.email}</Text>
+                  <Text style={styles.textError}>{formDataError.email}</Text>
                 }
               </View>
 
@@ -140,7 +133,7 @@ export default function SignIn() {
                   editable={!isLoading}
                 />
                 {formDataError.password && 
-                  <Text style={{ color: "red", marginTop:5 }}>{formDataError.password}</Text>
+                  <Text style={styles.textError}>{formDataError.password}</Text>
                 }
                 <TouchableOpacity
                   style={styles.passwordToggle}
@@ -268,5 +261,9 @@ const styles = StyleSheet.create({
     color: Colors.primary,
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  textError : {
+    color: Colors.error,
+    marginTop: 5,
   },
 });
