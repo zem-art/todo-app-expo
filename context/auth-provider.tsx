@@ -38,13 +38,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .then((data) => {
           // console.log("Response data :", data.response.data)
           setIsLogin(!!token)
-          dispatch(setAuthActions(token || '', true))
+          dispatch(setAuthActions(token || '', true)) // setToken to Redux
         })
         .catch(async (error) => {
-            // console.error("Error ===>:", error.message)
-            await AsyncStorage.removeItem("userToken");
+            // console.error("Error ===>:", error.status)
             setIsLogin(false)
-            dispatch(setAuthActions('', false))
+            await AsyncStorage.removeItem("userToken");
+            dispatch(setAuthActions('', false)) // setToken to Redux
             ToastAndroid.show('Sesi Anda telah berakhir', ToastAndroid.SHORT)
           }
         );

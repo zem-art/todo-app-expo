@@ -15,7 +15,7 @@ const AuthSlice = createSlice({
     initialState,
     reducers : {
         setAuth : (state, action: PayloadAction<{ login : boolean, token: string}>) => {
-            console.log("setAuth triggered with: ", action.payload, '==', state);
+            // console.log("setAuth triggered with: ", action.payload, '==', state);
             state.login = action.payload.login;
             state.token = action.payload.token;
         }
