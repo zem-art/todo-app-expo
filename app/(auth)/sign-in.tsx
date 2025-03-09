@@ -48,7 +48,7 @@ export default function SignIn() {
   
     setFormDataError(errors);
 
-    return Object.keys(errors).length === 0; 
+    return Object.keys(errors).length === 0;
   };
 
   const handleLogin = async () => {
@@ -65,7 +65,10 @@ export default function SignIn() {
         formData,
       )
       // console.log(data)
-      if(data.status_code >= 200 && data.status_code <= 204) setLogin(true)
+      const token = data.response.token || undefined || null
+      if(data.status_code >= 200 && data.status_code <= 204 && token) 
+        setLogin(true, token)
+        ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
     } catch (error) {
       ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
       console.log('Erorr ==> : ', error)

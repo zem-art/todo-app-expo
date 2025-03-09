@@ -1,9 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { fetchApi } from "@/utils/helpers/fetchApi.utils";
+import { ConfigApiURL } from "@/constants/Config";
+import { ToastAndroid } from "react-native";
 interface AuthContextType {
   isLogin: boolean;
-  setLogin: (value: boolean) => void;
+  setLogin: (value: boolean, token:string) => void;
   logout: () => void;
 }
 
@@ -18,7 +21,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const checkLoginStatus = async () => {
       try {
         const token = await AsyncStorage.getItem("userToken");
-        setIsLogin(!!token);
+        const additionalHeaders = {
+          Authorization: `Bearer ${token}`,
+        };
+        // console.log(additionalHeaders)
+        await fetchApi(
+          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/profile`,
+          "GET",
+          undefined,
+          additionalHeaders,
+        )
+        .then((data) => 
+          // console.log("Response:", data)
+          setIsLogin(!!token)
+        )
+        .catch(async (error) => {
+            // console.error("Error ===>:", error.message)
+            ToastAndroid.show('Sesi Anda telah berakhir', ToastAndroid.SHORT)
+            await AsyncStorage.removeItem("userToken");
+            setIsLogin(false)
+          }
+        );
       } catch (error) {
         console.error("Error checking login status:", error);
       } finally {
@@ -35,7 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   // Function to set login status and save token
-  const setLogin = async (value: boolean, token='dummy-token') => {
+  const setLogin = async (value: boolean, token:string) => {
     try {
       if (value) {
         await AsyncStorage.setItem("userToken", token); // Simpan token

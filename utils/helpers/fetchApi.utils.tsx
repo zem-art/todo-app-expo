@@ -20,7 +20,7 @@ export async function fetchApi(
       const isFormData = body instanceof FormData;
       const BASE_URL = ConfigApiURL.base_url
       const base_url = BASE_URL + url
-      console.log(base_url)
+      // console.log(headers)
 
       const response = await fetch(base_url, {
         method,
@@ -34,10 +34,10 @@ export async function fetchApi(
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
-  
+
       return await response.json();
     } catch (error) {
-      console.error("Fetch API Error:", error);
+      // console.error("Fetch API Error:", error);
       throw error;
     }
 }
