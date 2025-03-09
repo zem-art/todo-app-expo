@@ -4,6 +4,9 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { fetchApi } from "@/utils/helpers/fetchApi.utils";
 import { ConfigApiURL } from "@/constants/Config";
 import { ToastAndroid } from "react-native";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/reducer-store";
+import { setAuthActions } from "@/redux/actions";
 interface AuthContextType {
   isLogin: boolean;
   setLogin: (value: boolean, token:string) => void;
@@ -15,6 +18,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const dispatch = useDispatch<AppDispatch>();
 
   // Check login status when component is first loaded
   useEffect(() => {
@@ -31,15 +35,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           undefined,
           additionalHeaders,
         )
-        .then((data) => 
-          // console.log("Response:", data)
+        .then((data) => {
+          // console.log("Response data :", data.response.data)
           setIsLogin(!!token)
-        )
+          dispatch(setAuthActions(token || '', true))
+        })
         .catch(async (error) => {
             // console.error("Error ===>:", error.message)
-            ToastAndroid.show('Sesi Anda telah berakhir', ToastAndroid.SHORT)
             await AsyncStorage.removeItem("userToken");
             setIsLogin(false)
+            dispatch(setAuthActions('', false))
+            ToastAndroid.show('Sesi Anda telah berakhir', ToastAndroid.SHORT)
           }
         );
       } catch (error) {
@@ -76,6 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await AsyncStorage.removeItem("userToken");
       setIsLogin(false);
+      dispatch(setAuthActions('', false))
     } catch (error) {
       console.error("Error during logout:", error);
     }

@@ -1,4 +1,5 @@
 import { AppDispatch, RootState } from "../reducer-store";
+import { setAuth } from "../store/auth-store";
 import { setTheme } from "../store/theme-store"
 import { setUsers } from "../store/users-store";
 
@@ -10,4 +11,13 @@ export const setThemeActions = () => (dispatch: AppDispatch, getState: () => Roo
 export const setUserActions = () => (dispatch: AppDispatch, getState: () => RootState) => {
     const { data, meta } = getState().USER_REDUCER
     dispatch(setUsers({ data, meta: {} }))
+}
+
+export const setAuthActions = (
+    NewToken:string,
+    NewLogin: boolean
+) => (dispatch: AppDispatch, getState: () => RootState) => {
+    const { token, login } = getState().AUTH_REDUCER
+    console.log('==> : ', token);    
+    dispatch(setAuth({ token: NewToken, login: NewLogin }))
 }
