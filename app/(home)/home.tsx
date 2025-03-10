@@ -60,7 +60,7 @@ export default function HomeScreen() {
       }));
       setTodos(arrayData);
     } catch (error:any) {
-      console.error("Error ==>", error?.response);
+      // console.error("Error ==>", error);
     } finally {
       setIsLoading(false);
     }
