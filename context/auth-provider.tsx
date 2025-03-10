@@ -22,41 +22,57 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Check login status when component is first loaded
   useEffect(() => {
+    let interval: NodeJS.Timeout;
     const checkLoginStatus = async () => {
       try {
         const token = await AsyncStorage.getItem("userToken");
+        if (!token) {
+          setIsLogin(false);
+          dispatch(setAuthActions("", false));
+          return;
+        }
         const additionalHeaders = {
           Authorization: `Bearer ${token}`,
         };
         // console.log(additionalHeaders)
-        await fetchApi(
+        const response = await fetchApi(
           `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/profile`,
           "GET",
           undefined,
           additionalHeaders,
         )
-        .then((data) => {
-          // console.log("Response data :", data.response.data)
-          setIsLogin(!!token)
-          dispatch(setAuthActions(token || '', true)) // setToken to Redux
-        })
-        .catch(async (error) => {
-            // console.error("Error ===>:", error.status)
-            setIsLogin(false)
-            await AsyncStorage.removeItem("userToken");
-            dispatch(setAuthActions('', false)) // setToken to Redux
-            ToastAndroid.show('Sesi Anda telah berakhir', ToastAndroid.SHORT)
-          }
-        );
-      } catch (error) {
-        console.error("Error checking login status:", error);
+        
+        if (response) {
+          setIsLogin(true);
+          dispatch(setAuthActions(token, true));
+        } else {
+          await logout(); // Jika gagal, logout otomatis
+        }
+      } catch (error:any) {
+        if (error.response?.status === 401) {
+          ToastAndroid.show("Sesi Anda telah berakhir", ToastAndroid.SHORT);
+          await logout();
+        }
+        // console.error("Error checking login status:", error);
       } finally {
         setIsLoading(false); // Set loading to false after the process is complete
       }
     };
+    // Cek pertama dalam 10 detik
+    const firstCheck = setTimeout(() => {
+      checkLoginStatus();
 
-    checkLoginStatus();
-  }, [isLogin]);
+      // Setelah cek pertama, jalankan polling setiap 5 menit
+      interval = setInterval(() => {
+        checkLoginStatus();
+      }, 5 * 60 * 1000); // 5 menit (300.000 ms)
+    }, 10000); // 10 detik (10.000 ms)
+
+    return () => {
+      clearTimeout(firstCheck);
+      clearInterval(interval);
+    };
+  }, []);
 
   // Show loading spinner if still loading
   if (isLoading) {

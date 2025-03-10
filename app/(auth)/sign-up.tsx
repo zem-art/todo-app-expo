@@ -69,7 +69,7 @@ export default function SignUp() {
       if(data.status_code >= 200 && data.status_code <= 204) 
         router.replace('/(auth)/sign-in')
         ToastAndroid.show('Berhasil Mendaftar..', ToastAndroid.SHORT);
-    } catch (error) {
+    } catch (error:any) {
       ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
       console.log('Erorr ==> : ', error)
     } finally {

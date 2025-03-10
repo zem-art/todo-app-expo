@@ -47,7 +47,7 @@ export default function HomeScreen() {
         Authorization: `Bearer ${token}`,
       };
       const data = await fetchApi(
-        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?limit=10`,
+        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?limit=50`,
         "GET",
         undefined,
         additionalHeaders);
@@ -56,7 +56,7 @@ export default function HomeScreen() {
       // console.log("Response data:", data.response.data);
       const arrayData = data.response.data.map((item: any) => ({
         ...item,
-        status: "completed",
+        status: item.status || 'open',
       }));
       setTodos(arrayData);
     } catch (error:any) {

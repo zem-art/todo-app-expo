@@ -69,7 +69,7 @@ export default function SignIn() {
       if(data.status_code >= 200 && data.status_code <= 204 && token) 
         setLogin(true, token)
         ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
-    } catch (error) {
+    } catch (error:any) {
       ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
       console.log('Erorr ==> : ', error)
     } finally {
