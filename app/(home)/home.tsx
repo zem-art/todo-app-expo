@@ -12,6 +12,10 @@ import dummy from "@/test.json";
 import { Colors } from '@/constants/Colors';
 import { useBackHandler } from '@/utils/helpers/useBackHandler.utils';
 import { useAuth } from '@/context/auth-provider';
+import { fetchApi } from '@/utils/helpers/fetchApi.utils';
+import { ConfigApiURL } from '@/constants/Config';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import { ListTodo } from '@/interfaces/home';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -19,8 +23,11 @@ export default function HomeScreen() {
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
+  const { token, login } = useSelector((state:RootState) => state.AUTH_REDUCER);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState(isDark);
-  const [todos, setTodos] = useState(dummy);
+  const [todos, setTodos] = useState<Array<ListTodo>>([]);
+  console.log('TOKEN ==>', token)
 
   // useEffect Theme System
   useEffect(() => {
@@ -32,6 +39,37 @@ export default function HomeScreen() {
     // Clean up listeners when component is unmounted
     return unsubscribe;
   }, [navigation, isDark]);
+  
+  const handleListTodo = async () => {
+    setIsLoading(true);
+    try {
+      const additionalHeaders = {
+        Authorization: `Bearer ${token}`,
+      };
+      const data = await fetchApi(
+        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?limit=10`,
+        "GET",
+        undefined,
+        additionalHeaders);
+      // if (!data?.response?.data) throw new Error("Invalid response data");
+      if (!data?.response?.data) setTodos([]);
+      // console.log("Response data:", data.response.data);
+      const arrayData = data.response.data.map((item: any) => ({
+        ...item,
+        status: "completed",
+      }));
+      setTodos(arrayData);
+    } catch (error:any) {
+      console.error("Error ==>", error?.response);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleListTodo()
+  }, [token])
+  
 
   // Using the back handler
   useBackHandler( isFocused, () => {
@@ -80,29 +118,40 @@ export default function HomeScreen() {
           LIST OF TODO
         </Text>
 
-        {todos.map((item, i) => {
-          const bgStatus: string = {
-            completed: Colors.grayishDarkGreen,
-            'on-track': Colors.secondary,
-          }[item?.status] || Colors.primary;
-          const { title, description, createdAt, completed, id } = item;
-          const substr = 70
-          return (
-            <Pressable style={[styles.card, { backgroundColor: bgStatus }]} key={i} onPress={() => onPressDetail(item)}>
-              <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>{title}</Text>
-                <IconSymbol
-                  lib={!completed ? "FontAwesome6" : "AntDesign"}
-                  name={!completed ? "clock" : "check"}
-                  size={15}
-                  color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray}
-                  />
-              </View>
-              <Text style={styles.cardDescription}>{description.length < substr ? description : `${description.substring(0, substr)}...`}</Text>
-              <Text style={styles.cardFooter}>Created at : {createdAt}</Text>
-            </Pressable>
-          );
-        })}
+        {
+          isLoading ?
+            <LoadingSpinner color="#FF5733" backgroundColor="#f0f0f0" />
+            :
+            <>
+              {todos.map((item, i) => {
+                const statusColors: Record<"completed" | "on-track", string> = {
+                  completed: Colors.grayishDarkGreen,
+                  "on-track": Colors.secondary,
+                };
+                const color = statusColors[item?.status as "completed" | "on-track"] || Colors.primary;
+                
+                const { title, description, created_at, completed, id } = item;
+                const substr = 70
+                return (
+                  <Pressable style={[styles.card, { backgroundColor: color }]} key={i} onPress={() => onPressDetail(item)}>
+                    <View style={styles.cardHeader}>
+                      <Text style={styles.cardTitle}>{title}</Text>
+                      <IconSymbol
+                        lib={!completed ? "FontAwesome6" : "AntDesign"}
+                        name={!completed ? "clock" : "check"}
+                        size={15}
+                        color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray}
+                        />
+                    </View>
+                    <Text style={styles.cardDescription}>{description.length < substr ? description : `${description.substring(0, substr)}...`}</Text>
+                    <Text style={styles.cardFooter}>Created at : {created_at}</Text>
+                  </Pressable>
+                );
+            })}
+          </> 
+        }
+
+        
       </View>
       </ParallaxScrollView>
 

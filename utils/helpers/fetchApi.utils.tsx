@@ -20,7 +20,7 @@ export async function fetchApi(
       const isFormData = body instanceof FormData;
       const BASE_URL = ConfigApiURL.base_url
       const base_url = BASE_URL + url
-      // console.log(headers)
+      // console.log(base_url)
 
       const response = await fetch(base_url, {
         method,

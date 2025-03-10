@@ -48,3 +48,7 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## License
+This project **may not be used, copied, or modified** without the written permission of its owner.
+If you would like to use this project, please contact me at zenzenid175@gmail.com.
