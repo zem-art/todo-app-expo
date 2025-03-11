@@ -1,4 +1,5 @@
 import { Container } from '@/components/Container'
+import LoadingSpinner from '@/components/LoadingSpinner';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -24,7 +25,7 @@ export default function DetailsScreen() {
     const { token, login } = useSelector((state:RootState) => state.AUTH_REDUCER);
     const [isDarkMode, setIsDarkMode] = useState(isDark);
     const [stateDetail, setStateDetail] = useState<Todo>()
-    const [IsLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     console.log('token ==> : ', token)
 
     useEffect(() => {
@@ -76,6 +77,9 @@ export default function DetailsScreen() {
                 break;
         }
     }
+
+    console.log('loading ==> : ', isLoading)
+
     return (
         <Container style={[styles.container, { backgroundColor : !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }]} isDarkMode={isDarkMode}>
             <ThemedView style={[styles.header, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
@@ -95,17 +99,22 @@ export default function DetailsScreen() {
                 </ThemedView>
             </ThemedView>
 
-            <ThemedView style={[styles.content, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
-                <ThemedView style={[styles.created_at, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
-                    <ThemedText isDarkMode={isDarkMode}>Date : {stateDetail?.created_at}</ThemedText>
+            {
+                isLoading ? 
+                    <LoadingSpinner color="#FF5733" backgroundColor="#f0f0f0" />
+                :
+                <ThemedView style={[styles.content, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
+                    <ThemedView style={[styles.created_at, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
+                        <ThemedText isDarkMode={isDarkMode}>Date : {stateDetail?.created_at}</ThemedText>
+                    </ThemedView>
+                    <ThemedView style={[styles.contentTitle, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
+                        <ThemedText isDarkMode={isDarkMode} style={[styles.titleContent]}>{stateDetail?.title}</ThemedText>
+                    </ThemedView>
+                    <ThemedView style={[styles.descriptionContent, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
+                        <ThemedText isDarkMode={isDarkMode} style={[styles.description]}>{stateDetail?.description}</ThemedText>
+                    </ThemedView>
                 </ThemedView>
-                <ThemedView style={[styles.contentTitle, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
-                    <ThemedText isDarkMode={isDarkMode} style={[styles.titleContent]}>{stateDetail?.title}</ThemedText>
-                </ThemedView>
-                <ThemedView style={[styles.descriptionContent, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
-                     <ThemedText isDarkMode={isDarkMode} style={[styles.description]}>{stateDetail?.description}</ThemedText>
-                </ThemedView>
-            </ThemedView>
+            }
         </Container>
     )
 }

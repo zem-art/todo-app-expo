@@ -24,7 +24,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     console.log('== USE EFFECT AUTH PROVIDER ===')
 
-    let interval: NodeJS.Timeout;
+    let interval: NodeJS.Timeout | null = null;
+  
     const checkLoginStatus = async () => {
       try {
         const token = await AsyncStorage.getItem("userToken");
@@ -64,16 +65,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Cek pertama dalam 10 detik
     const firstCheck = setTimeout(() => {
       checkLoginStatus();
+
+      // Setelah cek pertama, mulai polling setiap 5 menit
       interval = setInterval(() => {
         checkLoginStatus();
-      }, 300000); // Setelah cek pertama, jalankan polling setiap 5 menit | 5 menit (300.000 ms))
-    }, 1000); // 10 detik (10.000 ms)
+      }, 300000); // 5 menit (300.000 ms)
+    }, 10000); // 10 detik (10.000 ms)
 
     return () => {
+      console.log("Cleanup function dijalankan");
       clearTimeout(firstCheck);
-      clearInterval(interval);
+      if (interval) clearInterval(interval);
     };
-  }, [isLogin]);
+  }, []);
 
   // Show loading spinner if still loading
   if (isLoading) {
