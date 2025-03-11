@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Container } from '@/components/Container';
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Alert, Pressable, StyleSheet, Text, View, Switch, VirtualizedList, FlatList, BackHandler } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, View, Switch, VirtualizedList, FlatList, BackHandler, ToastAndroid } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/reducer-store';
@@ -19,7 +19,7 @@ import { ListTodo } from '@/interfaces/home';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { logout } = useAuth()
+  const { logout, isLogin } = useAuth()
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
@@ -27,7 +27,6 @@ export default function HomeScreen() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState(isDark);
   const [todos, setTodos] = useState<Array<ListTodo>>([]);
-  console.log('TOKEN ==>', token)
 
   // useEffect Theme System
   useEffect(() => {
@@ -60,7 +59,11 @@ export default function HomeScreen() {
       }));
       setTodos(arrayData);
     } catch (error:any) {
-      // console.error("Error ==>", error);
+      if (error?.status === 401) {
+        ToastAndroid.show("Sesi Anda telah berakhir", ToastAndroid.SHORT);
+        logout();
+      }
+      // console.error("Error ==>", error?.status);
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +71,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     handleListTodo()
-  }, [token])
+  }, [token, isLogin, navigation])
   
 
   // Using the back handler
@@ -130,7 +133,7 @@ export default function HomeScreen() {
                 };
                 const color = statusColors[item?.status as "completed" | "on-track"] || Colors.primary;
                 
-                const { title, description, created_at, completed, id } = item;
+                const { title, description, created_at, completed, id_todo } = item;
                 const substr = 70
                 return (
                   <Pressable style={[styles.card, { backgroundColor: color }]} key={i} onPress={() => onPressDetail(item)}>

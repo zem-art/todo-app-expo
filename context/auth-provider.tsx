@@ -22,6 +22,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Check login status when component is first loaded
   useEffect(() => {
+    console.log('== USE EFFECT AUTH PROVIDER ===')
+
     let interval: NodeJS.Timeout;
     const checkLoginStatus = async () => {
       try {
@@ -49,30 +51,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           await logout(); // Jika gagal, logout otomatis
         }
       } catch (error:any) {
-        if (error.response?.status === 401) {
+        if (error?.status === 401) {
           ToastAndroid.show("Sesi Anda telah berakhir", ToastAndroid.SHORT);
           await logout();
         }
-        // console.error("Error checking login status:", error);
+        console.error("Error checking login status:", error);
       } finally {
         setIsLoading(false); // Set loading to false after the process is complete
       }
     };
+
     // Cek pertama dalam 10 detik
     const firstCheck = setTimeout(() => {
       checkLoginStatus();
-
-      // Setelah cek pertama, jalankan polling setiap 5 menit
       interval = setInterval(() => {
         checkLoginStatus();
-      }, 5 * 60 * 1000); // 5 menit (300.000 ms)
-    }, 10000); // 10 detik (10.000 ms)
+      }, 300000); // Setelah cek pertama, jalankan polling setiap 5 menit | 5 menit (300.000 ms))
+    }, 1000); // 10 detik (10.000 ms)
 
     return () => {
       clearTimeout(firstCheck);
       clearInterval(interval);
     };
-  }, []);
+  }, [isLogin]);
 
   // Show loading spinner if still loading
   if (isLoading) {
@@ -84,6 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       if (value) {
         await AsyncStorage.setItem("userToken", token); // Simpan token
+        dispatch(setAuthActions(token, true));
       } else {
         await AsyncStorage.removeItem("userToken"); // Hapus token
       }

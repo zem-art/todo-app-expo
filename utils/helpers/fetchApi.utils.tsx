@@ -1,4 +1,6 @@
 import { ConfigApiURL } from "@/constants/Config";
+import { useAuth } from "@/context/auth-provider";
+import { ToastAndroid } from "react-native";
 
 /**
  * 
@@ -10,6 +12,7 @@ import { ConfigApiURL } from "@/constants/Config";
  * 
  * NOTE : Fungsi otomatis mendeteksi apakah body menggunakan JSON atau FormData berdasarkan tipe data.
  */
+
 export async function fetchApi(
     url: string,
     method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
@@ -31,8 +34,10 @@ export async function fetchApi(
         body: isFormData ? (body as FormData) : JSON.stringify(body),
       });
   
+      // Menangani status error (misal: 401, 403)
       if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        const errorData = await response.json().catch(() => null); // Ambil error message dari response
+        throw { status: response.status, data: errorData }; // Melempar error dengan status
       }
 
       return await response.json();
