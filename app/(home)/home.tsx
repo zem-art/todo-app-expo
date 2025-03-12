@@ -71,7 +71,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     handleListTodo()
-  }, [token, isLogin, navigation])
+  }, [token, isLogin, isLoading])
   
 
   // Using the back handler
