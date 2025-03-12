@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 import { Alert, BackHandler, Image, Pressable, StyleSheet, View } from 'react-native';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import ParallaxFlatList from '@/components/ParallaxFlatList';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
@@ -40,7 +40,7 @@ export default function Settings() {
 
     return (
         <Container style={[styles.container]} isDarkMode={isDarkMode}>
-            <ParallaxScrollView
+            <ParallaxFlatList
                 isDarkMode={isDarkMode}
                 HEADER_HEIGHT={400}
                 header={
@@ -95,7 +95,7 @@ export default function Settings() {
                         <ThemedText style={[styles.textButton]}>log{' '}out</ThemedText>
                     </Pressable>
                 </ThemedView>
-            </ParallaxScrollView>
+            </ParallaxFlatList>
         </Container>
     )
 }

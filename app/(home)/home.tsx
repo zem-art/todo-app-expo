@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Container } from '@/components/Container';
-import ParallaxScrollView from "@/components/ParallaxScrollView";
+import ParallaxFlatList from "@/components/ParallaxFlatList";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Alert, Pressable, StyleSheet, Text, View, Switch, VirtualizedList, FlatList, BackHandler, ToastAndroid } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/reducer-store';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { Link, useRouter } from 'expo-router';
-import dummy from "@/test.json";
 import { Colors } from '@/constants/Colors';
 import { useBackHandler } from '@/utils/helpers/useBackHandler.utils';
 import { useAuth } from '@/context/auth-provider';
@@ -71,8 +70,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     handleListTodo()
-  }, [token, isLogin, isLoading])
-  
+  }, [token, isLogin])
 
   // Using the back handler
   useBackHandler( isFocused, () => {
@@ -93,7 +91,8 @@ export default function HomeScreen() {
 
   return (
     <Container style={[styles.container]} isDarkMode={isDarkMode}>
-      <ParallaxScrollView
+      {/* Main Content */}
+      <ParallaxFlatList
         isDarkMode={isDarkMode}
         HEADER_HEIGHT={60}
         header={
@@ -114,29 +113,29 @@ export default function HomeScreen() {
           </View>
         }
       >
-      {/* Main Content */}
+
       <View style={styles.content}>
-        {/* Subtitle */}
         <Text style={[styles.subTitle, { color: isDarkMode ? Colors.secondary : Colors.primary }]}>
           LIST OF TODO
         </Text>
 
-        {
-          isLoading ?
-            <LoadingSpinner color="#FF5733" backgroundColor="#f0f0f0" />
-            :
-            <>
-              {todos.map((item, i) => {
+        { isLoading ?
+          <LoadingSpinner color="#FF5733" backgroundColor="#f0f0f0" />
+          :
+          <>
+            <FlatList
+              data={todos}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => {
+                const { title, description, created_at, completed, id_todo } = item;
+                const substr = 70
                 const statusColors: Record<"completed" | "on-track", string> = {
                   completed: Colors.grayishDarkGreen,
                   "on-track": Colors.secondary,
                 };
                 const color = statusColors[item?.status as "completed" | "on-track"] || Colors.primary;
-                
-                const { title, description, created_at, completed, id_todo } = item;
-                const substr = 70
                 return (
-                  <Pressable style={[styles.card, { backgroundColor: color }]} key={i} onPress={() => onPressDetail(item)}>
+                  <Pressable style={[styles.card, { backgroundColor: color }]} onPress={() => onPressDetail(item)}>
                     <View style={styles.cardHeader}>
                       <Text style={styles.cardTitle}>{title}</Text>
                       <IconSymbol
@@ -149,14 +148,13 @@ export default function HomeScreen() {
                     <Text style={styles.cardDescription}>{description.length < substr ? description : `${description.substring(0, substr)}...`}</Text>
                     <Text style={styles.cardFooter}>Created at : {created_at}</Text>
                   </Pressable>
-                );
-            })}
+                )
+              }}
+            />
           </> 
         }
-
-        
       </View>
-      </ParallaxScrollView>
+      </ParallaxFlatList>
 
       {/* Floating Action Button */}
       <Pressable style={[styles.fab, { backgroundColor: !isDarkMode ? Colors.secondary : Colors.primary }]} onPress={() => Alert.alert('Add Todo')}>
@@ -270,3 +268,29 @@ const styles = StyleSheet.create({
   maxToRenderPerBatch={10}  // mengatur jumlah maksimal item yang dirender per batch
   windowSize={5}  // mengatur ukuran jendela rendering
 /> */}
+
+{/* {todos.map((item, i) => {
+  const statusColors: Record<"completed" | "on-track", string> = {
+    completed: Colors.grayishDarkGreen,
+    "on-track": Colors.secondary,
+  };
+  const color = statusColors[item?.status as "completed" | "on-track"] || Colors.primary;
+  
+  const { title, description, created_at, completed, id_todo } = item;
+  const substr = 70
+  return (
+    <Pressable style={[styles.card, { backgroundColor: color }]} key={i} onPress={() => onPressDetail(item)}>
+      <View style={styles.cardHeader}>
+        <Text style={styles.cardTitle}>{title}</Text>
+        <IconSymbol
+          lib={!completed ? "FontAwesome6" : "AntDesign"}
+          name={!completed ? "clock" : "check"}
+          size={15}
+          color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray}
+          />
+      </View>
+      <Text style={styles.cardDescription}>{description.length < substr ? description : `${description.substring(0, substr)}...`}</Text>
+      <Text style={styles.cardFooter}>Created at : {created_at}</Text>
+    </Pressable>
+  );
+})} */}

@@ -44,40 +44,46 @@ export default function RootLayout() {
 
 function RootLayoutContent() {
   const { isLogin } = useAuth();
-  // const NetInfo = useNetInfo();
+  const NetInfo = useNetInfo();
   const networkState = useNetworkState();
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
 
   useEffect(() => {
-    // console.log("Asynstore useEffect _layout : ", isLogin);
-    // console.log('==>', networkState)
-    if(networkState.isConnected){
-      if(isLogin){
-        router.replace('/(home)/home')
+    console.log('Network status : ==>', networkState.isConnected);
+    if (networkState?.isConnected !== null || 
+      networkState.isConnected !== undefined) {
+      if (networkState?.isConnected) {
+        if (isLogin) {
+          router.replace('/(home)/home');
+        } else {
+          router.replace('/(auth)/sign-in');
+        }
       } else {
-        router.replace('/(auth)/sign-in')
+        router.replace('/network');
       }
-    } else{
-      router.replace('/network')
     }
-  }, [isLogin, networkState.isConnected]);
+  }, [
+    isLogin, 
+    networkState.isConnected,
+    networkState.isConnected
+  ]);
 
   return(
     <ThemeProvider value={theme}>
       <Stack screenOptions={{ headerShown: false }}>
-        {networkState.isConnected ? 
+        {networkState?.isConnected ? (
           <>
             {isLogin ? (
               <Stack.Screen name="(home)" options={{ headerShown: false }} />
             ) : (
               <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             )}
-            <Stack.Screen name="+not-found" options={{ headerShown: false }} />
           </>
-        :
-          <Stack.Screen name="/network" options={{ headerShown: false }} />
-        }
+        ) : (
+          <Stack.Screen name="network" options={{ headerShown: false }} />
+        )}
+        <Stack.Screen name="+not-found" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

@@ -1,5 +1,5 @@
 import type { PropsWithChildren, ReactElement } from 'react';
-import { StyleSheet, useColorScheme, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedRef,
@@ -18,8 +18,8 @@ type Props = PropsWithChildren<{
   HEADER_HEIGHT? :number;
 }>;
 
-export default function ParallaxScrollView({ children, header, isDarkMode, HEADER_HEIGHT=130 }: Props ) {
-  const scrollRef = useAnimatedRef<Animated.ScrollView>();
+export default function ParallaxFlatList({ children, header, isDarkMode, HEADER_HEIGHT=130 }: Props ) {
+  const scrollRef = useAnimatedRef<Animated.FlatList<any>>();
   const scrollOffset = useScrollViewOffset(scrollRef);
   const bottom = useBottomTabOverflow();
   const headerAnimatedStyle = useAnimatedStyle(() => {
@@ -41,23 +41,24 @@ export default function ParallaxScrollView({ children, header, isDarkMode, HEADE
 
   return (
     <ThemedView style={[styles.container]}>
-      <Animated.ScrollView
+      <Animated.FlatList
         ref={scrollRef}
         scrollEventThrottle={16}
         scrollIndicatorInsets={{ bottom }}
-        contentContainerStyle={{ paddingBottom: bottom }}>
-        <Animated.View
-          style={[
-            styles.header,
-            { height: HEADER_HEIGHT },
-            headerAnimatedStyle,
-          ]}>
-          {header}
-        </Animated.View>
-        <ThemedView style={[styles.content]} isDarkMode={isDarkMode}>
-          {children}
-        </ThemedView>
-      </Animated.ScrollView>
+        contentContainerStyle={{ paddingBottom: bottom }}
+        data={[]} // FlatList tetap membutuhkan data, tapi di sini kosong karena hanya untuk container
+        ListHeaderComponent={
+          <>
+            <Animated.View style={[styles.header, { height: HEADER_HEIGHT }, headerAnimatedStyle]}>
+              {header}
+            </Animated.View>
+            <ThemedView style={[styles.content]} isDarkMode={isDarkMode}>
+              {children}
+            </ThemedView>
+          </>
+        }
+        renderItem={null} // Tidak ada item karena ini hanya wrapper
+      />
     </ThemedView>
   );
 }
