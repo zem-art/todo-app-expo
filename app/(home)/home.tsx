@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Container } from '@/components/Container';
 import ParallaxFlatList from "@/components/ParallaxFlatList";
 import { IconSymbol } from "@/components/ui/IconSymbol";
@@ -23,9 +23,28 @@ export default function HomeScreen() {
   const navigation = useNavigation();
   const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
   const { token, login } = useSelector((state:RootState) => state.AUTH_REDUCER);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState(isDark);
+  
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [page, setPage] = useState(2);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState(true); // Status jika masih ada data
   const [todos, setTodos] = useState<Array<ListTodo>>([]);
+
+  // Using the back handler
+  useBackHandler( isFocused, () => {
+    console.log("Custom exit logic executed!");
+    BackHandler.exitApp(); // Default exit action
+  })
+
+  // Swict page detail
+  const onPressDetail = (parms?:any) => {
+    router.push({
+      pathname : '/(home)/details',
+      params : { ...parms }
+    })
+  }
 
   // useEffect Theme System
   useEffect(() => {
@@ -37,64 +56,67 @@ export default function HomeScreen() {
     // Clean up listeners when component is unmounted
     return unsubscribe;
   }, [navigation, isDark]);
-  
-  const handleListTodo = async () => {
-    setIsLoading(true);
+
+  // fecthTodos deafault, loadMore, refresh
+  const fetchTodos = async (pageNumber = 1, reset = false) => {
+    const isFirstLoad = pageNumber === 1;
+    if (isFirstLoad) setIsLoading(true);
+    else setLoadingMore(true);
+
     try {
-      const additionalHeaders = {
-        Authorization: `Bearer ${token}`,
-      };
-      const data = await fetchApi(
-        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?limit=50`,
+      const additionalHeaders = { Authorization: `Bearer ${token}` };
+      const response = await fetchApi(
+        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?page=${pageNumber}`,
         "GET",
         undefined,
-        additionalHeaders);
-      // if (!data?.response?.data) throw new Error("Invalid response data");
-      if (!data?.response?.data) setTodos([]);
-      // console.log("Response data:", data.response.data);
-      const arrayData = data.response.data.map((item: any) => ({
-        ...item,
-        status: item.status || 'open',
-      }));
-      setTodos(arrayData);
-    } catch (error:any) {
+        additionalHeaders
+      );
+  
+      const data = response?.response?.data || [];
+      const formattedData = data.map((item: any) => ({ ...item, status: item.status || "open" }));
+  
+      setTodos((prev) => (reset ? formattedData : [...prev, ...formattedData]));
+  
+      if (formattedData.length === 0) setHasMore(false);
+      else setPage(pageNumber + 1);
+    } catch (error: any) {
       if (error?.status === 401) {
         ToastAndroid.show("Sesi Anda telah berakhir", ToastAndroid.SHORT);
         logout();
       }
-      // console.error("Error ==>", error?.status);
     } finally {
-      setIsLoading(false);
+      if (isFirstLoad) setIsLoading(false);
+      else setLoadingMore(false);
     }
   };
 
-  useEffect(() => {
-    handleListTodo()
-  }, [token, isLogin])
-
-  // Using the back handler
-  useBackHandler( isFocused, () => {
-    console.log("Custom exit logic executed!");
-    BackHandler.exitApp(); // Default exit action
-  })
-
-  const triggerError = () => {
-    throw new Error("Test error message");
+  const fetchData = () => fetchTodos();
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setHasMore(true);
+    setPage(2);
+    fetchTodos(1, true).finally(() => setRefreshing(false));
+  }, []);
+  
+  const onLoadMore = () => {
+    if (!loadingMore && hasMore) fetchTodos(page);
   };
+  
+  useEffect(() => {
+    fetchData();
+  }, [token, isLogin]);
 
-  const onPressDetail = (parms?:any) => {
-    router.push({
-      pathname : '/(home)/details',
-      params : { ...parms }
-    })
-  }
+  // console.log('==>', page)
 
   return (
     <Container style={[styles.container]} isDarkMode={isDarkMode}>
-      {/* Main Content */}
       <ParallaxFlatList
         isDarkMode={isDarkMode}
         HEADER_HEIGHT={60}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        onLoadMore={onLoadMore} // Load more
+        loadingMore={loadingMore}
         header={
           <View style={[styles.header, { backgroundColor: !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }]}>
             <ThemedText style={[styles.textTitle, { color: isDarkMode ? Colors.secondary : Colors.primary }]}>
@@ -113,7 +135,7 @@ export default function HomeScreen() {
           </View>
         }
       >
-
+      {/* Main Content */}
       <View style={styles.content}>
         <Text style={[styles.subTitle, { color: isDarkMode ? Colors.secondary : Colors.primary }]}>
           LIST OF TODO

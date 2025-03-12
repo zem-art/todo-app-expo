@@ -44,8 +44,9 @@ export default function Settings() {
                 isDarkMode={isDarkMode}
                 HEADER_HEIGHT={400}
                 header={
-                    <View style={[styles.header, 
-                    { backgroundColor: !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }
+                    <View style={[
+                        styles.header, 
+                        { backgroundColor: !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }
                     ]}>
                         <View style={[styles.subHeader]}>
                             <Link href="/home" style={[styles.button]} asChild>
@@ -72,29 +73,32 @@ export default function Settings() {
                     </View>
                 }>
                 {/* Main Content */}
-                <ThemedView style={styles.titleContainer} isDarkMode={isDarkMode}>
-                    <ThemedText type="title" isDarkMode={isDarkMode}>Settings</ThemedText>
-                </ThemedView>
-                <ThemedText style={[styles.textSubtitle]} isDarkMode={isDarkMode}>Customize your app experience.</ThemedText>
-                <ThemedView isDarkMode={isDarkMode} style={[styles.content, { marginTop :20}]}>
-                    <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Full Name</ThemedText>
-                    <ThemedText type='subtitle' style={[styles.textValueContent, { textTransform: 'uppercase', color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>{convertToHyphen('ucup surucup')}</ThemedText>
-                </ThemedView>
-                <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
-                    <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Email</ThemedText>
-                    <ThemedText type='subtitle' style={[styles.textValueContent, { color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>ucup@gmail.com</ThemedText>
-                </ThemedView>
-                <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
-                    <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Password</ThemedText>
-                    <Pressable onPress={() => Alert.alert('Change Password pressed')}>
-                        <ThemedText type='defaultSemiBold' style={[styles.textValueContent, styles.textLink, { color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>change{' '}password</ThemedText>
-                    </Pressable>
-                </ThemedView>
-                <ThemedView style={[styles.pathButton]} isDarkMode={isDarkMode}>
-                    <Pressable style={[styles.ButtonLogout, { backgroundColor: isDarkMode ? Colors.secondary : Colors.primary }]} onPress={() => Alert.alert('Logout pressed')}>
-                        <ThemedText style={[styles.textButton]}>log{' '}out</ThemedText>
-                    </Pressable>
-                </ThemedView>
+
+                {/* <View style={styles.content}> */}
+                    <ThemedView style={styles.titleContainer} isDarkMode={isDarkMode}>
+                        <ThemedText type="title" isDarkMode={isDarkMode}>Settings</ThemedText>
+                    </ThemedView>
+                    <ThemedText style={[styles.textSubtitle]} isDarkMode={isDarkMode}>Customize your app experience.</ThemedText>
+                    <ThemedView isDarkMode={isDarkMode} style={[styles.content, { marginTop :20}]}>
+                        <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Full Name</ThemedText>
+                        <ThemedText type='subtitle' style={[styles.textValueContent, { textTransform: 'uppercase', color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>{convertToHyphen('ucup surucup')}</ThemedText>
+                    </ThemedView>
+                    <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
+                        <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Email</ThemedText>
+                        <ThemedText type='subtitle' style={[styles.textValueContent, { color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>ucup@gmail.com</ThemedText>
+                    </ThemedView>
+                    <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
+                        <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Password</ThemedText>
+                        <Pressable onPress={() => Alert.alert('Change Password pressed')}>
+                            <ThemedText type='defaultSemiBold' style={[styles.textValueContent, styles.textLink, { color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>change{' '}password</ThemedText>
+                        </Pressable>
+                    </ThemedView>
+                    <ThemedView style={[styles.pathButton]} isDarkMode={isDarkMode}>
+                        <Pressable style={[styles.ButtonLogout, { backgroundColor: isDarkMode ? Colors.secondary : Colors.primary }]} onPress={() => Alert.alert('Logout pressed')}>
+                            <ThemedText style={[styles.textButton]}>log{' '}out</ThemedText>
+                        </Pressable>
+                    </ThemedView>
+                {/* </View> */}
             </ParallaxFlatList>
         </Container>
     )
@@ -106,8 +110,8 @@ const styles = StyleSheet.create({
         height : '100%',
         width : 'auto',
         backgroundColor : 'red',
-        borderBottomWidth : 0.5,
-        borderBottomColor : 'grey'
+        // borderBottomWidth : 0.5,
+        // borderBottomColor : 'grey'
     },
     textTitle: {
         fontWeight : 'bold'
@@ -129,15 +133,12 @@ const styles = StyleSheet.create({
         marginTop : 20,
         alignSelf : 'center',
     },
-    titleContainer: {
-        flexDirection: 'row',
-        gap: 8,
-    },
+    titleContainer: {},
     content: {
         alignItems : 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginVertical: 12,
+        marginVertical: 10,
         // marginBottom: 20,
     },
     textLabelContent: {
