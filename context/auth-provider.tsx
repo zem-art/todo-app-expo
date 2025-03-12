@@ -70,7 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       interval = setInterval(() => {
         checkLoginStatus();
       }, 300000); // 5 menit (300.000 ms)
-    }, 10000); // 10 detik (10.000 ms)
+    }, 1000); // 10 detik (10.000 ms)
 
     return () => {
       console.log("Cleanup function dijalankan");

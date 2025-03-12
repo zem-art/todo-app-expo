@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { router, Stack } from "expo-router";
 import { useColorScheme } from "@/hooks/useColorScheme.web";
 import { useFonts } from "expo-font";
@@ -9,6 +9,9 @@ import { Provider, useSelector } from "react-redux";
 import { store } from "@/redux/reducer-store";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider, useAuth } from "@/context/auth-provider";
+import { useNetInfo } from "@react-native-community/netinfo";
+import { useNetworkState } from 'expo-network';
+
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -41,27 +44,40 @@ export default function RootLayout() {
 
 function RootLayoutContent() {
   const { isLogin } = useAuth();
+  // const NetInfo = useNetInfo();
+  const networkState = useNetworkState();
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
 
   useEffect(() => {
     // console.log("Asynstore useEffect _layout : ", isLogin);
-    if(isLogin){
-      router.replace('/(home)/home')
-    } else {
-      router.replace('/(auth)/sign-in')
+    // console.log('==>', networkState)
+    if(networkState.isConnected){
+      if(isLogin){
+        router.replace('/(home)/home')
+      } else {
+        router.replace('/(auth)/sign-in')
+      }
+    } else{
+      router.replace('/network')
     }
-  }, [isLogin]);
+  }, [isLogin, networkState.isConnected]);
 
   return(
     <ThemeProvider value={theme}>
       <Stack screenOptions={{ headerShown: false }}>
-        {isLogin ? (
-          <Stack.Screen name="(home)" options={{ headerShown: false }} />
-        ) : (
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        )}
-        <Stack.Screen name="+not-found" options={{ headerShown: false }} />
+        {networkState.isConnected ? 
+          <>
+            {isLogin ? (
+              <Stack.Screen name="(home)" options={{ headerShown: false }} />
+            ) : (
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            )}
+            <Stack.Screen name="+not-found" options={{ headerShown: false }} />
+          </>
+        :
+          <Stack.Screen name="/network" options={{ headerShown: false }} />
+        }
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
