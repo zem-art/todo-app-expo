@@ -29,8 +29,8 @@ export default function SignIn() {
   const { setLogin } = useAuth();
   const isFocused = useIsFocused();
   const [formData, setFormData] = useState<FormDataSignInPayload>({
-    email: '',
-    password: '',
+    email: 'miku@gmail.com',
+    password: 'miku1234',
   });
   const [formDataError, setFormDataError] = useState<FormDataSignInError>({
     email: '',
@@ -67,7 +67,7 @@ export default function SignIn() {
       // console.log(data)
       const token = data.response.token || undefined || null
       if(data.status_code >= 200 && data.status_code <= 204 && token) 
-        setLogin(true, token)
+        setLogin(true, token, data.response.data)
         ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
     } catch (error:any) {
       ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);

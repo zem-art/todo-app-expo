@@ -6,10 +6,10 @@ import { ConfigApiURL } from "@/constants/Config";
 import { ToastAndroid } from "react-native";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/reducer-store";
-import { setAuthActions } from "@/redux/actions";
+import { setAuthActions, setUserActions } from "@/redux/actions";
 interface AuthContextType {
   isLogin: boolean;
-  setLogin: (value: boolean, token:string) => void;
+  setLogin: (value: boolean, token:string, data:object) => void;
   logout: () => void;
 }
 
@@ -37,17 +37,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const additionalHeaders = {
           Authorization: `Bearer ${token}`,
         };
-        // console.log(additionalHeaders)
         const response = await fetchApi(
           `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/profile`,
           "GET",
           undefined,
           additionalHeaders,
         )
-        
+        // console.log('==>',response.response.data)
         if (response) {
           setIsLogin(true);
           dispatch(setAuthActions(token, true));
+          dispatch(setUserActions(response.response.data, {}, true))
         } else {
           await logout(); // Jika gagal, logout otomatis
         }
@@ -77,7 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       clearTimeout(firstCheck);
       if (interval) clearInterval(interval);
     };
-  }, []);
+  }, [isLogin]);
 
   // Show loading spinner if still loading
   if (isLoading) {
@@ -85,11 +85,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   // Function to set login status and save token
-  const setLogin = async (value: boolean, token:string) => {
+  const setLogin = async (value: boolean, token:string, data:object) => {
     try {
       if (value) {
         await AsyncStorage.setItem("userToken", token); // Simpan token
         dispatch(setAuthActions(token, true));
+        dispatch(setUserActions(data, {}, true));
       } else {
         await AsyncStorage.removeItem("userToken"); // Hapus token
       }

@@ -8,9 +8,9 @@ export const setThemeActions = () => (dispatch: AppDispatch, getState: () => Roo
     dispatch(setTheme(!isDark)); // Dispatch action dengan nilai yang diubah
 };
 
-export const setUserActions = (NewDataUser: object, NewMeta?:object) => (dispatch: AppDispatch, getState: () => RootState) => {
-    const { data, meta } = getState().USER_REDUCER
-    dispatch(setUsers({ data: NewDataUser, meta: {} }))
+export const setUserActions = (NewDataUser: object, NewMeta?:object, newLogin?:boolean) => (dispatch: AppDispatch, getState: () => RootState) => {
+    const { data, meta, login } = getState().USER_REDUCER
+    dispatch(setUsers({ data: NewDataUser, meta: {}, login: newLogin || login }))
 }
 
 export const setAuthActions = (

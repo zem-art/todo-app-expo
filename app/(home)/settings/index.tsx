@@ -12,10 +12,13 @@ import { AppDispatch, RootState } from '@/redux/reducer-store';
 import convertToHyphen from '@/utils/helpers/string';
 import { Container } from '@/components/Container';
 import { Colors } from '@/constants/Colors';
+import { useAuth } from '@/context/auth-provider';
 
 export default function Settings() {
     const navigation = useNavigation();
+    const { logout, isLogin } = useAuth()
     const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
+    const { data, meta, login }:any = useSelector((state:RootState) => state.USER_REDUCER);
     const dispatch = useDispatch<AppDispatch>();
     const [isDarkMode, setIsDarkMode] = useState(isDark);
 
@@ -26,8 +29,8 @@ export default function Settings() {
 
     useEffect(() => {
         const backAction = () => {
-          navigation.goBack(); // Navigasi ke Home
-          return true; // Tangkap aksi back
+          navigation.goBack(); // Navigate to Home
+          return true; // Catch the back action
         };
     
         const backHandler = BackHandler.addEventListener(
@@ -35,14 +38,29 @@ export default function Settings() {
           backAction
         );
     
-        return () => backHandler.remove(); // Bersihkan listener
-      }, [navigation, isDark]);
+        return () => backHandler.remove(); // Clean up listeners
+    }, [navigation, isDark, isLogin]);
+
+    const confirmLogout = async () => {
+        Alert.alert(
+          "Confirm Logout",
+          "Are you sure you want to log out ? 😢",
+          [
+            { text: "Cancel", style: "cancel" },
+            { text: "Logout", onPress: () => logout() },
+          ]
+        );
+    };
 
     return (
         <Container style={[styles.container]} isDarkMode={isDarkMode}>
             <ParallaxFlatList
                 isDarkMode={isDarkMode}
-                HEADER_HEIGHT={400}
+                HEADER_HEIGHT={410}
+                refreshing={false}
+                loadingMore={false}
+                onLoadMore={() => undefined}
+                onRefresh={() => undefined}
                 header={
                     <View style={[
                         styles.header, 
@@ -73,32 +91,39 @@ export default function Settings() {
                     </View>
                 }>
                 {/* Main Content */}
-
-                {/* <View style={styles.content}> */}
-                    <ThemedView style={styles.titleContainer} isDarkMode={isDarkMode}>
-                        <ThemedText type="title" isDarkMode={isDarkMode}>Settings</ThemedText>
-                    </ThemedView>
-                    <ThemedText style={[styles.textSubtitle]} isDarkMode={isDarkMode}>Customize your app experience.</ThemedText>
-                    <ThemedView isDarkMode={isDarkMode} style={[styles.content, { marginTop :20}]}>
-                        <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Full Name</ThemedText>
-                        <ThemedText type='subtitle' style={[styles.textValueContent, { textTransform: 'uppercase', color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>{convertToHyphen('ucup surucup')}</ThemedText>
-                    </ThemedView>
-                    <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
-                        <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Email</ThemedText>
-                        <ThemedText type='subtitle' style={[styles.textValueContent, { color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>ucup@gmail.com</ThemedText>
-                    </ThemedView>
-                    <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
-                        <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Password</ThemedText>
-                        <Pressable onPress={() => Alert.alert('Change Password pressed')}>
-                            <ThemedText type='defaultSemiBold' style={[styles.textValueContent, styles.textLink, { color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>change{' '}password</ThemedText>
-                        </Pressable>
-                    </ThemedView>
-                    <ThemedView style={[styles.pathButton]} isDarkMode={isDarkMode}>
-                        <Pressable style={[styles.ButtonLogout, { backgroundColor: isDarkMode ? Colors.secondary : Colors.primary }]} onPress={() => Alert.alert('Logout pressed')}>
-                            <ThemedText style={[styles.textButton]}>log{' '}out</ThemedText>
-                        </Pressable>
-                    </ThemedView>
-                {/* </View> */}
+                <ThemedView style={styles.titleContainer} isDarkMode={isDarkMode}>
+                    <ThemedText type="title" isDarkMode={isDarkMode}>Settings</ThemedText>
+                </ThemedView>
+                <ThemedText style={[styles.textSubtitle]} isDarkMode={isDarkMode}>Customize your app experience.</ThemedText>
+                <ThemedView isDarkMode={isDarkMode} style={[styles.content, { marginTop :20}]}>
+                    <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Full Name</ThemedText>
+                    <ThemedText 
+                        type='subtitle'
+                        style={[styles.textValueContent, { textTransform: 'uppercase', color: isDarkMode ? Colors.secondary : Colors.primary }]} 
+                        isDarkMode={isDarkMode}
+                        >{convertToHyphen(data.username || '')}
+                        </ThemedText>
+                </ThemedView>
+                <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
+                    <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Email</ThemedText>
+                    <ThemedText 
+                        type='subtitle'
+                        style={[styles.textValueContent, { color: isDarkMode ? Colors.secondary : Colors.primary }]}
+                        isDarkMode={isDarkMode}
+                        >{data.email}
+                        </ThemedText>
+                </ThemedView>
+                <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
+                    <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Password</ThemedText>
+                    <Pressable onPress={() => Alert.alert('Change Password pressed')}>
+                        <ThemedText type='defaultSemiBold' style={[styles.textValueContent, styles.textLink, { color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>change{' '}password</ThemedText>
+                    </Pressable>
+                </ThemedView>
+                <ThemedView style={[styles.pathButton]} isDarkMode={isDarkMode}>
+                    <Pressable style={[styles.ButtonLogout, { backgroundColor: isDarkMode ? Colors.secondary : Colors.primary }]} onPress={confirmLogout}>
+                        <ThemedText style={[styles.textButton]}>log{' '}out</ThemedText>
+                    </Pressable>
+                </ThemedView>
             </ParallaxFlatList>
         </Container>
     )

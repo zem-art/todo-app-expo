@@ -26,7 +26,6 @@ export default function DetailsScreen() {
     const [isDarkMode, setIsDarkMode] = useState(isDark);
     const [stateDetail, setStateDetail] = useState<Todo>()
     const [isLoading, setIsLoading] = useState(false)
-    console.log('token ==> : ', token)
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {

@@ -57,7 +57,7 @@ export default function HomeScreen() {
     return unsubscribe;
   }, [navigation, isDark]);
 
-  // fecthTodos deafault, loadMore, refresh
+  // fecthTodos default, loadMore, refreash
   const fetchTodos = async (pageNumber = 1, reset = false) => {
     const isFirstLoad = pageNumber === 1;
     if (isFirstLoad) setIsLoading(true);
@@ -106,8 +106,6 @@ export default function HomeScreen() {
     fetchData();
   }, [token, isLogin]);
 
-  // console.log('==>', page)
-
   return (
     <Container style={[styles.container]} isDarkMode={isDarkMode}>
       <ParallaxFlatList
@@ -123,7 +121,7 @@ export default function HomeScreen() {
               TO DO LIST
             </ThemedText>
             <View style={{ flexDirection : 'row'}}>
-              <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => logout()}>
+              <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => Alert.alert('Filter pressed')}>
                 <IconSymbol lib="Feather" name="filter" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
               </Pressable>
               <Link href="/settings" asChild>
