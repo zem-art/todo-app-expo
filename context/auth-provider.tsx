@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           ToastAndroid.show("Sesi Anda telah berakhir", ToastAndroid.SHORT);
           await logout();
         }
-        console.error("Error checking login status:", error);
+        // console.error("Error checking login status:", error);
       } finally {
         setIsLoading(false); // Set loading to false after the process is complete
       }
