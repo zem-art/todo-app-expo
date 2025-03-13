@@ -77,7 +77,7 @@ export default function DetailsScreen() {
         }
     }
 
-    console.log('loading ==> : ', isLoading)
+    // console.log('loading ==> : ', isLoading)
 
     return (
         <Container style={[styles.container, { backgroundColor : !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }]} isDarkMode={isDarkMode}>

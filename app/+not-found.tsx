@@ -14,7 +14,7 @@ export default function NotFoundScreen() {
           style={[styles.reactLogo]}
         />
         <ThemedText type="subtitle">This screen doesn't exist.</ThemedText>
-        <Link href="/(app)" style={styles.link}>
+        <Link href="/(home)/home" style={styles.link}>
           <ThemedText type="link">Go to home screen!</ThemedText>
         </Link>
       </ThemedView>
