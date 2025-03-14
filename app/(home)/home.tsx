@@ -15,6 +15,8 @@ import { fetchApi } from '@/utils/helpers/fetchApi.utils';
 import { ConfigApiURL } from '@/constants/Config';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { ListTodo } from '@/interfaces/home';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import BottomSheetModal from '@/components/modal/modal-add';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -31,6 +33,7 @@ export default function HomeScreen() {
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState(true); // Status jika masih ada data
   const [todos, setTodos] = useState<Array<ListTodo>>([]);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   // Using the back handler
   useBackHandler( isFocused, () => {
@@ -109,78 +112,83 @@ export default function HomeScreen() {
   return (
     <Container style={[styles.container]} isDarkMode={isDarkMode}>
       <ParallaxFlatList
-        isDarkMode={isDarkMode}
-        HEADER_HEIGHT={60}
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-        onLoadMore={onLoadMore} // Load more
-        loadingMore={loadingMore}
-        header={
-          <View style={[styles.header, { backgroundColor: !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }]}>
-            <ThemedText style={[styles.textTitle, { color: isDarkMode ? Colors.secondary : Colors.primary }]}>
-              TO DO LIST
-            </ThemedText>
-            <View style={{ flexDirection : 'row'}}>
-              <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => Alert.alert('Filter pressed')}>
-                <IconSymbol lib="Feather" name="filter" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
-              </Pressable>
-              <Link href="/settings" asChild>
-                <Pressable style={[styles.buttonSettings]}>
-                  <IconSymbol lib="Feather" name="settings" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
+          isDarkMode={isDarkMode}
+          HEADER_HEIGHT={60}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          onLoadMore={onLoadMore} // Load more
+          loadingMore={loadingMore}
+          header={
+            <View style={[styles.header, { backgroundColor: !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }]}>
+              <ThemedText style={[styles.textTitle, { color: isDarkMode ? Colors.secondary : Colors.primary }]}>
+                TO DO LIST
+              </ThemedText>
+              <View style={{ flexDirection : 'row'}}>
+                <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => Alert.alert('Filter pressed')}>
+                  <IconSymbol lib="Feather" name="filter" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
                 </Pressable>
-              </Link>
-            </View>
-          </View>
-        }
-      >
-      {/* Main Content */}
-      <View style={styles.content}>
-        <Text style={[styles.subTitle, { color: isDarkMode ? Colors.secondary : Colors.primary }]}>
-          LIST OF TODO
-        </Text>
-
-        { isLoading ?
-          <LoadingSpinner color="#FF5733" backgroundColor="#f0f0f0" />
-          :
-          <>
-            <FlatList
-              data={todos}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => {
-                const { title, description, created_at, completed, id_todo } = item;
-                const substr = 70
-                const statusColors: Record<"completed" | "on-track", string> = {
-                  completed: Colors.grayishDarkGreen,
-                  "on-track": Colors.secondary,
-                };
-                const color = statusColors[item?.status as "completed" | "on-track"] || Colors.primary;
-                return (
-                  <Pressable style={[styles.card, { backgroundColor: color }]} onPress={() => onPressDetail(item)}>
-                    <View style={styles.cardHeader}>
-                      <Text style={styles.cardTitle}>{title}</Text>
-                      <IconSymbol
-                        lib={!completed ? "FontAwesome6" : "AntDesign"}
-                        name={!completed ? "clock" : "check"}
-                        size={15}
-                        color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray}
-                        />
-                    </View>
-                    <Text style={styles.cardDescription}>{description.length < substr ? description : `${description.substring(0, substr)}...`}</Text>
-                    <Text style={styles.cardFooter}>Created at : {created_at}</Text>
+                <Link href="/settings" asChild>
+                  <Pressable style={[styles.buttonSettings]}>
+                    <IconSymbol lib="Feather" name="settings" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
                   </Pressable>
-                )
-              }}
-            />
-          </> 
-        }
-      </View>
+                </Link>
+              </View>
+            </View>
+          }
+        >
+        {/* Main Content */}
+        <View style={styles.content}>
+          <Text style={[styles.subTitle, { color: isDarkMode ? Colors.secondary : Colors.primary }]}>
+            LIST OF TODO
+          </Text>
+
+          { isLoading ?
+            <LoadingSpinner color="#FF5733" backgroundColor="#f0f0f0" />
+            :
+            <>
+              <FlatList
+                data={todos}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => {
+                  const { title, description, created_at, completed, id_todo } = item;
+                  const substr = 70
+                  const statusColors: Record<"completed" | "on-track", string> = {
+                    completed: Colors.grayishDarkGreen,
+                    "on-track": Colors.secondary,
+                  };
+                  const color = statusColors[item?.status as "completed" | "on-track"] || Colors.primary;
+                  return (
+                    <Pressable style={[styles.card, { backgroundColor: color }]} onPress={() => onPressDetail(item)}>
+                      <View style={styles.cardHeader}>
+                        <Text style={styles.cardTitle}>{title}</Text>
+                        <IconSymbol
+                          lib={!completed ? "FontAwesome6" : "AntDesign"}
+                          name={!completed ? "clock" : "check"}
+                          size={15}
+                          color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray}
+                          />
+                      </View>
+                      <Text style={styles.cardDescription}>{description.length < substr ? description : `${description.substring(0, substr)}...`}</Text>
+                      <Text style={styles.cardFooter}>Created at : {created_at}</Text>
+                    </Pressable>
+                  )
+                }}
+              />
+            </> 
+          }
+        </View>
       </ParallaxFlatList>
 
       {/* Floating Action Button */}
-      <Pressable style={[styles.fab, { backgroundColor: !isDarkMode ? Colors.secondary : Colors.primary }]} onPress={() => Alert.alert('Add Todo')}>
+      <Pressable 
+        style={[styles.fab, { backgroundColor: !isDarkMode ? Colors.secondary : Colors.primary }]}
+        onPress={() => setModalVisible(true)}>
         <IconSymbol lib="Feather" name="plus" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
       </Pressable>
-  </Container>
+      <GestureHandlerRootView style={styles.GesturModal}>
+        <BottomSheetModal isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+      </GestureHandlerRootView>
+    </Container>
   );
 }
 
@@ -209,7 +217,6 @@ const styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
   },
-
   subTitle: {
     fontSize: 22,
     fontWeight: 'bold',
@@ -250,5 +257,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 3,
+  },
+  GesturModal : {
+    position: 'absolute',
   },
 });
