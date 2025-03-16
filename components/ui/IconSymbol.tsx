@@ -45,7 +45,9 @@ const IconMap = {
   Ionicons : {
     checkboxOutline : 'checkbox-outline',
     eyeOffOutline : 'eye-off-outline',
-    eyeOutline : 'eye-outline'
+    eyeOutline : 'eye-outline',
+    calenderOutline : 'calendar-outline',
+    imageOutline: 'image-outline'
   }
 } as const;
 
