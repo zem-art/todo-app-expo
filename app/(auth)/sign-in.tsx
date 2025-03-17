@@ -31,7 +31,6 @@ import { validateForm, ValidationSchema } from '@/utils/validators/formData';
 export default function SignIn() {
   const { setLogin } = useAuth();
   const isFocused = useIsFocused();
-  const [isChecked, setChecked] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormDataSignInPayload>({
     email: '',
     password: '',
@@ -40,7 +39,7 @@ export default function SignIn() {
     email: '',
     password: '',
   });
-
+  const [isChecked, setChecked] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
