@@ -1,5 +1,6 @@
 // LoginScreen.tsx
 import React, { useEffect, useState } from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   Text,
@@ -14,6 +15,7 @@ import {
   ActivityIndicator,
   ToastAndroid,
 } from 'react-native';
+import Checkbox from 'expo-checkbox';
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Colors } from '@/constants/Colors';
 import { Link } from 'expo-router';
@@ -29,9 +31,10 @@ import { validateForm, ValidationSchema } from '@/utils/validators/formData';
 export default function SignIn() {
   const { setLogin } = useAuth();
   const isFocused = useIsFocused();
+  const [isChecked, setChecked] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormDataSignInPayload>({
-    email: 'miku@gmail.com',
-    password: 'miku1234',
+    email: '',
+    password: '',
   });
   const [formDataError, setFormDataError] = useState<FormDataSignInError>({
     email: '',
@@ -60,9 +63,15 @@ export default function SignIn() {
         )
         // console.log(data)
         const token = data.response.token || undefined || null
-        if(data.status_code >= 200 && data.status_code <= 204 && token) 
-          setLogin(true, token, data.response.data)
+        if(data.status_code >= 200 && data.status_code <= 204 && token) {
+          setLogin(true, token, data.response.data) 
           ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
+          if(isChecked) {
+            saveRememberMe(formData)
+          } else {
+            await AsyncStorage.removeItem("remember_me");
+          }
+        }
       } catch (error:any) {
         ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
         console.log('Erorr ==> : ', error)
@@ -85,6 +94,24 @@ export default function SignIn() {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setFormDataError({})
   };
+
+  const saveRememberMe = async (value:any) => {
+    await AsyncStorage.setItem("remember_me", JSON.stringify(value));
+  };
+
+  const getRememberMe = async () => {
+    const value = await AsyncStorage.getItem("remember_me");
+    return value ? JSON.parse(value) : false;
+  };
+
+  useEffect(() => {
+    getRememberMe().then((data:any) => {
+      if (data) {
+        setFormData(data)
+        setChecked(true);
+      }
+    });
+  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -146,9 +173,16 @@ export default function SignIn() {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={styles.forgotPassword}>
-                <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-              </TouchableOpacity>
+              <View style={styles.rememberMeForgotPass}>
+                <TouchableOpacity style={[styles.forgotPassword, { flexDirection : 'row'}]} onPress={() => setChecked(!isChecked)}>
+                  <Checkbox style={styles.checkbox} value={isChecked} color={isChecked ? Colors.primary : undefined}/>
+                  <Text style={styles.forgotPasswordText}>remember{' '}me</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.forgotPassword}>
+                  <Text style={styles.forgotPasswordText}>forgot{' '}password?</Text>
+                </TouchableOpacity>
+              </View>
 
               <TouchableOpacity disabled={isLoading} style={styles.signInButton} onPress={handleLogin}>
                 {isLoading ?
@@ -227,6 +261,13 @@ const styles = StyleSheet.create({
     right: 15,
     top: 15,
   },
+  rememberMeForgotPass : { 
+    flexDirection: 'row',
+    justifyContent:'space-between'
+  },
+  checkbox : {
+    marginRight: 10,
+  },
   forgotPassword: {
     alignSelf: 'flex-end',
     marginBottom: 20,
@@ -234,6 +275,7 @@ const styles = StyleSheet.create({
   forgotPasswordText: {
     color: Colors.drakGray,
     fontSize: 14,
+    textTransform: 'capitalize'
   },
   signInButton: {
     backgroundColor: Colors.primary,
