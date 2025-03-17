@@ -90,7 +90,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
           ...formData,
           date : convertDate
         })
-        console.log(formData)
+        // console.log(formData)
         const data = await fetchApi(
           `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/create`,
           'POST',
