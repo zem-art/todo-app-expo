@@ -51,7 +51,6 @@ export default function SignIn() {
 
   const handleLogin = async () => {
     // Implement your login logic here
-
     const isValid = validateForm(formData, signInValidationSchema, setFormDataError);
     if (isValid) {
       try {
