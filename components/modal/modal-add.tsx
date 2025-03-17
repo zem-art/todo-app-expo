@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator, Button, Pressable } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator, Pressable, ToastAndroid } from "react-native";
 import Modal from "react-native-modal";
-import { PanGestureHandler, State, TextInput } from "react-native-gesture-handler";
+import { PanGestureHandler, TextInput } from "react-native-gesture-handler";
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { Colors } from "@/constants/Colors";
-import { Ionicons } from "@expo/vector-icons";
 import { IconSymbol } from "../ui/IconSymbol";
+import { TodoFormData } from "@/interfaces/todo";
+import { validateForm, ValidationSchema } from "@/utils/validators/formData";
+import { fetchApi } from "@/utils/helpers/fetchApi.utils";
+import { ConfigApiURL } from "@/constants/Config";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/reducer-store";
+import { useAuth } from "@/context/auth-provider";
+import { formatDateTime } from "@/utils/date";
 
 interface BottomSheetModalProps {
   isVisible: boolean;
@@ -13,22 +20,50 @@ interface BottomSheetModalProps {
 }
 
 const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose }) => {
+  const { logout } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [date, setDate] = useState<Date>(new Date());
   const [show, setShow] = useState<boolean>(false);
+  const { token, login } = useSelector((state:RootState) => state.AUTH_REDUCER);
+  const [formData, setFormData] = useState<TodoFormData>({
+    title: '',
+    description: '',
+    date: '',
+    image: ''
+  })
+
+  const [formDataError, setFormDataError] = useState<TodoFormData>({
+    title: '',
+    description: '',
+    date: '',
+    image: ''
+  })
 
   const handleGesture = (event: any) => {
     if (event.nativeEvent.translationY > 100) {
       onClose();
+      setFormData({})
+      setDate(new Date())
     }
-    setDate(new Date())
   };
 
-  // handle change input text
-  // const handleInputChange = (field: keyof FormDataSignInPayload, value: string) => {
-  //   setFormData((prev) => ({ ...prev, [field]: value }));
-  //   setFormDataError({})
-  // };
+  const handleCloseModal = async () => {
+    onClose();
+    setFormData({
+      title: '',
+      description: '',
+      date: '',
+      image: ''
+    })
+    setDate(new Date())
+    setFormDataError({})
+  }
+
+  // // handle change input text
+  const handleInputChange = (field: keyof TodoFormData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormDataError({})
+  };
 
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (event.type === "set" && selectedDate) {
@@ -36,6 +71,49 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
     }
     setShow(false); // Menutup date picker setelah pemilihan
   };
+
+  const signInValidationSchema : ValidationSchema<TodoFormData> = {
+    title: (value:any) => (!value ? "Title is required" : undefined),
+    description: (value:any) => (!value ? "Description is required" : undefined),
+  };
+
+  const handleSubmit = async () => {
+    const isValid = validateForm(formData, signInValidationSchema, setFormDataError);
+    if(isValid){
+      try {
+        setIsLoading(true)
+        const additionalHeaders = {
+          Authorization: `Bearer ${token}`,
+        };
+        const convertDate = formatDateTime(date, "YYYY-MM-DD")
+        setFormData({
+          ...formData,
+          date : convertDate
+        })
+        console.log(formData)
+        const data = await fetchApi(
+          `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/create`,
+          'POST',
+          formData,
+          additionalHeaders,
+        )
+        if(data.status_code >= 200 && data.status_code <= 204) 
+          handleCloseModal()
+          ToastAndroid.show('Selamat, Anda telah berhasil membuat todo', ToastAndroid.SHORT);
+      } catch (error:any) {
+        if (error?.status === 401) {
+          ToastAndroid.show("Sesi Anda telah berakhir", ToastAndroid.SHORT);
+          logout();
+        }
+        ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+        console.log('Erorr ==> : ', error)
+      } finally {
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 500);
+      }
+    }
+  }
 
   return (
     <KeyboardAvoidingView
@@ -46,14 +124,14 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
       <Modal
         isVisible={isVisible}
         swipeDirection="down"
-        onSwipeComplete={onClose}
-        onBackdropPress={onClose}
+        onSwipeComplete={handleCloseModal}
+        onBackdropPress={handleCloseModal}
         animationIn="slideInUp"
         animationOut="slideOutDown"
         style={styles.modal}
         animationInTiming={300}
         animationOutTiming={300}
-        backdropOpacity={0} // 🔥 Bikin background transparan
+        backdropOpacity={0.2} // 🔥 Bikin background transparan
       >
         <PanGestureHandler onGestureEvent={handleGesture}>
           <View style={styles.modalContent}>
@@ -65,14 +143,13 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
                   style={styles.input}
                   placeholder="Title"
                   keyboardType="default"
-                  // value={formData.email}
-                  // onChangeText={(text) => handleInputChange('email', text)}
-                  // autoCapitalize="none"
-                  // editable={!isLoading}
+                  value={formData?.title}
+                  onChangeText={(text) => handleInputChange('title', text)}
+                  editable={!isLoading}
                 />
-                {/* {formDataError.email && 
-                  <Text style={styles.textError}>{formDataError.email}</Text>
-                } */}
+                {formDataError.title && 
+                  <Text style={styles.textError}>{formDataError.title}</Text>
+                }
               </View>
 
               <View style={styles.inputContainer}>
@@ -81,15 +158,13 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
                   multiline={true}
                   style={[styles.input, styles.textAreaInput]}
                   numberOfLines={50}
-                  // value={formData.email}
-                  // onChangeText={(text) => handleInputChange('email', text)}
-                  // keyboardType="email-address"
-                  // autoCapitalize="none"
-                  // editable={!isLoading}
+                  value={formData?.description}
+                  onChangeText={(text) => handleInputChange('description', text)}
+                  editable={!isLoading}
                 />
-                {/* {formDataError.email && 
-                  <Text style={styles.textError}>{formDataError.email}</Text>
-                } */}
+                {formDataError.description && 
+                  <Text style={styles.textError}>{formDataError.description}</Text>
+                }
               </View>
 
               <View style={styles.inputContainer}>
@@ -136,7 +211,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
                 </Pressable>
               </View>
 
-              <TouchableOpacity disabled={isLoading} style={styles.signInButton}>
+              <TouchableOpacity disabled={isLoading} style={styles.signInButton} onPress={handleSubmit}>
                 {isLoading ?
                   <ActivityIndicator size={'small'} color={Colors.background} /> 
                 :
@@ -228,9 +303,13 @@ const styles = StyleSheet.create({
     top: 15
   },
   textAreaInput : { 
-    height: 200,
+    height: 350,
     textAlignVertical: "top"
-  }
+  },
+  textError : {
+    color: Colors.error,
+    marginTop: 5,
+  },
 });
 
 export default BottomSheetModal;

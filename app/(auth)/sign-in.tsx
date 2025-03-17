@@ -23,6 +23,7 @@ import { useAuth } from '@/context/auth-provider';
 import { fetchApi } from '@/utils/helpers/fetchApi.utils';
 import { ConfigApiURL } from '@/constants/Config';
 import { FormDataSignInError, FormDataSignInPayload } from '@/interfaces/auth';
+import { validateForm, ValidationSchema } from '@/utils/validators/formData';
 
 
 export default function SignIn() {
@@ -40,42 +41,36 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const validateForm = (formData: FormDataSignInError, setFormDataError: (errors: FormDataSignInError) => void) => {
-    const errors: FormDataSignInError = {};
-  
-    if (!formData.email) errors.email = "Email is required";
-    if (!formData.password) errors.password = "Password is required";
-  
-    setFormDataError(errors);
-
-    return Object.keys(errors).length === 0;
+  const signInValidationSchema : ValidationSchema<FormDataSignInError> = {
+    email: (value:any) => (!value ? "Email is required" : undefined),
+    password: (value:any) => (!value ? "Password is required" : undefined),
   };
 
   const handleLogin = async () => {
     // Implement your login logic here
 
-    // console.log('Login attempt with:', formData);
-    if (!validateForm(formData, setFormDataError)) return;
-
-    try {
-      setIsLoading(true)
-      const data = await fetchApi(
-        `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`,
-        'POST',
-        formData,
-      )
-      // console.log(data)
-      const token = data.response.token || undefined || null
-      if(data.status_code >= 200 && data.status_code <= 204 && token) 
-        setLogin(true, token, data.response.data)
-        ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
-    } catch (error:any) {
-      ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
-      console.log('Erorr ==> : ', error)
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false)
-      }, 500);
+    const isValid = validateForm(formData, signInValidationSchema, setFormDataError);
+    if (isValid) {
+      try {
+        setIsLoading(true)
+        const data = await fetchApi(
+          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`,
+          'POST',
+          formData,
+        )
+        // console.log(data)
+        const token = data.response.token || undefined || null
+        if(data.status_code >= 200 && data.status_code <= 204 && token) 
+          setLogin(true, token, data.response.data)
+          ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
+      } catch (error:any) {
+        ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+        console.log('Erorr ==> : ', error)
+      } finally {
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 500);
+      }
     }
   };
 
