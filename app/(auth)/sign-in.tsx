@@ -93,10 +93,12 @@ export default function SignIn() {
     setFormDataError({})
   };
 
+  // handle remember me
   const saveRememberMe = async (value:any) => {
     await AsyncStorage.setItem("remember_me", JSON.stringify(value));
   };
 
+  // handle get data in remember me
   const getRememberMe = async () => {
     const value = await AsyncStorage.getItem("remember_me");
     return value ? JSON.parse(value) : false;
