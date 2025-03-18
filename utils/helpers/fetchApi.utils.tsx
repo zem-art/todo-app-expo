@@ -40,7 +40,7 @@ export async function fetchApi(
       body: isFormData ? (body as FormData) : JSON.stringify(body),
       signal, // Tambahkan signal untuk menangani abort
     });
-    console.log(response)
+    // console.log(response)
 
     clearTimeout(timeoutId); // Hapus timeout jika request selesai tepat waktu
 

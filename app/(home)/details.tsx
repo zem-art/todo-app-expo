@@ -11,6 +11,7 @@ import { Todo } from '@/interfaces/home';
 import { RootState } from '@/redux/reducer-store';
 import { fetchApi } from '@/utils/helpers/fetchApi.utils';
 import { useNavigation } from '@react-navigation/native';
+import { Tooltip } from '@rneui/themed';
 import { useLocalSearchParams, useRouter } from 'expo-router/build/hooks';
 import React, { useEffect, useState } from 'react'
 import { Alert, Pressable, StyleSheet, Text, ToastAndroid, View } from 'react-native'
@@ -23,14 +24,14 @@ export default function DetailsScreen() {
     const { id_todo } =  useLocalSearchParams();
     const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
     const { token, login } = useSelector((state:RootState) => state.AUTH_REDUCER);
-    const [isDarkMode, setIsDarkMode] = useState(isDark);
+    const [isDarkMode, setIsDarkMode] = useState<boolean>(isDark);
     const [stateDetail, setStateDetail] = useState<Todo>()
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [openTooltip, setOpenTooltip] = useState<boolean>(false);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
           // Log makesure state Redux
-          console.log('Refreshed Detail State:', isDark);
         });
         setIsDarkMode(isDark)
         // Clean up listeners when component is unmounted
@@ -77,7 +78,7 @@ export default function DetailsScreen() {
         }
     }
 
-    // console.log('loading ==> : ', isLoading)
+    // console.log('loading ==> : ', stateDetail)
 
     return (
         <Container style={[styles.container, { backgroundColor : !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }]} isDarkMode={isDarkMode}>
@@ -86,8 +87,17 @@ export default function DetailsScreen() {
                     <IconSymbol lib="AntDesign" name="left" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
                 </Pressable>
                 <ThemedView style={[styles.CrudTodos, { backgroundColor : !isDarkMode ? Colors.background : Colors.veryDarkGray }]}>
-                    <Pressable style={[styles.buttonBack]} onPress={() => handleNavigation('add')}>
-                        <IconSymbol lib="AntDesign" name="clockcircleo" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
+                    <Pressable style={[styles.buttonBack]}>
+                        <Tooltip
+                            visible={openTooltip}
+                            onOpen={() => setOpenTooltip(true)}
+                            onClose={() => setOpenTooltip(false)}
+                            popover={
+                                <Text>{stateDetail?.updated_at}</Text>
+                            }
+                        >
+                            <IconSymbol lib="AntDesign" name="clockcircleo" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
+                        </Tooltip>
                     </Pressable>
                     <Pressable style={[styles.buttonBack, { marginHorizontal: 15}]} onPress={() => handleNavigation('edit')}>
                         <IconSymbol lib="AntDesign" name="edit" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
