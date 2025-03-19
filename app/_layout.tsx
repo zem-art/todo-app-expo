@@ -50,7 +50,7 @@ function RootLayoutContent() {
   const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
 
   useEffect(() => {
-    console.log('Network status : ==>', networkState.isConnected);
+    // console.log('Network status : ==>', networkState.isConnected);
     if (networkState?.isConnected !== null || 
       networkState.isConnected !== undefined) {
       if (networkState?.isConnected) {
