@@ -7,6 +7,7 @@ import { ToastAndroid } from "react-native";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/reducer-store";
 import { setAuthActions, setUserActions } from "@/redux/actions";
+import { Colors } from "@/constants/Colors";
 interface AuthContextType {
   isLogin: boolean;
   setLogin: (value: boolean, token:string, data:object) => void;
@@ -81,7 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Show loading spinner if still loading
   if (isLoading) {
-    return <LoadingSpinner color="#FF5733" backgroundColor="#f0f0f0" />;
+    return <LoadingSpinner color={Colors.primary} backgroundColor={Colors.background} />;
   }
 
   // Function to set login status and save token

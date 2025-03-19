@@ -5,13 +5,14 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen';
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import { store } from "@/redux/reducer-store";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider, useAuth } from "@/context/auth-provider";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { useNetworkState } from 'expo-network';
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { Colors } from "@/constants/Colors";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -35,40 +36,45 @@ export default function RootLayout() {
     <ErrorBoundary>
       <Provider store={store}>
         <AuthProvider>
-          <RootLayoutContent/>
+          <RootLayoutContent />
         </AuthProvider>
       </Provider>
     </ErrorBoundary>
-  )
+  );
 }
 
 function RootLayoutContent() {
   const { isLogin } = useAuth();
-  const NetInfo = useNetInfo();
   const networkState = useNetworkState();
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // console.log('Network status : ==>', networkState.isConnected);
-    if (networkState?.isConnected !== null || 
-      networkState.isConnected !== undefined) {
-      if (networkState?.isConnected) {
-        if (isLogin) {
-          router.replace('/(home)/home');
+    const checkNetwork = async () => {
+      if (networkState?.isConnected !== null && networkState.isConnected !== undefined) {
+        setIsLoading(false);
+        if (networkState.isConnected) {
+          if (isLogin) {
+            router.replace('/(home)/home');
+          } else {
+            router.replace('/(auth)/sign-in');
+          }
         } else {
-          router.replace('/(auth)/sign-in');
+          router.replace('/network');
         }
-      } else {
-        router.replace('/network');
       }
-    }
+    };
+    checkNetwork();
   }, [
     isLogin,
+    isLoading,
     networkState.isConnected,
   ]);
 
-  return(
+  if (isLoading) return <LoadingSpinner color={Colors.primary} backgroundColor={Colors.background} />
+
+  return (
     <ThemeProvider value={theme}>
       <Stack screenOptions={{ headerShown: false }}>
         {networkState?.isConnected ? (
@@ -86,5 +92,22 @@ function RootLayoutContent() {
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
-  )
+  );
 }
+
+/**
+ * NOTES :
+ * Peringatan tersebut muncul karena Anda menggunakan komponen yang tidak sesuai dengan struktur yang diharapkan oleh Stack dari react-navigation. Dalam Stack,
+ * semua anak (children) harus berupa komponen Screen.
+ * Jika Anda ingin menambahkan komponen lain (seperti loading screen), Anda harus menggunakan komponen Layout kustom.
+ * 
+ * <Stack screenOptions={{ headerShown: false }}>
+      {isLoading ? (
+        <Stack.Screen name="Loading" component={LoadingScreen} />
+      ) : (
+        <>
+        SCREEN" YANG LAIN....
+        </>
+      )}
+  </Stack>
+ */
