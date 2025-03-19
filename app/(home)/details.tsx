@@ -1,7 +1,6 @@
 import { Container } from '@/components/Container'
 import LoadingSpinner from '@/components/LoadingSpinner';
 import BottomSheetModalEdit from '@/components/modal/modal-edit';
-import ParallaxFlatList from '@/components/ParallaxFlatList';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';

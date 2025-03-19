@@ -11,7 +11,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider, useAuth } from "@/context/auth-provider";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { useNetworkState } from 'expo-network';
-
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -64,9 +64,8 @@ function RootLayoutContent() {
       }
     }
   }, [
-    isLogin, 
+    isLogin,
     networkState.isConnected,
-    networkState.isConnected
   ]);
 
   return(
