@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator, Pressable, ToastAndroid } from "react-native";
 import Modal from "react-native-modal";
 import { PanGestureHandler, TextInput } from "react-native-gesture-handler";
@@ -13,15 +13,18 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/reducer-store";
 import { useAuth } from "@/context/auth-provider";
 import { formatDateTime } from "@/utils/date";
-
+import { useRouter } from "expo-router";
+import { TodoDetail } from "@/interfaces/home";
 interface BottomSheetModalProps {
   isVisible: boolean;
   onClose: () => void;
+  params?: TodoDetail;
 }
 
-const BottomSheetModalEdit: React.FC<BottomSheetModalProps> = ({ isVisible, onClose }) => {
+const BottomSheetModalEdit: React.FC<BottomSheetModalProps> = ({ isVisible, onClose, params }) => {
   const { logout } = useAuth();
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [date, setDate] = useState<Date>(new Date());
   const [show, setShow] = useState<boolean>(false);
   const { token, login } = useSelector((state:RootState) => state.AUTH_REDUCER);
@@ -29,7 +32,7 @@ const BottomSheetModalEdit: React.FC<BottomSheetModalProps> = ({ isVisible, onCl
     title: '',
     description: '',
     date: '',
-    image: ''
+    image: '',
   })
 
   const [formDataError, setFormDataError] = useState<TodoFormData>({
@@ -42,21 +45,19 @@ const BottomSheetModalEdit: React.FC<BottomSheetModalProps> = ({ isVisible, onCl
   const handleGesture = (event: any) => {
     if (event.nativeEvent.translationY > 100) {
       onClose();
-      setFormData({})
-      setDate(new Date())
     }
   };
 
   const handleCloseModal = async () => {
     onClose();
-    setFormData({
-      title: '',
-      description: '',
-      date: '',
-      image: ''
-    })
-    setDate(new Date())
-    setFormDataError({})
+    // setFormData({
+    //   title: '',
+    //   description: '',
+    //   date: '',
+    //   image: ''
+    // })
+    // setDate(new Date())
+    // setFormDataError({})
   }
 
   // // handle change input text
@@ -68,38 +69,39 @@ const BottomSheetModalEdit: React.FC<BottomSheetModalProps> = ({ isVisible, onCl
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (event.type === "set" && selectedDate) {
       setDate(selectedDate);
+      const convertDate = formatDateTime(selectedDate, "YYYY-MM-DD")
+      // console.log(convertDate)
+      setFormData({
+        ...formData,
+        date : convertDate
+      })
     }
     setShow(false); // Menutup date picker setelah pemilihan
   };
 
-  const signInValidationSchema : ValidationSchema<TodoFormData> = {
+  const TodoValidationSchema : ValidationSchema<TodoFormData> = {
     title: (value:any) => (!value ? "Title is required" : undefined),
     description: (value:any) => (!value ? "Description is required" : undefined),
   };
 
   const handleSubmit = async () => {
-    const isValid = validateForm(formData, signInValidationSchema, setFormDataError);
+    const isValid = validateForm(formData, TodoValidationSchema, setFormDataError);
     if(isValid){
       try {
         setIsLoading(true)
         const additionalHeaders = {
           Authorization: `Bearer ${token}`,
         };
-        const convertDate = formatDateTime(date, "YYYY-MM-DD")
-        setFormData({
-          ...formData,
-          date : convertDate
-        })
         // console.log(formData)
         const data = await fetchApi(
-          `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/create`,
-          'POST',
+          `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/edit/${params?.id_todo}/exist`,
+          'PUT',
           formData,
           additionalHeaders,
         )
         if(data.status_code >= 200 && data.status_code <= 204) 
-          handleCloseModal()
-          ToastAndroid.show('Selamat, Anda telah berhasil membuat todo', ToastAndroid.SHORT);
+          router.replace('/(home)/home')
+          ToastAndroid.show('Selamat, Anda telah berhasil update todo', ToastAndroid.SHORT);
       } catch (error:any) {
         if (error?.status === 401) {
           ToastAndroid.show("Sesi Anda telah berakhir", ToastAndroid.SHORT);
@@ -114,6 +116,12 @@ const BottomSheetModalEdit: React.FC<BottomSheetModalProps> = ({ isVisible, onCl
       }
     }
   }
+
+  useEffect(() => {
+    setFormData({
+      ...params
+    })
+  }, [params])
 
   return (
     <KeyboardAvoidingView
@@ -172,7 +180,10 @@ const BottomSheetModalEdit: React.FC<BottomSheetModalProps> = ({ isVisible, onCl
                   <TextInput
                     style={[styles.input]}
                     placeholder="Deadline (Optional)"
-                    value={date.toDateString() || ''}
+                    value={formData.date ? 
+                      formatDateTime(String(formData.date), 'DD/MM/YYYY') 
+                      : ''
+                    }
                     editable={false}
                   />
                   <IconSymbol
@@ -215,14 +226,10 @@ const BottomSheetModalEdit: React.FC<BottomSheetModalProps> = ({ isVisible, onCl
                 {isLoading ?
                   <ActivityIndicator size={'small'} color={Colors.background} /> 
                 :
-                  <Text style={styles.signInText}>add{' '}todo</Text>
+                  <Text style={styles.signInText}>edit{' '}todo</Text>
                 }
               </TouchableOpacity>
             </View>
-            
-            {/* <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Text style={styles.closeText}>Close</Text>
-            </TouchableOpacity> */}
           </View>
         </PanGestureHandler>
       </Modal>

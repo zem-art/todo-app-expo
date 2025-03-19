@@ -7,13 +7,15 @@ export interface ListTodo {
     id_todo:string
 }
 
-export interface Todo {
-    id_todo:string,
-    id_user:string,
-    title:string, 
-    status:string, 
-    description:string, 
-    created_at:string, 
-    updated_at: string,
-    completed:string, 
+export interface TodoDetail {
+    id_todo?:string,
+    id_user?:string,
+    title?:string, 
+    status?:string,
+    description?:string, 
+    date?: string,
+    image?: string,
+    created_at?:string, 
+    updated_at?: string,
+    completed?:string, 
 }

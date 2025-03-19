@@ -72,13 +72,13 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
     setShow(false); // Menutup date picker setelah pemilihan
   };
 
-  const signInValidationSchema : ValidationSchema<TodoFormData> = {
+  const TodoValidationSchema : ValidationSchema<TodoFormData> = {
     title: (value:any) => (!value ? "Title is required" : undefined),
     description: (value:any) => (!value ? "Description is required" : undefined),
   };
 
   const handleSubmit = async () => {
-    const isValid = validateForm(formData, signInValidationSchema, setFormDataError);
+    const isValid = validateForm(formData, TodoValidationSchema, setFormDataError);
     if(isValid){
       try {
         setIsLoading(true)
@@ -86,11 +86,8 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
           Authorization: `Bearer ${token}`,
         };
         const convertDate = formatDateTime(date, "YYYY-MM-DD")
-        setFormData({
-          ...formData,
-          date : convertDate
-        })
-        // console.log(formData)
+        formData.date = convertDate
+        // console.log('FORM DATA==>', formData)
         const data = await fetchApi(
           `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/create`,
           'POST',

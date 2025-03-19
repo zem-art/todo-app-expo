@@ -1,5 +1,6 @@
 import { Container } from '@/components/Container'
 import LoadingSpinner from '@/components/LoadingSpinner';
+import BottomSheetModalEdit from '@/components/modal/modal-edit';
 import ParallaxFlatList from '@/components/ParallaxFlatList';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -7,7 +8,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/Colors';
 import { ConfigApiURL } from '@/constants/Config';
 import { useAuth } from '@/context/auth-provider';
-import { Todo } from '@/interfaces/home';
+import { TodoDetail } from '@/interfaces/home';
 import { RootState } from '@/redux/reducer-store';
 import { fetchApi } from '@/utils/helpers/fetchApi.utils';
 import { useNavigation } from '@react-navigation/native';
@@ -15,6 +16,7 @@ import { Tooltip } from '@rneui/themed';
 import { useLocalSearchParams, useRouter } from 'expo-router/build/hooks';
 import React, { useEffect, useState } from 'react'
 import { Alert, Pressable, StyleSheet, Text, ToastAndroid, View } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 
 export default function DetailsScreen() {
@@ -25,9 +27,10 @@ export default function DetailsScreen() {
     const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
     const { token, login } = useSelector((state:RootState) => state.AUTH_REDUCER);
     const [isDarkMode, setIsDarkMode] = useState<boolean>(isDark);
-    const [stateDetail, setStateDetail] = useState<Todo>()
+    const [stateDetail, setStateDetail] = useState<TodoDetail>({})
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [openTooltip, setOpenTooltip] = useState<boolean>(false);
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -50,7 +53,7 @@ export default function DetailsScreen() {
                     "GET",
                     undefined,
                     additionalHeaders);
-                setStateDetail(data.response.data)
+                setStateDetail({...data.response.data})
             } catch (error:any) {
                 // console.error("Error ==>", error?.status);
                 if (error?.status === 401) {
@@ -64,21 +67,57 @@ export default function DetailsScreen() {
         handleDetailTodo()
     }, [])
 
+    const handleDeleteTodoTemporary = async (uid:string) => {
+        try {
+        setIsLoading(true)
+        const additionalHeaders = {
+            Authorization: `Bearer ${token}`,
+        };
+        const base_url = `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/delete/${uid}/temporary`
+        const data = await fetchApi(
+            base_url,
+            'DELETE',
+            undefined,
+            additionalHeaders,
+        )
+        if(data.status_code >= 200 && data.status_code <= 204){
+            ToastAndroid.show('Selamat, Anda telah berhasil menghapus todo', ToastAndroid.SHORT);
+            router.replace('/(home)/home')
+        }
+        } catch (error:any) {
+            if (error?.status === 401) {
+                ToastAndroid.show("Sesi Anda telah berakhir", ToastAndroid.SHORT);
+                logout();
+            }
+            ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+            console.log('Erorr ==> : ', error)
+        } finally {
+            setTimeout(() => {
+                setIsLoading(false)
+            }, 500);
+        }
+    }
+
     const handleNavigation = (params:string) => {
         switch (params) {
             case 'add':
                 Alert.alert('Add pressed')
                 break;
             case 'edit':
-                Alert.alert('Edit pressed')
+                setModalVisible(true)
                 break;
             default:
-                Alert.alert('Delete pressed')
+                Alert.alert(
+                    "Confirm Delete",
+                    "Are you sure you want to delete ? 🤔",
+                    [
+                    { text: "Cancel", style: "cancel" },
+                    { text: "Delete", onPress: () => handleDeleteTodoTemporary(stateDetail?.id_todo || '') },
+                    ]
+                );
                 break;
         }
     }
-
-    // console.log('loading ==> : ', stateDetail)
 
     return (
         <Container style={[styles.container, { backgroundColor : !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }]} isDarkMode={isDarkMode}>
@@ -95,6 +134,8 @@ export default function DetailsScreen() {
                             popover={
                                 <Text>{stateDetail?.updated_at}</Text>
                             }
+                            backgroundColor={Colors.primary}
+                            
                         >
                             <IconSymbol lib="AntDesign" name="clockcircleo" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
                         </Tooltip>
@@ -124,6 +165,9 @@ export default function DetailsScreen() {
                     </ThemedView>
                 </ThemedView>
             }
+            <GestureHandlerRootView style={styles.GesturModal}>
+                <BottomSheetModalEdit isVisible={modalVisible} onClose={() => setModalVisible(false)} params={stateDetail}/>
+            </GestureHandlerRootView>
         </Container>
     )
 }
@@ -165,5 +209,8 @@ const styles = StyleSheet.create({
     },
     description: {
         fontSize: 16
+    },
+    GesturModal : {
+        position: 'absolute',
     },
 })
