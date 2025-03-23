@@ -72,17 +72,29 @@ export default function Settings() {
                                     <IconSymbol lib="AntDesign" name="left" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
                                 </Pressable>
                             </Link>
-                            <ThemedText style={[styles.textTitle, { color: isDarkMode ? Colors.secondary : Colors.primary }]}>
+                            {/* <ThemedText style={[styles.textTitle, { color: isDarkMode ? Colors.secondary : Colors.primary }]}>
                                 TO DO LIST
-                            </ThemedText>
-                            <Pressable style={[styles.button]} onPress={() => toggleTheme()}>
-                                <IconSymbol 
-                                    lib={!isDarkMode ? "MaterialIcons" : "Entypo"} 
-                                    name={!isDarkMode ? "darkMode" : "lightMode"}
-                                    color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray}
-                                    size={24}
-                                />
-                            </Pressable>
+                            </ThemedText> */}
+                            <View style={{ flexDirection : 'row', width : '20%', justifyContent : 'space-between' }}>
+                                <Link href="/history" asChild>
+                                    <Pressable style={[styles.button]}>
+                                        <IconSymbol 
+                                            lib={'MaterialIcons'} 
+                                            name={'history'}
+                                            color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray}
+                                            size={28}
+                                            />
+                                    </Pressable>
+                                </Link>
+                                <Pressable style={[styles.button]} onPress={() => toggleTheme()}>
+                                    <IconSymbol 
+                                        lib={!isDarkMode ? "MaterialIcons" : "Entypo"} 
+                                        name={!isDarkMode ? "darkMode" : "lightMode"}
+                                        color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray}
+                                        size={28}
+                                    />
+                                </Pressable>
+                            </View>
                         </View>
                         <Image
                             source={require('@/assets/images/ilustration.png')}

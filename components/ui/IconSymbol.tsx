@@ -16,6 +16,7 @@ const IconMap = {
     code: 'code',
     right: 'chevron-right',
     darkMode : 'dark-mode',
+    history: 'history',
   },
   AntDesign: {
     up: 'arrowup',
@@ -30,9 +31,11 @@ const IconMap = {
   FontAwesome: {
     like: 'thumbs-o-up',
     dislike: 'thumbs-o-down',
+    history: 'history',
   },
   FontAwesome6: {
     clock: 'clock',
+    history: 'history',
   },
   Feather: {
     settings: 'settings',
