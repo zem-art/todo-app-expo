@@ -14,7 +14,7 @@ import { useAuth } from '@/context/auth-provider';
 import { fetchApi } from '@/utils/helpers/fetchApi.utils';
 import { ConfigApiURL } from '@/constants/Config';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { ListTodo } from '@/interfaces/home';
+import { ListTodoDelete } from '@/interfaces/home';
 
 export default function HistoryScreen() {
   const router = useRouter();
@@ -30,8 +30,7 @@ export default function HistoryScreen() {
   const [page, setPage] = useState(2);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState(true); // Status jika masih ada data
-  const [todos, setTodos] = useState<Array<ListTodo>>([]);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [todos, setTodos] = useState<Array<ListTodoDelete>>([]);
 
   // Using the back handler
   // useBackHandler( isFocused, () => {
@@ -41,10 +40,14 @@ export default function HistoryScreen() {
 
   // Swict page detail
   const onPressDetail = (parms?:any) => {
-    router.push({
-      pathname : '/(home)/details',
-      params : { ...parms }
-    })
+    Alert.alert(
+      "Confirm Restore",
+      "Are you sure you want to restore todo ? 😢",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Logout", onPress: () => logout() },
+      ]
+    );
   }
 
   // useEffect Theme System
@@ -65,9 +68,9 @@ export default function HistoryScreen() {
     else setLoadingMore(true);
 
     try {
-      const additionalHeaders = { Authorization: `Bearer ${token}` };
+      const additionalHeaders = { Authorization: `Bearer ${token}` };      
       const response = await fetchApi(
-        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?page=${pageNumber}`,
+        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?temporary=true&page=${pageNumber}`,
         "GET",
         undefined,
         additionalHeaders
@@ -138,26 +141,21 @@ export default function HistoryScreen() {
                 data={todos}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => {
-                  const { title, description, created_at, completed, id_todo } = item;
+                  const { id_todo, title, description, status, created_at, updated_at, deleted_at } = item;
                   const substr = 70
-                  const statusColors: Record<"completed" | "on-track", string> = {
-                    completed: Colors.grayishDarkGreen,
-                    "on-track": Colors.secondary,
-                  };
-                  const color = statusColors[item?.status as "completed" | "on-track"] || Colors.primary;
                   return (
-                    <Pressable style={[styles.card, { backgroundColor: color }]} onPress={() => onPressDetail(item)}>
+                    <Pressable style={[styles.card, { backgroundColor: Colors.error }]} onPress={() => onPressDetail(item)}>
                       <View style={styles.cardHeader}>
                         <Text style={styles.cardTitle}>{title}</Text>
                         <IconSymbol
-                          lib={!completed ? "FontAwesome6" : "AntDesign"}
-                          name={!completed ? "clock" : "check"}
-                          size={15}
+                          lib={'MaterialIcons'} 
+                          name={'history'}
+                          size={25}
                           color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray}
                           />
                       </View>
                       <Text style={styles.cardDescription}>{description.length < substr ? description : `${description.substring(0, substr)}...`}</Text>
-                      <Text style={styles.cardFooter}>Created at : {created_at}</Text>
+                      <Text style={styles.cardFooter}>Delete at : {deleted_at}</Text>
                     </Pressable>
                   )
                 }}
