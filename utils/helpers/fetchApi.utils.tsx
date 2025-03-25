@@ -1,6 +1,4 @@
 import { ConfigApiURL } from "@/constants/Config";
-import { useAuth } from "@/context/auth-provider";
-import { ToastAndroid } from "react-native";
 
 /**
  * 
@@ -15,10 +13,10 @@ import { ToastAndroid } from "react-native";
 
 export async function fetchApi(
   url: string,
-  method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" = "GET",
   body?: Record<string, any> | FormData,
   headers?: Record<string, string>,
-  timeout: number = 5000 // Default timeout 5 detik
+  timeout: number = 9000 // Default timeout 5 detik
 ): Promise<any> {
   const controller = new AbortController();
   const signal = controller.signal;

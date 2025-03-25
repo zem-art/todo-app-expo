@@ -99,7 +99,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
           ToastAndroid.show('Selamat, Anda telah berhasil membuat todo', ToastAndroid.SHORT);
       } catch (error:any) {
         if (error?.status === 401) {
-          ToastAndroid.show("Sesi Anda telah berakhir", ToastAndroid.SHORT);
+          ToastAndroid.show("Your session has expired", ToastAndroid.SHORT);
           logout();
         }
         ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);

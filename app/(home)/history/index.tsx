@@ -19,12 +19,10 @@ import { ListTodoDelete } from '@/interfaces/home';
 export default function HistoryScreen() {
   const router = useRouter();
   const { logout, isLogin } = useAuth()
-  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
   const { token, login } = useSelector((state:RootState) => state.AUTH_REDUCER);
   const [isDarkMode, setIsDarkMode] = useState(isDark);
-  
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [page, setPage] = useState(2);
@@ -32,29 +30,11 @@ export default function HistoryScreen() {
   const [hasMore, setHasMore] = useState(true); // Status jika masih ada data
   const [todos, setTodos] = useState<Array<ListTodoDelete>>([]);
 
-  // Using the back handler
-  // useBackHandler( isFocused, () => {
-  //   console.log("Custom exit logic executed!");
-  //   BackHandler.exitApp(); // Default exit action
-  // })
-
-  // Swict page detail
-  const onPressDetail = (parms?:any) => {
-    Alert.alert(
-      "Confirm Restore",
-      "Are you sure you want to restore todo ? 😢",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Logout", onPress: () => logout() },
-      ]
-    );
-  }
-
   // useEffect Theme System
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // Log makesure state Redux
-      console.log('Refreshed Home State:', isDark); 
+      console.log('Refreshed History State:', isDark);
     });
     setIsDarkMode(isDark)
     // Clean up listeners when component is unmounted
@@ -85,7 +65,7 @@ export default function HistoryScreen() {
       else setPage(pageNumber + 1);
     } catch (error: any) {
       if (error?.status === 401) {
-        ToastAndroid.show("Sesi Anda telah berakhir", ToastAndroid.SHORT);
+        ToastAndroid.show("Your session has expired", ToastAndroid.SHORT);
         logout();
       }
     } finally {
@@ -110,6 +90,45 @@ export default function HistoryScreen() {
     fetchData();
   }, [token, isLogin]);
 
+  const handleRecoveryTodo = async (params:string) => {
+    console.log(params);
+    try {
+      const additionalHeaders = {
+        Authorization: `Bearer ${token}`,
+        "Content-Length": "0"
+      };
+      const respons = await fetchApi(
+        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/recovery/${params}/temporary`,
+        "PATCH",
+        {},
+        additionalHeaders);
+      console.log(respons)
+      if(respons.status_code >= 200 && respons.status_code <= 204) {
+        ToastAndroid.show('Selamat, Anda telah berhasil restore todo', ToastAndroid.SHORT);
+        fetchTodos(1, true)
+      }
+    } catch (error:any) {
+      console.error("Error ==>", error);
+      if (error?.status === 401) {
+        ToastAndroid.show("Your session has expired", ToastAndroid.SHORT);
+        logout();
+      }
+    } finally {
+    }
+  }
+
+  // Restore Todo
+  const onPressRestore = (parms?:any) => {
+    Alert.alert(
+      "Confirm Restore",
+      "Are you sure you want to restore todo ? 😢",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Restore", onPress: () => handleRecoveryTodo(parms) },
+      ]
+    );
+  }
+
   return (
     <Container style={[styles.container]} isDarkMode={isDarkMode}>
       <ParallaxFlatList
@@ -121,6 +140,9 @@ export default function HistoryScreen() {
           loadingMore={loadingMore}
           header={
             <View style={[styles.header, { backgroundColor: !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }]}>
+              <Pressable onPress={() => navigation.goBack()}>
+                <IconSymbol lib="AntDesign" name="left" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
+              </Pressable>
               <ThemedText style={[styles.textTitle, { color: isDarkMode ? Colors.secondary : Colors.primary }]}>
                 TO DO LIST
               </ThemedText>
@@ -134,7 +156,7 @@ export default function HistoryScreen() {
           </Text>
 
           { isLoading ?
-            <LoadingSpinner color="#FF5733" backgroundColor="#f0f0f0" />
+            <LoadingSpinner color={Colors.primary} backgroundColor={Colors.background} />
             :
             <>
               <FlatList
@@ -144,14 +166,14 @@ export default function HistoryScreen() {
                   const { id_todo, title, description, status, created_at, updated_at, deleted_at } = item;
                   const substr = 70
                   return (
-                    <Pressable style={[styles.card, { backgroundColor: Colors.error }]} onPress={() => onPressDetail(item)}>
+                    <Pressable style={[styles.card, { backgroundColor: Colors.error }]} onPress={() => onPressRestore(id_todo)}>
                       <View style={styles.cardHeader}>
                         <Text style={styles.cardTitle}>{title}</Text>
                         <IconSymbol
-                          lib={'MaterialIcons'} 
+                          lib={'MaterialIcons'}
                           name={'history'}
                           size={25}
-                          color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray}
+                          color={Colors.light.background}
                           />
                       </View>
                       <Text style={styles.cardDescription}>{description.length < substr ? description : `${description.substring(0, substr)}...`}</Text>
@@ -237,4 +259,7 @@ const styles = StyleSheet.create({
   GesturModal : {
     position: 'absolute',
   },
+  button: {
+    alignItems: 'center',
+} ,
 });

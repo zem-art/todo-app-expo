@@ -84,7 +84,7 @@ export default function HomeScreen() {
       else setPage(pageNumber + 1);
     } catch (error: any) {
       if (error?.status === 401) {
-        ToastAndroid.show("Sesi Anda telah berakhir", ToastAndroid.SHORT);
+        ToastAndroid.show("Your session has expired", ToastAndroid.SHORT);
         logout();
       }
     } finally {

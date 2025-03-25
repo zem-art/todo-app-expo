@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       } catch (error:any) {
         if (error?.status === 401) {
-          ToastAndroid.show("Sesi Anda telah berakhir", ToastAndroid.SHORT);
+          ToastAndroid.show("Your session has expired", ToastAndroid.SHORT);
           await logout();
         }
         // console.error("Error checking login status:", error);
