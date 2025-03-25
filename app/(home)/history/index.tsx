@@ -34,7 +34,7 @@ export default function HistoryScreen() {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // Log makesure state Redux
-      console.log('Refreshed History State:', isDark);
+      // console.log('Refreshed History State:', isDark);
     });
     setIsDarkMode(isDark)
     // Clean up listeners when component is unmounted
