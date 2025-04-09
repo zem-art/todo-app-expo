@@ -15,8 +15,7 @@
       },
       "env": {
         "EXPO_PUBLIC_BASE_API_URL": "https://todo.learning-api.my.id",
-        "EXPO_PUBLIC_PREFIX_URL": "v1",
-        "EXPO_PUBLIC_ENV_URL": null
+        "EXPO_PUBLIC_PREFIX_URL": "v1"
       }
     },
     "production": {
