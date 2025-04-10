@@ -7,6 +7,8 @@
     "start:cache": "expo start -c",
     "bump": "node update-version.js",
     "reset-project": "node ./scripts/reset-project.js",
+    "build:development" : "eas build --platform android --profile development",
+    "build:preview" : "eas build --platform android --profile preview",
     "android": "expo start --android",
     "dev": "expo-router dev",
     "ios": "expo start --ios",

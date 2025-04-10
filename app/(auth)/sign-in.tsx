@@ -101,14 +101,18 @@ export default function SignIn() {
   // handle get data in remember me
   const getRememberMe = async () => {
     const value = await AsyncStorage.getItem("remember_me");
-    return value ? JSON.parse(value) : false;
+    return value ? JSON.parse(value) : {};
   };
 
   useEffect(() => {
     getRememberMe().then((data:any) => {
-      if (data) {
-        setFormData(data)
-        setChecked(true);
+      try {
+        if (data.email && data.password) {
+          setFormData(data)
+          setChecked(true);
+        }
+      } catch (error) {
+        console.log('Error parsing remember me data:', error);
       }
     });
   }, []);
