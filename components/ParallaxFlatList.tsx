@@ -9,6 +9,7 @@ import Animated, {
 
 import { ThemedView } from '@/components/ThemedView';
 import { useBottomTabOverflow } from '@/components/ui/TabBarBackground';
+import { Colors } from '@/constants/Colors';
 
 // const HEADER_HEIGHT = 100;
 
@@ -79,7 +80,7 @@ export default function ParallaxFlatList({
         ListFooterComponent={
           loadingMore ? (
             <View style={{ padding: 10 }}>
-              <ActivityIndicator size="small" color="#FF5733" />
+              <ActivityIndicator size="small" color={Colors.primary} />
             </View>
           ) : null
         }

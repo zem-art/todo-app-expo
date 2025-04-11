@@ -110,7 +110,7 @@ export default function HomeScreen() {
   
   useEffect(() => {
     fetchData();
-  }, [token, isLogin, modalVisible]);
+  }, [token, isLogin]);
 
   return (
     <Container style={[styles.container]} isDarkMode={isDarkMode}>
