@@ -123,11 +123,11 @@ export default function Settings() {
                         style={[styles.textValueContent, { color: isDarkMode ? Colors.secondary : Colors.primary }]}
                         isDarkMode={isDarkMode}
                         >{data.email}
-                        </ThemedText>
+                    </ThemedText>
                 </ThemedView>
                 <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
                     <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Password</ThemedText>
-                    <Pressable onPress={() => Alert.alert('Change Password pressed')}>
+                    <Pressable onPress={() => navigation.navigate('/profile/password' as never)}>
                         <ThemedText type='defaultSemiBold' style={[styles.textValueContent, styles.textLink, { color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>change{' '}password</ThemedText>
                     </Pressable>
                 </ThemedView>

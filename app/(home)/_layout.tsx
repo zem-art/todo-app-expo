@@ -14,6 +14,7 @@ export default function HomeLayout() {
       <Stack.Screen name="details"/>
       <Stack.Screen name="settings/index"/>
       <Stack.Screen name="history/index"/>
+      <Stack.Screen name="profile/password"/>
     </Stack>
   );
 }
