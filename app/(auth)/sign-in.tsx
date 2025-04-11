@@ -54,12 +54,15 @@ export default function SignIn() {
     if (isValid) {
       try {
         setIsLoading(true)
+        let base_url = !!ConfigApiURL.env_url ?
+          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in` :
+          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`;
         const data = await fetchApi(
-          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`,
+          base_url,
           'POST',
           formData,
         )
-        // console.log(data)
+        console.log(base_url)
         const token = data.response.token || undefined || null
         if(data.status_code >= 200 && data.status_code <= 204 && token) {
           setLogin(true, token, data.response.data) 
@@ -71,8 +74,8 @@ export default function SignIn() {
           }
         }
       } catch (error:any) {
-        ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
-        console.log('Erorr ==> : ', error)
+        console.log('Erorr Sign ==> : ', error)
+        ToastAndroid.show(error || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
       } finally {
         setTimeout(() => {
           setIsLoading(false)

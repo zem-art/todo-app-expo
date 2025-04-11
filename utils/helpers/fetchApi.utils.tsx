@@ -50,9 +50,9 @@ export async function fetchApi(
     return await response.json();
   } catch (error: any) {
     if (error.name === "AbortError") {
-      throw new Error("Request timeout, silakan coba lagi");
+      return new Error("Request timeout, silakan coba lagi");
     }
-    throw error;
+    return error;
   }
 }
 

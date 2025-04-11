@@ -48,9 +48,12 @@ export default function HistoryScreen() {
     else setLoadingMore(true);
 
     try {
-      const additionalHeaders = { Authorization: `Bearer ${token}` };      
+      const additionalHeaders = { Authorization: `Bearer ${token}` };
+      let base_url = !!ConfigApiURL.env_url ?
+        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?temporary=true&page=${pageNumber}` :
+        `/api/todo/${ConfigApiURL.prefix_url}/list?temporary=true&page=${pageNumber}`;
       const response = await fetchApi(
-        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?temporary=true&page=${pageNumber}`,
+        base_url,
         "GET",
         undefined,
         additionalHeaders

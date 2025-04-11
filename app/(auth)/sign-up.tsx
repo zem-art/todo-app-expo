@@ -60,8 +60,11 @@ export default function SignUp() {
 
     try {
       setIsLoading(true)
+      let base_url = !!ConfigApiURL.env_url ? 
+        `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_up` : 
+        `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_up`;
       const data = await fetchApi(
-        `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_up`,
+        base_url,
         'POST',
         formData,
       )

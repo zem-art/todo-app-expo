@@ -38,8 +38,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const additionalHeaders = {
           Authorization: `Bearer ${token}`,
         };
+        let base_url = !!ConfigApiURL.env_url ? 
+          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/profile` : 
+          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/profile`;
         const response = await fetchApi(
-          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/profile`,
+          base_url,
           "GET",
           undefined,
           additionalHeaders,

@@ -47,8 +47,11 @@ export default function DetailsScreen() {
                 const additionalHeaders = {
                     Authorization: `Bearer ${token}`,
                 };
+                let base_url = !!ConfigApiURL.env_url ?
+                    `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/detail/${id_todo}/exist` : 
+                    `/api/todo/${ConfigApiURL.prefix_url}/detail/${id_todo}/exist`;
                 const data = await fetchApi(
-                    `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/detail/${id_todo}/exist`,
+                    base_url,
                     "GET",
                     undefined,
                     additionalHeaders);
@@ -72,7 +75,9 @@ export default function DetailsScreen() {
         const additionalHeaders = {
             Authorization: `Bearer ${token}`,
         };
-        const base_url = `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/delete/${uid}/temporary`
+        const base_url = !!ConfigApiURL.env_url ?
+            `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/delete/${uid}/temporary` :
+            `/api/todo/${ConfigApiURL.prefix_url}/delete/${uid}/temporary`
         const data = await fetchApi(
             base_url,
             'DELETE',

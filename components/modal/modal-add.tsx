@@ -88,8 +88,11 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
         const convertDate = formatDateTime(date, "YYYY-MM-DD")
         formData.date = convertDate
         // console.log('FORM DATA==>', formData)
+        const base_url = !!ConfigApiURL.env_url ?
+          `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/create` :
+          `/api/todo/${ConfigApiURL.prefix_url}/create`
         const data = await fetchApi(
-          `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/create`,
+          base_url,
           'POST',
           formData,
           additionalHeaders,

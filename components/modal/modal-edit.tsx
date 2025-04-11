@@ -93,8 +93,11 @@ const BottomSheetModalEdit: React.FC<BottomSheetModalProps> = ({ isVisible, onCl
           Authorization: `Bearer ${token}`,
         };
         // console.log(formData)
+        const base_url = !!ConfigApiURL.env_url ?
+          `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/edit/${params?.id_todo}/exist` :
+          `/api/todo/${ConfigApiURL.prefix_url}/edit/${params?.id_todo}/exist`
         const data = await fetchApi(
-          `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/edit/${params?.id_todo}/exist`,
+          base_url,
           'PUT',
           formData,
           additionalHeaders,

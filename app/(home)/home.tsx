@@ -68,8 +68,11 @@ export default function HomeScreen() {
 
     try {
       const additionalHeaders = { Authorization: `Bearer ${token}` };
+      let base_url = !!ConfigApiURL.env_url ?
+        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?page=${pageNumber}` : 
+        `/api/todo/${ConfigApiURL.prefix_url}/list?page=${pageNumber}`;
       const response = await fetchApi(
-        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?page=${pageNumber}`,
+        base_url,
         "GET",
         undefined,
         additionalHeaders
@@ -107,7 +110,7 @@ export default function HomeScreen() {
   
   useEffect(() => {
     fetchData();
-  }, [token, isLogin]);
+  }, [token, isLogin, modalVisible]);
 
   return (
     <Container style={[styles.container]} isDarkMode={isDarkMode}>
