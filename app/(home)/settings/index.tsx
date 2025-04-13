@@ -127,9 +127,11 @@ export default function Settings() {
                 </ThemedView>
                 <ThemedView isDarkMode={isDarkMode} style={[styles.content]}>
                     <ThemedText style={[styles.textLabelContent]} isDarkMode={isDarkMode}>Password</ThemedText>
-                    <Pressable onPress={() => navigation.navigate('/profile/password' as never)}>
-                        <ThemedText type='defaultSemiBold' style={[styles.textValueContent, styles.textLink, { color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>change{' '}password</ThemedText>
-                    </Pressable>
+                    <Link href="/profile/password" asChild>
+                        <Pressable>
+                            <ThemedText type='defaultSemiBold' style={[styles.textValueContent, styles.textLink, { color: isDarkMode ? Colors.secondary : Colors.primary }]} isDarkMode={isDarkMode}>change{' '}password</ThemedText>
+                        </Pressable>
+                    </Link>
                 </ThemedView>
                 <ThemedView style={[styles.pathButton]} isDarkMode={isDarkMode}>
                     <Pressable style={[styles.ButtonLogout, { backgroundColor: isDarkMode ? Colors.secondary : Colors.primary }]} onPress={confirmLogout}>

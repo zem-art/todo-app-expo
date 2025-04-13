@@ -15,8 +15,13 @@ export interface FormDataSignUpPayload {
 }
 
 export interface FormDataSignUpError {
-    username?: string;
-    email?: string;
-    password?: string;
-    confirm_password?: string;
+  username?: string;
+  email?: string;
+  password?: string;
+  confirm_password?: string;
+}
+
+export interface FormDataForgotPasswordPayload {
+  password?: string;
+  confirm_password?: string;
 }

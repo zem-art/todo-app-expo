@@ -41,14 +41,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         let base_url = !!ConfigApiURL.env_url ? 
           `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/profile` : 
           `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/profile`;
+        // console.log(base_url)
         const response = await fetchApi(
           base_url,
           "GET",
           undefined,
           additionalHeaders,
         )
-        // console.log('==>',response.response.data)
-        if (response) {
+        // console.log('==>',response.response)
+        if (response.response) {
           setIsLogin(true);
           dispatch(setAuthActions(token, true));
           dispatch(setUserActions(response.response.data, {}, true))
@@ -69,17 +70,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Cek pertama dalam 10 detik
     const firstCheck = setTimeout(() => {
       checkLoginStatus();
-
+      console.log("First check login status...");
       // Setelah cek pertama, mulai polling setiap 5 menit
       interval = setInterval(() => {
         checkLoginStatus();
-      }, 300000); // 5 menit (300.000 ms)
+        console.log("Polling login status...");
+      }, 120000); // 2 menit = 2 × 60 × 1000 = 180000 ms
+      console.log("Polling started...");
     }, 1000); // 10 detik (10.000 ms)
 
     return () => {
-      console.log("Cleanup function dijalankan");
+      console.log("Cleanup interval...");
       clearTimeout(firstCheck);
       if (interval) clearInterval(interval);
+      console.log("Interval cleared");
     };
   }, [isLogin]);
 

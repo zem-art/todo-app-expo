@@ -49,6 +49,7 @@ function RootLayoutContent() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  console.log('==>',isLogin);
 
   useEffect(() => {
     const checkNetwork = async () => {

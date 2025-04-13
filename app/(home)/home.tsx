@@ -86,6 +86,7 @@ export default function HomeScreen() {
       if (formattedData.length === 0) setHasMore(false);
       else setPage(pageNumber + 1);
     } catch (error: any) {
+      console.log('Error fetching todos:', error);
       if (error?.status === 401) {
         ToastAndroid.show("Your session has expired", ToastAndroid.SHORT);
         logout();
