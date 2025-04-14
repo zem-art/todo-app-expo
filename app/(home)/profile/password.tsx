@@ -6,7 +6,7 @@ import { FormDataForgotPasswordPayload } from '@/interfaces/auth';
 import { useIsFocused } from '@react-navigation/native';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { View, Text, KeyboardAvoidingView, StyleSheet, Platform, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView, TextInput } from 'react-native';
+import { View, Text, KeyboardAvoidingView, StyleSheet, Platform, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView, TextInput, Pressable } from 'react-native';
 
 export default function PasswordScreen() {
   const router = useRouter();
@@ -35,11 +35,18 @@ export default function PasswordScreen() {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
       >
       <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
         <View style={styles.content}>
+          <View style={{ position: 'absolute', top: 20, left: 10, height:50 }}>
+            {/* <Link href="#" asChild> */}
+              <Pressable style={{ padding: 10 }} onPress={() => router.back()}>
+                <IconSymbol lib="AntDesign" name="left" size={24} />
+              </Pressable>
+            {/* </Link> */}
+          </View>
           <View style={styles.titleContainer}>
             <Text style={styles.titleText}>T O</Text>
             <Text style={styles.titleText}>D O</Text>
