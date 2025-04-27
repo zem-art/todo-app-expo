@@ -68,13 +68,19 @@ export default function SignUp() {
         'POST',
         formData,
       )
-      // console.log('==>',data)
-      if(data.status_code >= 200 && data.status_code <= 204) 
+
+      const response = data.response || data.data || undefined || null
+      // console.log('Sign Up response: ', response);
+      if(data.status_code >= 200 && data.status_code <= 204){
         router.replace('/(auth)/sign-in')
         ToastAndroid.show('Berhasil Mendaftar..', ToastAndroid.SHORT);
+      } else {
+        // console.log('Error Sign ==> : ', response);
+        ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+      }
     } catch (error:any) {
+      // console.log('Erorr ==> : ', error)
       ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
-      console.log('Erorr ==> : ', error)
     } finally {
       setTimeout(() => {
         setIsLoading(false)

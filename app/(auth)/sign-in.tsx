@@ -62,20 +62,23 @@ export default function SignIn() {
           'POST',
           formData,
         )
-        console.log(base_url)
-        const token = data.response.token || undefined || null
-        if(data.status_code >= 200 && data.status_code <= 204 && token) {
-          setLogin(true, token, data.response.data) 
+
+        const response = data.response || data.data || undefined || null
+        if(data.status_code >= 200 && data.status_code <= 204 && response.token) {
+          setLogin(true, response.token, data.response.data) 
           ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
           if(isChecked) {
             saveRememberMe(formData)
           } else {
             await AsyncStorage.removeItem("remember_me");
           }
+        } else {
+          // console.log('Error Sign ==> : ', response);
+          ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
         }
       } catch (error:any) {
-        console.log('Erorr Sign ==> : ', error)
-        ToastAndroid.show(error || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+        // console.log('Erorr Sign ==> : ', error)
+        ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
       } finally {
         setTimeout(() => {
           setIsLoading(false)
