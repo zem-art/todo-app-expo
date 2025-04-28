@@ -70,6 +70,7 @@ export default function PasswordScreen() {
         // console.log('Response Sign ==> : ', response);
         if(apiResponse.status_code >= 200 && apiResponse.status_code <= 204) {
           ToastAndroid.show(response, ToastAndroid.SHORT);
+          router.push({ pathname : '/settings' });
         } else {
           // console.log('Error Sign ==> : ', response);
           ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
