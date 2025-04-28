@@ -3,24 +3,28 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/Colors';
 import { useAuth } from '@/context/auth-provider';
 import { FormDataForgotPasswordPayload } from '@/interfaces/auth';
+import { RootState } from '@/redux/reducer-store';
 import { useIsFocused } from '@react-navigation/native';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, KeyboardAvoidingView, StyleSheet, Platform, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView, TextInput, Pressable } from 'react-native';
+import { useSelector } from 'react-redux';
 
 export default function PasswordScreen() {
   const router = useRouter();
-    const [formData, setFormData] = useState<FormDataForgotPasswordPayload>({
-      password: '',
-      confirm_password: '',
-    });
-    const [formDataError, setFormDataError] = useState<FormDataForgotPasswordPayload>({
-      password: '',
-      confirm_password: '',
-    });
-    const [isLoading, setIsLoading] = useState(false)
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
+  const [formData, setFormData] = useState<FormDataForgotPasswordPayload>({
+    password: '',
+    confirm_password: '',
+  });
+  const [formDataError, setFormDataError] = useState<FormDataForgotPasswordPayload>({
+    password: '',
+    confirm_password: '',
+  });
+  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [isDarkMode, setIsDarkMode] = useState(isDark);
 
   // handle change input text
   const handleInputChange = (field: keyof FormDataForgotPasswordPayload, value: string) => {
@@ -31,8 +35,9 @@ export default function PasswordScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={styles.container}
+      style={[styles.container, { backgroundColor: !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }]}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
+      
       >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -40,10 +45,10 @@ export default function PasswordScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.content}>
-          <View style={{ position: 'absolute', top: 20, left: 10, height:50 }}>
+          <View style={{ position: 'absolute', top: 35, left: 10, height:50 }}>
             {/* <Link href="#" asChild> */}
               <Pressable style={{ padding: 10 }} onPress={() => router.back()}>
-                <IconSymbol lib="AntDesign" name="left" size={24} />
+                <IconSymbol lib="AntDesign" name="left" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
               </Pressable>
             {/* </Link> */}
           </View>
