@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
       fontWeight : 'bold',
     },
     buttonSettings: {
-      alignItems: 'center',
+      // alignItems: 'center',
     },
     content: {},
     reactLogo: {

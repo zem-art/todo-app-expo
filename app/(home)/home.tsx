@@ -18,6 +18,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import { ListTodo } from '@/interfaces/home';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheetModal from '@/components/modal/modal-add';
+import FilterComponent from '@/components/modal/modal-filter';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -34,6 +35,12 @@ export default function HomeScreen() {
   const [hasMore, setHasMore] = useState(true); // Status jika masih ada data
   const [todos, setTodos] = useState<Array<ListTodo>>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  // filter state
+  const [filter, setFilter] = useState({
+    status: 'all', // 'all', 'open', 'completed'
+    order: 'newest', // 'newest', 'oldest'
+  });
 
   // Using the back handler
   useBackHandler( isFocused, () => {
@@ -103,6 +110,7 @@ export default function HomeScreen() {
     setHasMore(true);
     setPage(2);
     fetchTodos(1, true).finally(() => setRefreshing(false));
+    setFilter({ status: 'all', order: 'newest' }); // Reset filter on refresh
   }, []);
   
   const onLoadMore = () => {
@@ -112,6 +120,27 @@ export default function HomeScreen() {
   useEffect(() => {
     fetchData();
   }, [token, isLogin]);
+
+  // Filter and sort todos based on the selected filter
+  const applyFilter = (todos: Array<ListTodo>) => {
+    let filteredTodos = [...todos];
+  
+    // Filter by status
+    if (filter.status !== 'all') {
+      filteredTodos = filteredTodos.filter((todo) => todo.status === filter.status);
+    }
+  
+    // Sort by created_at
+    filteredTodos.sort((a, b) => {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      return filter.order === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+  
+    return filteredTodos;
+  };
+
+  const filteredTodos = applyFilter(todos);
 
   return (
     <Container style={[styles.container]} isDarkMode={isDarkMode}>
@@ -128,9 +157,9 @@ export default function HomeScreen() {
                 TO DO LIST
               </ThemedText>
               <View style={{ flexDirection : 'row'}}>
-                <Pressable style={[styles.buttonSettings, { marginRight: 20}]} onPress={() => Alert.alert('Filter pressed')}>
-                  <IconSymbol lib="Feather" name="filter" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
-                </Pressable>
+                <GestureHandlerRootView style={{ position: 'absolute', right: 20, top: 0 }}>
+                  <FilterComponent isDarkMode={isDarkMode} filter={filter} setFilter={setFilter} />
+                </GestureHandlerRootView>
                 <Link href="/settings" asChild>
                   <Pressable style={[styles.buttonSettings]}>
                     <IconSymbol lib="Feather" name="settings" size={24} color={isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray} />
@@ -151,7 +180,7 @@ export default function HomeScreen() {
             :
             <>
               <FlatList
-                data={todos}
+                data={filteredTodos}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => {
                   const { title, description, created_at, completed, id_todo } = item;
