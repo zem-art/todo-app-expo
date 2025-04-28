@@ -1,18 +1,23 @@
 // PasswordScreen.tsx 
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/Colors';
+import { ConfigApiURL } from '@/constants/Config';
 import { useAuth } from '@/context/auth-provider';
 import { FormDataForgotPasswordPayload } from '@/interfaces/auth';
 import { RootState } from '@/redux/reducer-store';
+import { fetchApi } from '@/utils/helpers/fetchApi.utils';
+import { validateForm, ValidationSchema } from '@/utils/validators/formData';
 import { useIsFocused } from '@react-navigation/native';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { View, Text, KeyboardAvoidingView, StyleSheet, Platform, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView, TextInput, Pressable } from 'react-native';
+import { View, Text, KeyboardAvoidingView, StyleSheet, Platform, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView, TextInput, Pressable, ToastAndroid } from 'react-native';
 import { useSelector } from 'react-redux';
 
 export default function PasswordScreen() {
   const router = useRouter();
   const isDark = useSelector((state:RootState) => state.THEME_REDUCER.isDark);
+  const { data, meta, login }:any = useSelector((state:RootState) => state.USER_REDUCER);
+  const [isDarkMode, setIsDarkMode] = useState(isDark);
   const [formData, setFormData] = useState<FormDataForgotPasswordPayload>({
     password: '',
     confirm_password: '',
@@ -24,7 +29,6 @@ export default function PasswordScreen() {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
-  const [isDarkMode, setIsDarkMode] = useState(isDark);
 
   // handle change input text
   const handleInputChange = (field: keyof FormDataForgotPasswordPayload, value: string) => {
@@ -32,12 +36,60 @@ export default function PasswordScreen() {
     setFormDataError({})
   };
 
+  const forgotValidationSchema : ValidationSchema<FormDataForgotPasswordPayload> = {
+    password: (value:any) => (!value ? "Password is required" : undefined),
+    confirm_password: (value:any) => (!value ? "Confirm Password is required" : undefined),
+  };
+
+  const handleForgot = async () => {
+    // Implement your login logic here
+    const isValid = validateForm(formData, forgotValidationSchema, setFormDataError);
+    if (isValid) {
+      try {
+        setIsLoading(true)
+        let base_url = !!ConfigApiURL.env_url ?
+          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password` :
+          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`;
+
+        const payload = {
+          email : '',
+          ...formData,
+        }
+        const data = await fetchApi(
+          base_url,
+          'POST',
+          payload,
+        )
+
+        const response = data.response || data.data || undefined || null
+        // if(data.status_code >= 200 && data.status_code <= 204 && response.token) {
+        //   setLogin(true, response.token, data.response.data) 
+        //   ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
+        //   if(isChecked) {
+        //     saveRememberMe(formData)
+        //   } else {
+        //     await AsyncStorage.removeItem("remember_me");
+        //   }
+        // } else {
+        //   // console.log('Error Sign ==> : ', response);
+        //   ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+        // }
+      } catch (error:any) {
+        // console.log('Erorr Sign ==> : ', error)
+        ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+      } finally {
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 500);
+      }
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={[styles.container, { backgroundColor: !isDarkMode ? Colors.veryLightGray : Colors.veryDarkGray }]}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
-      
       >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -99,7 +151,7 @@ export default function PasswordScreen() {
                 style={styles.passwordToggle}
                 onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                <IconSymbol 
+                <IconSymbol
                   lib="Ionicons"
                   name={showConfirmPassword ? 'eyeOffOutline' : 'eyeOutline'} 
                   size={24} 
@@ -108,7 +160,7 @@ export default function PasswordScreen() {
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.signInButton} disabled={isLoading}>
+            <TouchableOpacity style={styles.signInButton} disabled={isLoading} onPress={handleForgot}>
               {isLoading ? 
                 <ActivityIndicator size={'small'} color={Colors.background} /> 
               : 
