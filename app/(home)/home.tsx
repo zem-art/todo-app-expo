@@ -3,7 +3,7 @@ import styles from './styles';
 import { Container } from '@/components/Container';
 import ParallaxFlatList from "@/components/ParallaxFlatList";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Alert, Pressable, Text, View, Switch, VirtualizedList, FlatList, BackHandler, ToastAndroid } from 'react-native';
+import { Pressable, Text, View, Switch, VirtualizedList, FlatList, BackHandler, ToastAndroid } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/reducer-store';
