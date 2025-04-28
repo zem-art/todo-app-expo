@@ -52,6 +52,7 @@ export default function HistoryScreen() {
       let base_url = !!ConfigApiURL.env_url ?
         `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?temporary=true&page=${pageNumber}` :
         `/api/todo/${ConfigApiURL.prefix_url}/list?temporary=true&page=${pageNumber}`;
+      
       const response = await fetchApi(
         base_url,
         "GET",
@@ -100,8 +101,13 @@ export default function HistoryScreen() {
         Authorization: `Bearer ${token}`,
         "Content-Length": "0"
       };
+
+      let base_url = !!ConfigApiURL.env_url ? 
+        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/recovery/${params}/temporary` :
+        `/api/todo/${ConfigApiURL.prefix_url}/recovery/${params}/temporary`;
+
       const respons = await fetchApi(
-        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/recovery/${params}/temporary`,
+        base_url,
         "PATCH",
         {},
         additionalHeaders);

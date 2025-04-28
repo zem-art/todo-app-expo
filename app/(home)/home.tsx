@@ -36,19 +36,19 @@ export default function HomeScreen() {
   const [todos, setTodos] = useState<Array<ListTodo>>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
-  // filter state
+  // State for filter and sort
   const [filter, setFilter] = useState({
     status: 'all', // 'all', 'open', 'completed'
     order: 'newest', // 'newest', 'oldest'
   });
 
-  // Using the back handler
+  // Using the back handler to handle the back button press
   useBackHandler( isFocused, () => {
     console.log("Custom exit logic executed!");
     BackHandler.exitApp(); // Default exit action
   })
 
-  // Swict page detail
+  // Function to handle the press event on the card
   const onPressDetail = (parms?:any) => {
     router.push({
       pathname : '/(home)/details',
@@ -140,6 +140,7 @@ export default function HomeScreen() {
     return filteredTodos;
   };
 
+  // Apply filter to todos
   const filteredTodos = applyFilter(todos);
 
   return (
