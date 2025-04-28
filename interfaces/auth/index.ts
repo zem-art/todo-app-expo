@@ -22,6 +22,7 @@ export interface FormDataSignUpError {
 }
 
 export interface FormDataForgotPasswordPayload {
+  current_password?: string;
   password?: string;
   confirm_password?: string;
 }

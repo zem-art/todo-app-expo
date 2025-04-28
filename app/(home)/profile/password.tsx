@@ -20,14 +20,17 @@ export default function PasswordScreen() {
   const [isDarkMode, setIsDarkMode] = useState(isDark);
   const [formData, setFormData] = useState<FormDataForgotPasswordPayload>({
     password: '',
+    current_password : '',
     confirm_password: '',
   });
   const [formDataError, setFormDataError] = useState<FormDataForgotPasswordPayload>({
     password: '',
     confirm_password: '',
+    current_password : '',
   });
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
   // handle change input text
@@ -39,41 +42,38 @@ export default function PasswordScreen() {
   const forgotValidationSchema : ValidationSchema<FormDataForgotPasswordPayload> = {
     password: (value:any) => (!value ? "Password is required" : undefined),
     confirm_password: (value:any) => (!value ? "Confirm Password is required" : undefined),
+    current_password: (value:any) => (!value ? "Current Password is required" : undefined),
   };
 
   const handleForgot = async () => {
-    // Implement your login logic here
+    // Implement your logic here
     const isValid = validateForm(formData, forgotValidationSchema, setFormDataError);
     if (isValid) {
       try {
         setIsLoading(true)
         let base_url = !!ConfigApiURL.env_url ?
           `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password` :
-          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`;
+          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password`;
 
         const payload = {
-          email : '',
-          ...formData,
+          email : data.email,
+          current_password : formData.current_password,
+          update_password : formData.password,
         }
-        const data = await fetchApi(
+        const apiResponse = await fetchApi(
           base_url,
           'POST',
           payload,
         )
 
-        const response = data.response || data.data || undefined || null
-        // if(data.status_code >= 200 && data.status_code <= 204 && response.token) {
-        //   setLogin(true, response.token, data.response.data) 
-        //   ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
-        //   if(isChecked) {
-        //     saveRememberMe(formData)
-        //   } else {
-        //     await AsyncStorage.removeItem("remember_me");
-        //   }
-        // } else {
-        //   // console.log('Error Sign ==> : ', response);
-        //   ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
-        // }
+        const response = apiResponse.message || apiResponse.data || undefined || null
+        // console.log('Response Sign ==> : ', response);
+        if(apiResponse.status_code >= 200 && apiResponse.status_code <= 204) {
+          ToastAndroid.show(response, ToastAndroid.SHORT);
+        } else {
+          // console.log('Error Sign ==> : ', response);
+          ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+        }
       } catch (error:any) {
         // console.log('Erorr Sign ==> : ', error)
         ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
@@ -112,6 +112,30 @@ export default function PasswordScreen() {
           </View>
 
           <View style={styles.formContainer}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={[styles.input, styles.passwordInput]}
+                placeholder="Current Password"
+                value={formData.current_password}
+                onChangeText={(text) => handleInputChange('current_password', text)}
+                secureTextEntry={!showCurrentPassword}
+              />
+              {formDataError.current_password && 
+                <Text style={styles.textError}>{formDataError.current_password}</Text>
+              }
+              <TouchableOpacity
+                style={styles.passwordToggle}
+                onPress={() => setShowCurrentPassword(!showCurrentPassword)}
+                >
+                <IconSymbol 
+                lib="Ionicons"
+                name={showCurrentPassword ? 'eyeOffOutline' : 'eyeOutline'} 
+                size={24} 
+                color={Colors.drakGray}
+                />
+              </TouchableOpacity>
+            </View>
+
             <View style={styles.inputContainer}>
               <TextInput
                 style={[styles.input, styles.passwordInput]}
@@ -164,7 +188,7 @@ export default function PasswordScreen() {
               {isLoading ? 
                 <ActivityIndicator size={'small'} color={Colors.background} /> 
               : 
-              <Text style={styles.signInText}>SIGN UP</Text>
+                <Text style={styles.signInText}>upda{''}te</Text>
               }
             </TouchableOpacity>
           </View>
@@ -247,6 +271,7 @@ const styles = StyleSheet.create({
     color: Colors.background,
     fontSize: 16,
     fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
   signUpContainer: {
     flexDirection: 'row',
