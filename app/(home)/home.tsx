@@ -51,7 +51,7 @@ export default function HomeScreen() {
   // Function to handle the press event on the card
   const onPressDetail = (parms?:any) => {
     router.push({
-      pathname : '/(home)/details',
+      pathname : '/(home)/details/details',
       params : { ...parms }
     })
   }
