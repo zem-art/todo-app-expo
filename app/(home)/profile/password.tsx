@@ -1,17 +1,15 @@
 // PasswordScreen.tsx 
-import { IconSymbol } from '@/components/ui/IconSymbol';
+import React, { useState } from 'react';
+import { useRouter } from 'expo-router';
+import { useSelector } from 'react-redux';
 import { Colors } from '@/constants/Colors';
 import { ConfigApiURL } from '@/constants/Config';
-import { useAuth } from '@/context/auth-provider';
-import { FormDataForgotPasswordPayload } from '@/interfaces/auth';
 import { RootState } from '@/redux/reducer-store';
 import { fetchApi } from '@/utils/helpers/fetchApi.utils';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import { FormDataForgotPasswordPayload } from '@/interfaces/auth';
 import { validateForm, ValidationSchema } from '@/utils/validators/formData';
-import { useIsFocused } from '@react-navigation/native';
-import { Link, useRouter } from 'expo-router';
-import React, { useState } from 'react';
 import { View, Text, KeyboardAvoidingView, StyleSheet, Platform, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView, TextInput, Pressable, ToastAndroid } from 'react-native';
-import { useSelector } from 'react-redux';
 
 export default function PasswordScreen() {
   const router = useRouter();
