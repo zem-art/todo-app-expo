@@ -32,8 +32,8 @@ export default function ForgotPassword() {
   });
   const [isLoading, setIsLoading] = useState(false)
 
-  const signInValidationSchema : ValidationSchema<FormDataEmailPayload> = {
-    email: (value:any) => (!value ? "Email is required" : undefined),
+  const signInValidationSchema: ValidationSchema<FormDataEmailPayload> = {
+    email: (value: any) => (!value ? "Email is required" : undefined),
   };
 
   const handleForgotMail = async () => {
@@ -45,7 +45,12 @@ export default function ForgotPassword() {
         let base_url = !!ConfigApiURL.env_url ?
           `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in` :
           `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`;
-        
+
+        router.push({
+          pathname: "/otp-mail",
+          params: { email: formData.email }
+        });
+
         // const data = await fetchApi(
         //   base_url,
         //   'POST',
@@ -65,7 +70,7 @@ export default function ForgotPassword() {
         //   // console.log('Error Sign ==> : ', response);
         //   ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
         // }
-      } catch (error:any) {
+      } catch (error: any) {
         // console.log('Erorr Sign ==> : ', error)
         ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
       } finally {
@@ -84,61 +89,61 @@ export default function ForgotPassword() {
 
   return (
     <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.container}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
-        >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.content}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.titleText}>T O</Text>
-              <Text style={styles.titleText}>D O</Text>
-              <Text style={styles.titleText}>L I S T</Text>
-              <IconSymbol lib="Ionicons" name="checkboxOutline" size={24} color={Colors.primary} style={styles.checkIcon}/>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={styles.container}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.content}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.titleText}>T O</Text>
+            <Text style={styles.titleText}>D O</Text>
+            <Text style={styles.titleText}>L I S T</Text>
+            <IconSymbol lib="Ionicons" name="checkboxOutline" size={24} color={Colors.primary} style={styles.checkIcon} />
+          </View>
+
+          <View style={styles.formContainer}>
+            <View style={[styles.inputContainer, { marginBottom: 10 }]}>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                value={formData.email}
+                onChangeText={(text) => handleInputChange('email', text)}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={!isLoading}
+              />
+              {formDataError.email &&
+                <Text style={styles.textError}>{formDataError.email}</Text>
+              }
             </View>
 
-            <View style={styles.formContainer}>
-              <View style={[styles.inputContainer, { marginBottom: 10}]}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Email"
-                  value={formData.email}
-                  onChangeText={(text) => handleInputChange('email', text)}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  editable={!isLoading}
-                />
-                {formDataError.email && 
-                  <Text style={styles.textError}>{formDataError.email}</Text>
-                }
-              </View>
+            <View style={[styles.inputContainer, { paddingHorizontal: 7 }]}>
+              <Text style={[styles.textError, { fontSize: 12, color: Colors.mediumGray }]}>
+                * Please check the email you registered, we have sent an OTP code to reset your password.</Text>
+            </View>
 
-              <View style={[styles.inputContainer, { paddingHorizontal: 7}]}>
-                <Text style={[styles.textError, { fontSize : 12, color : Colors.mediumGray }]}>
-                  * Please check the email you registered, we have sent an OTP code to reset your password.</Text>
-              </View>
-              
-              <View style={[styles.inputContainer]}>
-                <View style={{ flexDirection : 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <TouchableOpacity disabled={isLoading} style={[styles.signInButton, { backgroundColor : Colors.drakGray}]} onPress={() => router.back()}>
-                    <Text style={styles.signInText}>bac{''}k</Text>
-                  </TouchableOpacity>
+            <View style={[styles.inputContainer]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <TouchableOpacity disabled={isLoading} style={[styles.signInButton, { backgroundColor: Colors.drakGray }]} onPress={() => router.back()}>
+                  <Text style={styles.signInText}>bac{''}k</Text>
+                </TouchableOpacity>
 
-                  <TouchableOpacity disabled={isLoading} style={styles.signInButton} onPress={handleForgotMail}>
-                    {isLoading ?
-                      <ActivityIndicator size={'small'} color={Colors.background} /> 
+                <TouchableOpacity disabled={isLoading} style={styles.signInButton} onPress={handleForgotMail}>
+                  {isLoading ?
+                    <ActivityIndicator size={'small'} color={Colors.background} />
                     :
-                      <Text style={styles.signInText}>send</Text>
-                    }
-                  </TouchableOpacity>
-                </View>
+                    <Text style={styles.signInText}>send</Text>
+                  }
+                </TouchableOpacity>
               </View>
             </View>
           </View>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -198,11 +203,11 @@ const styles = StyleSheet.create({
     right: 15,
     top: 15,
   },
-  rememberMeForgotPass : { 
+  rememberMeForgotPass: {
     flexDirection: 'row',
-    justifyContent:'space-between'
+    justifyContent: 'space-between'
   },
-  checkbox : {
+  checkbox: {
     marginRight: 10,
   },
   forgotPassword: {
@@ -228,7 +233,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textTransform: 'uppercase',
   },
-  textError : {
+  textError: {
     color: Colors.error,
     marginTop: 5,
   },
