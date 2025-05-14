@@ -28,7 +28,7 @@ import { FormDataSignInError, FormDataSignInPayload } from '@/interfaces/auth';
 import { validateForm, ValidationSchema } from '@/utils/validators/formData';
 
 
-export default function SignIn() {
+export default function ForgotPassword() {
   const { setLogin } = useAuth();
   const isFocused = useIsFocused();
   const [formData, setFormData] = useState<FormDataSignInPayload>({
@@ -41,7 +41,6 @@ export default function SignIn() {
   });
   const [isChecked, setChecked] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const signInValidationSchema : ValidationSchema<FormDataSignInError> = {
     email: (value:any) => (!value ? "Email is required" : undefined),
@@ -54,28 +53,28 @@ export default function SignIn() {
     if (isValid) {
       try {
         setIsLoading(true)
-        let base_url = !!ConfigApiURL.env_url ?
-          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in` :
-          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`;
-        const data = await fetchApi(
-          base_url,
-          'POST',
-          formData,
-        )
+        // let base_url = !!ConfigApiURL.env_url ?
+        //   `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in` :
+        //   `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`;
+        // const data = await fetchApi(
+        //   base_url,
+        //   'POST',
+        //   formData,
+        // )
 
-        const response = data.response || data.data || undefined || null
-        if(data.status_code >= 200 && data.status_code <= 204 && response.token) {
-          setLogin(true, response.token, data.response.data) 
-          ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
-          if(isChecked) {
-            saveRememberMe(formData)
-          } else {
-            await AsyncStorage.removeItem("remember_me");
-          }
-        } else {
-          // console.log('Error Sign ==> : ', response);
-          ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
-        }
+        // const response = data.response || data.data || undefined || null
+        // if(data.status_code >= 200 && data.status_code <= 204 && response.token) {
+        //   setLogin(true, response.token, data.response.data) 
+        //   ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
+        //   if(isChecked) {
+        //     saveRememberMe(formData)
+        //   } else {
+        //     await AsyncStorage.removeItem("remember_me");
+        //   }
+        // } else {
+        //   // console.log('Error Sign ==> : ', response);
+        //   ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+        // }
       } catch (error:any) {
         // console.log('Erorr Sign ==> : ', error)
         ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
@@ -110,19 +109,6 @@ export default function SignIn() {
     return value ? JSON.parse(value) : {};
   };
 
-  useEffect(() => {
-    getRememberMe().then((data:any) => {
-      try {
-        if (data.email && data.password) {
-          setFormData(data)
-          setChecked(true);
-        }
-      } catch (error) {
-        console.log('Error parsing remember me data:', error);
-      }
-    });
-  }, []);
-
   return (
     <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -143,7 +129,7 @@ export default function SignIn() {
             </View>
 
             <View style={styles.formContainer}>
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, { marginBottom: 10}]}>
                 <TextInput
                   style={styles.input}
                   placeholder="Email"
@@ -158,59 +144,28 @@ export default function SignIn() {
                 }
               </View>
 
-              <View style={styles.inputContainer}>
-                <TextInput
-                  style={[styles.input, styles.passwordInput]}
-                  placeholder="Password"
-                  value={formData.password}
-                  onChangeText={(text) => handleInputChange('password', text)}
-                  secureTextEntry={!showPassword}
-                  editable={!isLoading}
-                />
-                {formDataError.password && 
-                  <Text style={styles.textError}>{formDataError.password}</Text>
-                }
-                <TouchableOpacity
-                  style={styles.passwordToggle}
-                  onPress={() => setShowPassword(!showPassword)}
-                  >
-                  <IconSymbol 
-                    lib="Ionicons"
-                    name={showPassword ? 'eyeOffOutline' : 'eyeOutline'} 
-                    size={24} 
-                    color={Colors.drakGray}
-                  />
-                </TouchableOpacity>
+              <View style={[styles.inputContainer, { paddingHorizontal: 7}]}>
+                <Text style={[styles.textError, { fontSize : 12, color : Colors.mediumGray }]}>*Please check the email you registered, we have sent a link to reset your password.</Text>
               </View>
-
-              <View style={styles.rememberMeForgotPass}>
-                <TouchableOpacity style={[styles.forgotPassword, { flexDirection : 'row'}]} onPress={() => setChecked(!isChecked)}>
-                  <Checkbox style={styles.checkbox} value={isChecked} color={isChecked ? Colors.primary : undefined}/>
-                  <Text style={styles.forgotPasswordText}>remember{' '}me</Text>
-                </TouchableOpacity>
-
-                <Link href='/forgot-password' asChild>
-                  <TouchableOpacity style={styles.forgotPassword}>
-                    <Text style={styles.forgotPasswordText}>forgot{' '}password?</Text>
+              
+              <View style={[styles.inputContainer]}>
+                <View style={{ flexDirection : 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <TouchableOpacity disabled={isLoading} style={[styles.signInButton, { backgroundColor : Colors.drakGray}]} onPress={handleLogin}>
+                    {isLoading ?
+                      <ActivityIndicator size={'small'} color={Colors.background} /> 
+                    :
+                      <Text style={styles.signInText}>bac{''}k</Text>
+                    }
                   </TouchableOpacity>
-                </Link>
-              </View>
 
-              <TouchableOpacity disabled={isLoading} style={styles.signInButton} onPress={handleLogin}>
-                {isLoading ?
-                  <ActivityIndicator size={'small'} color={Colors.background} /> 
-                :
-                  <Text style={styles.signInText}>SIGN IN</Text>
-                }
-              </TouchableOpacity>
-
-              <View style={styles.signUpContainer}>
-                <Text style={styles.signUpText}>Don't have an account? </Text>
-                <Link href='/sign-up' asChild>
-                  <TouchableOpacity>
-                    <Text style={styles.signUpLink}>Sign up</Text>
+                  <TouchableOpacity disabled={isLoading} style={styles.signInButton} onPress={handleLogin}>
+                    {isLoading ?
+                      <ActivityIndicator size={'small'} color={Colors.background} /> 
+                    :
+                      <Text style={styles.signInText}>send</Text>
+                    }
                   </TouchableOpacity>
-                </Link>
+                </View>
               </View>
             </View>
           </View>
@@ -295,24 +250,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 20,
+    width: '48%',
   },
   signInText: {
     color: Colors.background,
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  signUpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  signUpText: {
-    color: Colors.drakGray,
-    fontSize: 14,
-  },
-  signUpLink: {
-    color: Colors.primary,
-    fontSize: 14,
-    fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
   textError : {
     color: Colors.error,
