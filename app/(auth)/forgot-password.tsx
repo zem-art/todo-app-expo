@@ -11,51 +11,41 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  BackHandler,
   ActivityIndicator,
   ToastAndroid,
 } from 'react-native';
-import Checkbox from 'expo-checkbox';
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Colors } from '@/constants/Colors';
-import { Link } from 'expo-router';
-import { useIsFocused } from '@react-navigation/native';
-import { useDoubleBackPress } from '@/utils/helpers/useBackHandler.utils';
+import { Link, router } from 'expo-router';
 import { useAuth } from '@/context/auth-provider';
 import { fetchApi } from '@/utils/helpers/fetchApi.utils';
 import { ConfigApiURL } from '@/constants/Config';
-import { FormDataSignInError, FormDataSignInPayload } from '@/interfaces/auth';
+import { FormDataEmailPayload } from '@/interfaces/auth';
 import { validateForm, ValidationSchema } from '@/utils/validators/formData';
 
-
 export default function ForgotPassword() {
-  const { setLogin } = useAuth();
-  const isFocused = useIsFocused();
-  const [formData, setFormData] = useState<FormDataSignInPayload>({
+  const [formData, setFormData] = useState<FormDataEmailPayload>({
     email: '',
-    password: '',
   });
-  const [formDataError, setFormDataError] = useState<FormDataSignInError>({
+  const [formDataError, setFormDataError] = useState<FormDataEmailPayload>({
     email: '',
-    password: '',
   });
-  const [isChecked, setChecked] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false)
 
-  const signInValidationSchema : ValidationSchema<FormDataSignInError> = {
+  const signInValidationSchema : ValidationSchema<FormDataEmailPayload> = {
     email: (value:any) => (!value ? "Email is required" : undefined),
-    password: (value:any) => (!value ? "Password is required" : undefined),
   };
 
-  const handleLogin = async () => {
+  const handleForgotMail = async () => {
     // Implement your login logic here
     const isValid = validateForm(formData, signInValidationSchema, setFormDataError);
     if (isValid) {
       try {
         setIsLoading(true)
-        // let base_url = !!ConfigApiURL.env_url ?
-        //   `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in` :
-        //   `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`;
+        let base_url = !!ConfigApiURL.env_url ?
+          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in` :
+          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`;
+        
         // const data = await fetchApi(
         //   base_url,
         //   'POST',
@@ -86,27 +76,10 @@ export default function ForgotPassword() {
     }
   };
 
-  // Using the back handler
-  useDoubleBackPress(isFocused, () => {
-    console.log("Custom exit logic executed!");
-    BackHandler.exitApp(); // Default exit action
-  });
-
   // handle change input text
-  const handleInputChange = (field: keyof FormDataSignInPayload, value: string) => {
+  const handleInputChange = (field: keyof FormDataEmailPayload, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setFormDataError({})
-  };
-
-  // handle remember me
-  const saveRememberMe = async (value:any) => {
-    await AsyncStorage.setItem("remember_me", JSON.stringify(value));
-  };
-
-  // handle get data in remember me
-  const getRememberMe = async () => {
-    const value = await AsyncStorage.getItem("remember_me");
-    return value ? JSON.parse(value) : {};
   };
 
   return (
@@ -145,20 +118,17 @@ export default function ForgotPassword() {
               </View>
 
               <View style={[styles.inputContainer, { paddingHorizontal: 7}]}>
-                <Text style={[styles.textError, { fontSize : 12, color : Colors.mediumGray }]}>*Please check the email you registered, we have sent a link to reset your password.</Text>
+                <Text style={[styles.textError, { fontSize : 12, color : Colors.mediumGray }]}>
+                  * Please check the email you registered, we have sent an OTP code to reset your password.</Text>
               </View>
               
               <View style={[styles.inputContainer]}>
                 <View style={{ flexDirection : 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <TouchableOpacity disabled={isLoading} style={[styles.signInButton, { backgroundColor : Colors.drakGray}]} onPress={handleLogin}>
-                    {isLoading ?
-                      <ActivityIndicator size={'small'} color={Colors.background} /> 
-                    :
-                      <Text style={styles.signInText}>bac{''}k</Text>
-                    }
+                  <TouchableOpacity disabled={isLoading} style={[styles.signInButton, { backgroundColor : Colors.drakGray}]} onPress={() => router.back()}>
+                    <Text style={styles.signInText}>bac{''}k</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity disabled={isLoading} style={styles.signInButton} onPress={handleLogin}>
+                  <TouchableOpacity disabled={isLoading} style={styles.signInButton} onPress={handleForgotMail}>
                     {isLoading ?
                       <ActivityIndicator size={'small'} color={Colors.background} /> 
                     :

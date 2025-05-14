@@ -26,3 +26,7 @@ export interface FormDataForgotPasswordPayload {
   password?: string;
   confirm_password?: string;
 }
+
+export interface FormDataEmailPayload {
+  email?: string;
+}
