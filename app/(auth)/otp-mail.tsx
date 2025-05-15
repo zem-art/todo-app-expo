@@ -11,7 +11,7 @@ import {
     Dimensions,
     ActivityIndicator,
     NativeSyntheticEvent,
-    TextInputKeyPressEventData
+    TextInputKeyPressEventData,
 } from "react-native";
 import { ToastAndroid } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -23,7 +23,7 @@ export default function OtpForm() {
     const [otp, setOtp] = useState(Array(6).fill(""));
     const [isLoading, setIsLoading] = useState(false);
     const [otpError, setOtpError] = useState("");
-    const { email } =  useLocalSearchParams();
+    const { email } = useLocalSearchParams();
     const inputsRef = useRef<(TextInput | null)[]>([]);
     const router = useRouter();
     const { formatTime, secondsRemaining, start, isActive } = useCountdown(60); // 180 detik = 3 menit
@@ -42,12 +42,14 @@ export default function OtpForm() {
         }
     };
 
-    const handleKeyPress = (e: NativeSyntheticEvent<TextInputKeyPressEventData>, index: number) => {
-        if (e.nativeEvent.key === 'Backspace' && otp[index] === '' && index > 0) {
+    const handleKeyPress = (
+        e: NativeSyntheticEvent<TextInputKeyPressEventData>,
+        index: number
+    ) => {
+        if (e.nativeEvent.key === "Backspace" && otp[index] === "" && index > 0) {
             inputsRef.current[index - 1]?.focus();
         }
     };
-
 
     const handleSubmit = () => {
         const code = otp.join("");
@@ -60,6 +62,14 @@ export default function OtpForm() {
             setIsLoading(true);
             setOtpError("");
             // Kirim OTP ke backend untuk verifikasi
+
+            router.push({
+                pathname: "/password-no-auth",
+                params: {
+                    email: email,
+                },
+            });
+
             // Contoh: await verifyOtp(code);
             ToastAndroid.show(`Kode OTP: ${code}`, ToastAndroid.SHORT);
         } catch (error) {
@@ -83,9 +93,15 @@ export default function OtpForm() {
             >
                 <View style={styles.content}>
                     <View style={styles.titleContainer}>
-                        <Text style={[styles.titleText, { fontSize: 50, marginBottom: 0 }]}>T O</Text>
-                        <Text style={[styles.titleText, { fontSize: 50, marginBottom: 0 }]}>D O</Text>
-                        <Text style={[styles.titleText, { fontSize: 50, marginBottom: 0 }]}>L I S T</Text>
+                        <Text style={[styles.titleText, { fontSize: 50, marginBottom: 0 }]}>
+                            T O
+                        </Text>
+                        <Text style={[styles.titleText, { fontSize: 50, marginBottom: 0 }]}>
+                            D O
+                        </Text>
+                        <Text style={[styles.titleText, { fontSize: 50, marginBottom: 0 }]}>
+                            L I S T
+                        </Text>
                         <IconSymbol
                             lib="Ionicons"
                             name="checkboxOutline"
@@ -94,7 +110,7 @@ export default function OtpForm() {
                             style={styles.checkIcon}
                         />
                     </View>
-                    <Text style={[styles.titleText]}>Masukkan Kode OTP</Text>
+                    <Text style={[styles.titleText]}>Enter OTP Code</Text>
 
                     <View style={styles.otpContainer}>
                         {otp.map((digit, index) => (
@@ -122,20 +138,36 @@ export default function OtpForm() {
                         {isLoading ? (
                             <ActivityIndicator size={"small"} color={Colors.background} />
                         ) : (
-                            <Text style={styles.signInText}>verifikasi</Text>
+                            <Text style={styles.signInText}>verification</Text>
                         )}
                     </TouchableOpacity>
 
                     <View style={[styles.inputContainer, { paddingHorizontal: 7 }]}>
-                        <Text style={[styles.textError, { fontSize: 12, color: Colors.mediumGray }]}>
-                        * Haven't received the email ? Please try resending to get the OTP code.
+                        <Text
+                            style={[
+                                styles.textError,
+                                { fontSize: 12, color: Colors.mediumGray },
+                            ]}
+                        >
+                            * Haven't received the email ? Please try resending to get the OTP
+                            code.
                         </Text>
-                        <Text style={[styles.textError, { color: Colors.error, fontSize : 20}]}>
+                        <Text
+                            style={[styles.textError, { color: Colors.error, fontSize: 20 }]}
+                        >
                             {formatTime()}
                         </Text>
-                        <TouchableOpacity disabled={isActive} onPress={start} style={{ alignItems: "center", justifyContent : "center"}}>
-                            <Text style={{ color: Colors.primary }}>Resend</Text>
-                        </TouchableOpacity>
+                        {
+                            !isActive && (
+                                <TouchableOpacity
+                                    disabled={isActive}
+                                    onPress={start}
+                                    style={styles.buttonResend}
+                                >
+                                    <Text style={{ color: Colors.background }}>Resend</Text>
+                                </TouchableOpacity>
+                            )
+                        }
                     </View>
                 </View>
             </ScrollView>
@@ -192,7 +224,7 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         marginTop: 15,
-        position: 'relative',
+        position: "relative",
     },
     signInButton: {
         backgroundColor: Colors.primary,
@@ -214,5 +246,14 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
+    },
+    buttonResend: {
+        alignSelf: "center",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: Colors.primary,
+        padding: 10,
+        width: 100,
+        borderRadius: 10,
     },
 });

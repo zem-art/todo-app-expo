@@ -14,6 +14,7 @@ export default function AuthLayout() {
       <Stack.Screen name="sign-up" options={{ title: "Sign Up" }}/>
       <Stack.Screen name="forgot-password" options={{ title: "Forgot Password" }}/>
       <Stack.Screen name="otp-mail" options={{ title: "Otp Mail" }}/>
+      <Stack.Screen name="password-no-auth" options={{ title: "Password No Auth" }}/>
     </Stack>
   );
 }
