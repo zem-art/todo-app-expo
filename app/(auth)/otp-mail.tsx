@@ -11,19 +11,19 @@ import {
     Dimensions,
     ActivityIndicator,
     NativeSyntheticEvent,
-    TextInputKeyPressEventData,
-    Button,
+    TextInputKeyPressEventData
 } from "react-native";
 import { ToastAndroid } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useCountdown } from "@/hooks/useCountDown";
 
-export default function OTPForm() {
+export default function OtpForm() {
     const [otp, setOtp] = useState(Array(6).fill(""));
     const [isLoading, setIsLoading] = useState(false);
     const [otpError, setOtpError] = useState("");
+    const { email } =  useLocalSearchParams();
     const inputsRef = useRef<(TextInput | null)[]>([]);
     const router = useRouter();
     const { formatTime, secondsRemaining, start, isActive } = useCountdown(60); // 180 detik = 3 menit
@@ -99,6 +99,7 @@ export default function OTPForm() {
                     <View style={styles.otpContainer}>
                         {otp.map((digit, index) => (
                             <TextInput
+                                key={index}
                                 ref={(ref) => (inputsRef.current[index] = ref)}
                                 value={otp[index]}
                                 onChangeText={(text) => handleChange(text, index)}
