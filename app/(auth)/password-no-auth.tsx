@@ -7,9 +7,12 @@ import { fetchApi } from '@/utils/helpers/fetchApi.utils';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { FormDataForgotPasswordPayload } from '@/interfaces/auth';
 import { validateForm, ValidationSchema } from '@/utils/validators/formData';
-import { View, Text, KeyboardAvoidingView, StyleSheet, Platform, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView, TextInput, Pressable, ToastAndroid } from 'react-native';
+import { View, Text, KeyboardAvoidingView, StyleSheet, Platform, TouchableOpacity, ActivityIndicator, Dimensions, ScrollView, TextInput, Pressable, ToastAndroid, BackHandler } from 'react-native';
+import { useDoubleBackPress } from '@/utils/helpers/useBackHandler.utils';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function PasswordScreenNoAuth() {
+  const isFocused = useIsFocused();
   const router = useRouter();
   const [formData, setFormData] = useState<FormDataForgotPasswordPayload>({
     password: '',
@@ -77,6 +80,12 @@ export default function PasswordScreenNoAuth() {
       }
     }
   };
+
+  // Using the back handler
+  useDoubleBackPress(isFocused, () => {
+      console.log("Custom exit logic executed!");
+      BackHandler.exitApp(); // Default exit action
+  });
 
   return (
     <KeyboardAvoidingView

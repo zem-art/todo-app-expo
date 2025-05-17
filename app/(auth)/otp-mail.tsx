@@ -58,7 +58,7 @@ export default function OtpForm() {
         }
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const code = otp.join("");
         if (code.length < 6) {
             setOtpError("OTP harus terdiri dari 6 digit angka.");
@@ -70,15 +70,34 @@ export default function OtpForm() {
             setOtpError("");
             // Kirim OTP ke backend untuk verifikasi
 
-            router.push({
-                pathname: "/password-no-auth",
-                params: {
-                    email: email,
-                },
-            });
+            let base_url = !!ConfigApiURL.env_url ?
+                `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/verify_code_otp` :
+                `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/verify_code_otp`;
+            
+            const formData = {
+                email: email,
+                otp_code : code,
+            }
+            const data = await fetchApi(
+                base_url,
+                'POST',
+                formData,
+            )
 
-            // Contoh: await verifyOtp(code);
-            ToastAndroid.show(`Kode OTP: ${code}`, ToastAndroid.SHORT);
+            const response = data.response || data.data || undefined || null
+            if(data.status_code >= 200 && data.status_code <= 204) {
+                router.push({
+                    pathname: "/password-no-auth",
+                    params: {
+                        email: email,
+                    },
+                });
+                // Contoh: await verifyOtp(code);
+                ToastAndroid.show(`OTP Code Successfully Verified : ${code}`, ToastAndroid.SHORT);
+            } else {
+                console.log('Error : ', response);
+                ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+            }
         } catch (error) {
             ToastAndroid.show("Gagal verifikasi OTP", ToastAndroid.SHORT);
         } finally {
@@ -110,8 +129,6 @@ export default function OtpForm() {
             'POST',
             formData,
           )
-  
-          console.log('Response : ', data);
           
           const response = data.response || data.data || undefined || null
           if(data.status_code >= 200 && data.status_code <= 204) {
