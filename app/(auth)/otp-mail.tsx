@@ -12,21 +12,28 @@ import {
     ActivityIndicator,
     NativeSyntheticEvent,
     TextInputKeyPressEventData,
+    BackHandler,
 } from "react-native";
 import { ToastAndroid } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useCountdown } from "@/hooks/useCountDown";
+import { useDoubleBackPress } from "@/utils/helpers/useBackHandler.utils";
+import { useIsFocused } from "@react-navigation/native";
+import { validateForm } from "@/utils/validators/formData";
+import { ConfigApiURL } from "@/constants/Config";
+import { fetchApi } from "@/utils/helpers/fetchApi.utils";
 
 export default function OtpForm() {
+    const isFocused = useIsFocused();
     const [otp, setOtp] = useState(Array(6).fill(""));
     const [isLoading, setIsLoading] = useState(false);
     const [otpError, setOtpError] = useState("");
     const { email } = useLocalSearchParams();
     const inputsRef = useRef<(TextInput | null)[]>([]);
     const router = useRouter();
-    const { formatTime, secondsRemaining, start, isActive } = useCountdown(60); // 180 detik = 3 menit
+    const { formatTime, secondsRemaining, start, isActive } = useCountdown(170); // 180 detik = 3 menit
 
     const handleChange = (text: string, index: number) => {
         if (/^\d?$/.test(text)) {
@@ -78,6 +85,47 @@ export default function OtpForm() {
             setTimeout(() => {
                 setIsLoading(false);
             }, 500);
+        }
+    };
+
+    // Using the back handler
+    useDoubleBackPress(isFocused, () => {
+        console.log("Custom exit logic executed!");
+        BackHandler.exitApp(); // Default exit action
+    });
+
+    const handleResendOtp = async () => {
+        // Implement your login logic here
+        start();
+        try {
+          let base_url = !!ConfigApiURL.env_url ?
+            `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password_email` :
+            `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password_email`;
+        
+          const formData = {
+            email: email,
+          }
+          const data = await fetchApi(
+            base_url,
+            'POST',
+            formData,
+          )
+  
+          console.log('Response : ', data);
+          
+          const response = data.response || data.data || undefined || null
+          if(data.status_code >= 200 && data.status_code <= 204) {
+            ToastAndroid.show('Successfully sent email back' , ToastAndroid.SHORT);
+          } else {
+            console.log('Error : ', response);
+            ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+          }
+        } catch (error: any) {
+          // console.log('Erorr Sign ==> : ', error)
+          ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+        } finally {
+          setTimeout(() => {
+          }, 500);
         }
     };
 
@@ -161,7 +209,7 @@ export default function OtpForm() {
                             !isActive && (
                                 <TouchableOpacity
                                     disabled={isActive}
-                                    onPress={start}
+                                    onPress={handleResendOtp}
                                     style={styles.buttonResend}
                                 >
                                     <Text style={{ color: Colors.background }}>Resend</Text>

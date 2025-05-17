@@ -23,7 +23,7 @@ import { validateForm, ValidationSchema } from '@/utils/validators/formData';
 
 export default function ForgotPassword() {
   const [formData, setFormData] = useState<FormDataEmailPayload>({
-    email: '',
+    email: 't06496253@gmail.com',
   });
   const [formDataError, setFormDataError] = useState<FormDataEmailPayload>({
     email: '',
@@ -41,33 +41,27 @@ export default function ForgotPassword() {
       try {
         setIsLoading(true)
         let base_url = !!ConfigApiURL.env_url ?
-          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in` :
-          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`;
+          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password_email` :
+          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password_email`;
 
-        router.push({
-          pathname: "/otp-mail",
-          params: { email: formData.email }
-        });
+        const data = await fetchApi(
+          base_url,
+          'POST',
+          formData,
+        )
 
-        // const data = await fetchApi(
-        //   base_url,
-        //   'POST',
-        //   formData,
-        // )
-
-        // const response = data.response || data.data || undefined || null
-        // if(data.status_code >= 200 && data.status_code <= 204 && response.token) {
-        //   setLogin(true, response.token, data.response.data) 
-        //   ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
-        //   if(isChecked) {
-        //     saveRememberMe(formData)
-        //   } else {
-        //     await AsyncStorage.removeItem("remember_me");
-        //   }
-        // } else {
-        //   // console.log('Error Sign ==> : ', response);
-        //   ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
-        // }
+        console.log('Response : ', data);
+        
+        const response = data.response || data.data || undefined || null
+        if(data.status_code >= 200 && data.status_code <= 204) {
+          router.push({
+            pathname: "/otp-mail",
+            params: { email: formData.email }
+          });
+        } else {
+          console.log('Error : ', response);
+          ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+        }
       } catch (error: any) {
         // console.log('Erorr Sign ==> : ', error)
         ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
