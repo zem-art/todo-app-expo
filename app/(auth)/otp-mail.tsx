@@ -29,6 +29,7 @@ export default function OtpForm() {
     const isFocused = useIsFocused();
     const [otp, setOtp] = useState(Array(6).fill(""));
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingSend, setisLoadingSend] = useState(false)
     const [otpError, setOtpError] = useState("");
     const { email } = useLocalSearchParams();
     const inputsRef = useRef<(TextInput | null)[]>([]);
@@ -116,33 +117,35 @@ export default function OtpForm() {
     const handleResendOtp = async () => {
         // Implement your login logic here
         try {
-          let base_url = !!ConfigApiURL.env_url ?
-            `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/send_otp_email` :
-            `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/send_otp_email`;
-        
-          const formData = {
-            email: email,
-          }
-          const data = await fetchApi(
-            base_url,
-            'POST',
-            formData,
-          )
-          
-          const response = data.response || data.data || undefined || null
-          if(data.status_code >= 200 && data.status_code <= 204) {
-            ToastAndroid.show('Successfully sent email back' , ToastAndroid.SHORT);
-            start();
-          } else {
-            console.log('Error : ', response);
-            ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
-          }
+            setisLoadingSend(true);
+            let base_url = !!ConfigApiURL.env_url ?
+                `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/send_otp_email` :
+                `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/send_otp_email`;
+            
+            const formData = {
+                email: email,
+            }
+            const data = await fetchApi(
+                base_url,
+                'POST',
+                formData,
+            )
+            
+            const response = data.response || data.data || undefined || null
+            if(data.status_code >= 200 && data.status_code <= 204) {
+                ToastAndroid.show('Successfully sent email back' , ToastAndroid.SHORT);
+                start();
+            } else {
+                console.log('Error : ', response);
+                ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+            }
         } catch (error: any) {
-          // console.log('Erorr Sign ==> : ', error)
-          ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+            // console.log('Erorr Sign ==> : ', error)
+            ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
         } finally {
-          setTimeout(() => {
-          }, 500);
+            setTimeout(() => {
+                setisLoadingSend(false);
+            }, 500);
         }
     };
 
@@ -225,7 +228,7 @@ export default function OtpForm() {
                         {
                             !isActive && (
                                 <TouchableOpacity
-                                    disabled={isActive}
+                                    disabled={isLoadingSend}
                                     onPress={handleResendOtp}
                                     style={styles.buttonResend}
                                 >
