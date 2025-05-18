@@ -185,7 +185,7 @@ export default function SignIn() {
 
               <View style={styles.rememberMeForgotPass}>
                 <TouchableOpacity style={[styles.forgotPassword, { flexDirection : 'row'}]} onPress={() => setChecked(!isChecked)}>
-                  <Checkbox style={styles.checkbox} value={isChecked} color={isChecked ? Colors.primary : undefined}/>
+                  <Checkbox style={styles.checkbox} value={isChecked} onValueChange={() => setChecked(!isChecked)} color={isChecked ? Colors.primary : undefined}/>
                   <Text style={styles.forgotPasswordText}>remember{' '}me</Text>
                 </TouchableOpacity>
 
