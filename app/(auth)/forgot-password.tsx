@@ -23,7 +23,7 @@ import { validateForm, ValidationSchema } from '@/utils/validators/formData';
 
 export default function ForgotPassword() {
   const [formData, setFormData] = useState<FormDataEmailPayload>({
-    email: 't06496253@gmail.com',
+    email: '',
   });
   const [formDataError, setFormDataError] = useState<FormDataEmailPayload>({
     email: '',
@@ -41,16 +41,14 @@ export default function ForgotPassword() {
       try {
         setIsLoading(true)
         let base_url = !!ConfigApiURL.env_url ?
-          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password_email` :
-          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password_email`;
+          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/send_otp_email` :
+          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/send_otp_email`;
 
         const data = await fetchApi(
           base_url,
           'POST',
           formData,
         )
-
-        console.log('Response : ', data);
         
         const response = data.response || data.data || undefined || null
         if(data.status_code >= 200 && data.status_code <= 204) {

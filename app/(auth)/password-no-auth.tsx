@@ -1,6 +1,6 @@
 // PasswordScreen.tsx 
 import React, { useState } from 'react';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { ConfigApiURL } from '@/constants/Config';
 import { fetchApi } from '@/utils/helpers/fetchApi.utils';
@@ -14,9 +14,10 @@ import { useIsFocused } from '@react-navigation/native';
 export default function PasswordScreenNoAuth() {
   const isFocused = useIsFocused();
   const router = useRouter();
+  const { email } = useLocalSearchParams();
   const [formData, setFormData] = useState<FormDataForgotPasswordPayload>({
     password: '',
-    current_password : '',
+    confirm_password : '',
   });
   const [formDataError, setFormDataError] = useState<FormDataForgotPasswordPayload>({
     password: '',
@@ -40,34 +41,37 @@ export default function PasswordScreenNoAuth() {
   const handleForgot = async () => {
     // Implement your logic here
     const isValid = validateForm(formData, forgotValidationSchema, setFormDataError);
+    if(formData.password !== formData.confirm_password) {
+      setFormDataError((prev) => ({ ...prev, confirm_password: "Password and Confirm Password do not match" }));
+      return;
+    }
     if (isValid) {
       try {
-        setIsLoading(true)
+        setIsLoading(true);
         let base_url = !!ConfigApiURL.env_url ?
-          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password` :
-          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password`;
+          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/reset_password` :
+          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/reset_password`;
 
         const payload = {
-          email : '',
-          current_password : formData.current_password,
+          email : email,
           update_password : formData.password,
         }
 
-        // const apiResponse = await fetchApi(
-        //   base_url,
-        //   'POST',
-        //   payload,
-        // )
+        const apiResponse = await fetchApi(
+          base_url,
+          'POST',
+          payload,
+        )
 
-        // const response = apiResponse.message || apiResponse.data || undefined || null
-        // // console.log('Response Sign ==> : ', response);
-        // if(apiResponse.status_code >= 200 && apiResponse.status_code <= 204) {
-        //   ToastAndroid.show(response, ToastAndroid.SHORT);
-        //   router.push({ pathname : '/settings' });
-        // } else {
-        //   // console.log('Error Sign ==> : ', response);
-        //   ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
-        // }
+        const response = apiResponse.message || apiResponse.data || undefined || null
+        // console.log('Response api ==> : ', apiResponse);
+        if(apiResponse.status_code >= 200 && apiResponse.status_code <= 204) {
+          ToastAndroid.show(response, ToastAndroid.SHORT);
+          router.replace('/sign-in')
+        } else {
+          // console.log('Error Sign ==> : ', response);
+          ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+        }
 
       } catch (error:any) {
         // console.log('Erorr Sign ==> : ', error)
@@ -75,7 +79,6 @@ export default function PasswordScreenNoAuth() {
       } finally {
         setTimeout(() => {
           setIsLoading(false)
-          router.replace('/sign-in')
         }, 500);
       }
     }
@@ -83,8 +86,8 @@ export default function PasswordScreenNoAuth() {
 
   // Using the back handler
   useDoubleBackPress(isFocused, () => {
-      console.log("Custom exit logic executed!");
-      BackHandler.exitApp(); // Default exit action
+    // console.log("Custom exit logic executed!");
+    BackHandler.exitApp(); // Default exit action
   });
 
   return (
