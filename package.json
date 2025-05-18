@@ -10,6 +10,8 @@
     "build:development": "eas build --platform android --profile development",
     "build:preview": "eas build --platform android --profile preview",
     "android": "expo start --android",
+    "create:branch:preview": "eas branch:create preview",
+    "create:branch:prod": "eas branch:create production",
     "dev": "expo-router dev",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -58,7 +60,8 @@
     "react-native-webview": "13.12.2",
     "react-redux": "^9.1.2",
     "expo-dev-client": "~5.0.19",
-    "@react-native-picker/picker": "2.9.0"
+    "@react-native-picker/picker": "2.9.0",
+    "expo-updates": "~0.27.4"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

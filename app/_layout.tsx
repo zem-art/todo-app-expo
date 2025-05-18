@@ -13,6 +13,8 @@ import { useNetInfo } from "@react-native-community/netinfo";
 import { useNetworkState } from 'expo-network';
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Colors } from "@/constants/Colors";
+import { Alert } from "react-native";
+import * as Updates from 'expo-updates';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -21,6 +23,34 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
+
+  useEffect(() => {
+    const checkForOTAUpdate = async () => {
+      try {
+        const update = await Updates.checkForUpdateAsync();
+
+        if (update.isAvailable) {
+          await Updates.fetchUpdateAsync();
+          Alert.alert(
+            'Pembaruan Tersedia',
+            'Aplikasi akan dimuat ulang untuk menerapkan pembaruan.',
+            [
+              {
+                text: 'Oke',
+                onPress: async () => {
+                  await Updates.reloadAsync();
+                },
+              },
+            ]
+          );
+        }
+      } catch (error) {
+        console.log('Gagal memeriksa pembaruan:', error);
+      }
+    };
+
+    checkForOTAUpdate();
+  }, []);
 
   useEffect(() => {
     if (loaded) {

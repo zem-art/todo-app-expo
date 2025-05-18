@@ -20,7 +20,11 @@ export default ({ config }) => {
             backgroundColor: "#ffffff"
         },
         updates: {
-            fallbackToCacheTimeout: 0
+            fallbackToCacheTimeout: 0,
+            url: "https://u.expo.dev/45ea338a-32a3-4f4c-bb99-c4dd98bb4a08",
+        },
+        runtimeVersion: {
+            policy: 'appVersion',  // supaya auto track runtime version berdasarkan appVersion
         },
         assetBundlePatterns: [
             "**/*"
