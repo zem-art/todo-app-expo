@@ -118,8 +118,8 @@ export default function OtpForm() {
         start();
         try {
           let base_url = !!ConfigApiURL.env_url ?
-            `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password_email` :
-            `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password_email`;
+            `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/send_otp_email` :
+            `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/send_otp_email`;
         
           const formData = {
             email: email,
