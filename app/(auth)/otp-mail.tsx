@@ -115,7 +115,6 @@ export default function OtpForm() {
 
     const handleResendOtp = async () => {
         // Implement your login logic here
-        start();
         try {
           let base_url = !!ConfigApiURL.env_url ?
             `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/send_otp_email` :
@@ -133,6 +132,7 @@ export default function OtpForm() {
           const response = data.response || data.data || undefined || null
           if(data.status_code >= 200 && data.status_code <= 204) {
             ToastAndroid.show('Successfully sent email back' , ToastAndroid.SHORT);
+            start();
           } else {
             console.log('Error : ', response);
             ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
