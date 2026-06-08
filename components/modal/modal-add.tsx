@@ -23,7 +23,9 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [date, setDate] = useState<Date>(new Date());
   const [show, setShow] = useState<boolean>(false);
-  const { token, login } = useSelector((state:RootState) => state.AUTH_REDUCER);
+  const { token } = useSelector((state: RootState) => state.AUTH_REDUCER);
+  const isDarkMode = useSelector((state: RootState) => state.THEME_REDUCER.isDark);
+
   const [formData, setFormData] = useState<TodoFormData>({
     title: '',
     description: '',
@@ -40,9 +42,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
 
   const handleGesture = (event: any) => {
     if (event.nativeEvent.translationY > 100) {
-      onClose();
-      setFormData({})
-      setDate(new Date())
+      handleCloseModal();
     }
   };
 
@@ -58,7 +58,6 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
     setFormDataError({})
   }
 
-  // // handle change input text
   const handleInputChange = (field: keyof TodoFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setFormDataError({})
@@ -68,35 +67,33 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
     if (event.type === "set" && selectedDate) {
       setDate(selectedDate);
     }
-    setShow(false); // Menutup date picker setelah pemilihan
+    setShow(false);
   };
 
-  const TodoValidationSchema : ValidationSchema<TodoFormData> = {
-    title: (value:any) => (!value ? "Title is required" : undefined),
-    description: (value:any) => (!value ? "Description is required" : undefined),
+  const TodoValidationSchema: ValidationSchema<TodoFormData> = {
+    title: (value: any) => (!value ? "Title is required" : undefined),
+    description: (value: any) => (!value ? "Description is required" : undefined),
   };
 
   const handleSubmit = async () => {
     const isValid = validateForm(formData, TodoValidationSchema, setFormDataError);
-    if(isValid){
+    if (isValid) {
       try {
         setIsLoading(true)
-        const additionalHeaders = {
-          Authorization: `Bearer ${token}`,
-        };
         const convertDate = formatDateTime(date, "YYYY-MM-DD")
         formData.date = convertDate
         const data = await todoService.createTodo(token, formData as any);
-        if(data.status >= 200 && data.status <= 204) 
+        if (data.status >= 200 && data.status <= 204) {
           handleCloseModal()
           ToastAndroid.show('Selamat, Anda telah berhasil membuat todo', ToastAndroid.SHORT);
-      } catch (error:any) {
+        }
+      } catch (error: any) {
         if (error?.status === 401) {
           ToastAndroid.show("Your session has expired", ToastAndroid.SHORT);
           logout();
         }
         ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
-        console.log('Erorr ==> : ', error)
+        console.log('Error ==> : ', error)
       } finally {
         setTimeout(() => {
           setIsLoading(false)
@@ -104,6 +101,12 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
       }
     }
   }
+
+  // Dynamic colors based on theme
+  const modalBgColor = isDarkMode ? '#1C1C1E' : '#FFFFFF';
+  const inputBgColor = isDarkMode ? '#2C2C2E' : '#F2F2F7';
+  const textColor = isDarkMode ? '#FFFFFF' : '#000000';
+  const placeholderColor = isDarkMode ? '#8E8E93' : '#8E8E93';
 
   return (
     <KeyboardAvoidingView
@@ -121,57 +124,60 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
         style={styles.modal}
         animationInTiming={300}
         animationOutTiming={300}
-        backdropOpacity={0.2} // 🔥 Bikin background transparan
+        backdropOpacity={0.4}
       >
         <PanGestureHandler onGestureEvent={handleGesture}>
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, { backgroundColor: modalBgColor }]}>
             <View style={styles.dragIndicator} />
-            {/* <Text style={styles.modalText}>Hello, I'm a modal add todo...!</Text> */}
+            
+            <View style={styles.headerContainer}>
+              <Text style={[styles.headerTitle, { color: textColor }]}>Buat Tugas Baru</Text>
+            </View>
+
             <View style={styles.formContainer}>
+              {/* Title Input */}
               <View style={styles.inputContainer}>
                 <TextInput
-                  style={styles.input}
-                  placeholder="Title"
+                  style={[styles.input, { backgroundColor: inputBgColor, color: textColor }]}
+                  placeholder="Judul Tugas..."
+                  placeholderTextColor={placeholderColor}
                   keyboardType="default"
                   value={formData?.title}
                   onChangeText={(text) => handleInputChange('title', text)}
                   editable={!isLoading}
                 />
-                {formDataError.title && 
-                  <Text style={styles.textError}>{formDataError.title}</Text>
-                }
+                {formDataError.title ? <Text style={styles.textError}>{formDataError.title}</Text> : null}
               </View>
 
+              {/* Description Input */}
               <View style={styles.inputContainer}>
                 <TextInput
-                  placeholder="Description"
+                  placeholder="Ketik deskripsi tugas di sini..."
+                  placeholderTextColor={placeholderColor}
                   multiline={true}
-                  style={[styles.input, styles.textAreaInput]}
-                  numberOfLines={50}
+                  style={[styles.input, styles.textAreaInput, { backgroundColor: inputBgColor, color: textColor }]}
                   value={formData?.description}
                   onChangeText={(text) => handleInputChange('description', text)}
                   editable={!isLoading}
                 />
-                {formDataError.description && 
-                  <Text style={styles.textError}>{formDataError.description}</Text>
-                }
+                {formDataError.description ? <Text style={styles.textError}>{formDataError.description}</Text> : null}
               </View>
 
+              {/* Date Picker Input */}
               <View style={styles.inputContainer}>
                 <Pressable onPress={() => setShow(true)}>
-                  <TextInput
-                    style={[styles.input]}
-                    placeholder="Deadline (Optional)"
-                    value={date.toDateString() || ''}
-                    editable={false}
-                  />
-                  <IconSymbol
-                    name="calenderOutline"
-                    lib="Ionicons"
-                    size={24}
-                    style={styles.iconTextInput}
-                    color={Colors.background}
-                  />
+                  <View style={[styles.inputWithIcon, { backgroundColor: inputBgColor }]}>
+                    <IconSymbol
+                      name="calender-outline"
+                      lib="Ionicons"
+                      size={20}
+                      color={Colors.primary}
+                      style={{ marginRight: 10 }}
+                    />
+                    <Text style={{ color: date ? textColor : placeholderColor, flex: 1, fontSize: 16 }}>
+                      {date.toDateString() || 'Pilih Tenggat Waktu (Opsional)'}
+                    </Text>
+                  </View>
                 </Pressable>
                 {show && (
                   <DateTimePicker
@@ -183,36 +189,19 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
                 )}
               </View>
 
-
-              <View style={styles.inputContainer}>
-                <Pressable>
-                  <TextInput
-                    style={[styles.input]}
-                    placeholder="Upload Image (Optional)"
-                    editable={false}
-                  />
-                  <IconSymbol
-                    name="imageOutline"
-                    lib="Ionicons"
-                    size={24}
-                    style={styles.iconTextInput}
-                    color={Colors.background}
-                  />
-                </Pressable>
-              </View>
-
-              <TouchableOpacity disabled={isLoading} style={styles.signInButton} onPress={handleSubmit}>
-                {isLoading ?
-                  <ActivityIndicator size={'small'} color={Colors.background} /> 
-                :
-                  <Text style={styles.signInText}>add{' '}todo</Text>
-                }
+              {/* Submit Button */}
+              <TouchableOpacity 
+                disabled={isLoading} 
+                style={[styles.submitButton, { opacity: isLoading ? 0.7 : 1 }]} 
+                onPress={handleSubmit}
+              >
+                {isLoading ? (
+                  <ActivityIndicator size={'small'} color="#FFF" /> 
+                ) : (
+                  <Text style={styles.submitText}>Simpan Tugas</Text>
+                )}
               </TouchableOpacity>
             </View>
-            
-            {/* <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Text style={styles.closeText}>Close</Text>
-            </TouchableOpacity> */}
           </View>
         </PanGestureHandler>
       </Modal>
@@ -229,76 +218,76 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   modalContent: {
-    backgroundColor: Colors.primary,
-    padding: 20,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    padding: 24,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     alignItems: "center",
-    height:'90%',
   },
   dragIndicator: {
-    width: 50,
-    height: 5,
-    backgroundColor: Colors.background,
-    borderRadius: 3,
-    marginBottom: 10,
-  },
-  modalText: {
-    fontSize: 16,
+    width: 40,
+    height: 4,
+    backgroundColor: '#D1D1D6',
+    borderRadius: 2,
     marginBottom: 20,
   },
-  closeButton: {
-    backgroundColor: "#ff5252",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+  headerContainer: {
+    width: '100%',
+    marginBottom: 24,
+    alignItems: 'center',
   },
-  closeText: {
-    color: "white",
-    fontSize: 16,
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  formContainer: {
+    width: '100%',
   },
   inputContainer: {
-    marginBottom: 15,
-    position: 'relative',
+    marginBottom: 16,
+    width: '100%',
   },
   input: {
-    borderWidth: 1,
-    borderColor: Colors.background,
-    borderRadius: 8,
-    padding: 15,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     fontSize: 16,
-    backgroundColor: Colors.primary,
   },
-  formContainer : {
-    width: '100%',
-    paddingHorizontal: 15,
-    marginTop:5,
+  textAreaInput: {
+    height: 120,
+    textAlignVertical: "top",
+    paddingTop: 16,
   },
-  signInButton: {
-    backgroundColor: Colors.background,
-    padding: 15,
-    borderRadius: 8,
+  inputWithIcon: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   },
-  signInText: {
-    color: Colors.primary,
+  submitButton: {
+    backgroundColor: Colors.primary,
+    paddingVertical: 16,
+    borderRadius: 16,
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  submitText: {
+    color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
-    textTransform: 'uppercase'
+    letterSpacing: 1,
   },
-  iconTextInput : { 
-    position: "absolute",
-    right: 10,
-    top: 15
-  },
-  textAreaInput : { 
-    height: 350,
-    textAlignVertical: "top"
-  },
-  textError : {
-    color: Colors.error,
-    marginTop: 5,
+  textError: {
+    color: '#FF3B30',
+    fontSize: 12,
+    marginTop: 6,
+    marginLeft: 4,
   },
 });
 

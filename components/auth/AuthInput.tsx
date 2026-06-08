@@ -19,7 +19,7 @@ export function AuthInput({ error, isPassword, style, ...props }: AuthInputProps
         {...props}
       />
       {error ? <Text style={styles.textError}>{error}</Text> : null}
-      
+
       {isPassword && (
         <TouchableOpacity
           style={styles.passwordToggle}
@@ -27,8 +27,8 @@ export function AuthInput({ error, isPassword, style, ...props }: AuthInputProps
         >
           <IconSymbol
             lib="Ionicons"
-            name={showPassword ? 'eyeOffOutline' : 'eyeOutline'}
-            size={24}
+            name={showPassword ? 'eye-off' : 'eye'}
+            size={20}
             color={Colors.drakGray}
           />
         </TouchableOpacity>
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   passwordToggle: {
     position: 'absolute',
     right: 15,
-    top: 15,
+    top: 17,
   },
   textError: {
     color: Colors.error,

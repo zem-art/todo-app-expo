@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 16,
-    letterSpacing: 0.5,
+    // letterSpacing: 0.5,
   },
   card: {
     padding: 18,

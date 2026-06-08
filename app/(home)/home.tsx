@@ -156,7 +156,7 @@ export default function HomeScreen() {
               </View>
               <Link href="/history" asChild>
                 <Pressable style={{ backgroundColor: isDarkMode ? '#2C2C2E' : '#E5E5EA', padding: 6, borderRadius: 10, marginRight: 8 }}>
-                  <IconSymbol lib="AntDesign" name="clockcircleo" size={16} color={isDarkMode ? '#FFF' : '#000'} />
+                  <IconSymbol lib="AntDesign" name="history" size={16} color={isDarkMode ? '#FFF' : '#000'} />
                 </Pressable>
               </Link>
               <Link href="/(home)/profile/profile" asChild>
