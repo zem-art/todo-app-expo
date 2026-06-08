@@ -10,10 +10,11 @@ import { store } from "@/redux/reducer-store";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider, useAuth } from "@/context/auth-provider";
 import { useSegments, useRouter } from 'expo-router';
-import { Alert } from "react-native";
+import { Alert, View } from "react-native";
 import * as Updates from 'expo-updates';
 
 import { initializeDatabase } from "@/services/database.service";
+import { AnimatedSplashScreen } from "@/components/AnimatedSplashScreen";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -84,20 +85,21 @@ export default function RootLayout() {
 function RootLayoutContent({ loaded, dbInitialized }: { loaded: boolean, dbInitialized: boolean }) {
   const { isLogin, isLoadingAuth } = useAuth();
   const colorScheme = useColorScheme();
-  const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
+  const isDarkMode = colorScheme === "dark";
+  const theme = isDarkMode ? DarkTheme : DefaultTheme;
   const segments = useSegments();
   const router = useRouter();
 
-  // Hide splash screen only after everything is loaded including auth state
+  const [isSplashAnimationComplete, setSplashAnimationComplete] = useState(false);
+
+  // Hide native splash screen immediately, since AnimatedSplashScreen is covering the screen
   useEffect(() => {
-    if (loaded && dbInitialized && !isLoadingAuth) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded, dbInitialized, isLoadingAuth]);
+    SplashScreen.hideAsync();
+  }, []);
 
   // Handle routing based on auth state
   useEffect(() => {
-    if (isLoadingAuth) return;
+    if (isLoadingAuth || !isSplashAnimationComplete) return;
 
     const inAuthGroup = segments[0] === '(auth)';
     const inHomeGroup = segments[0] === '(home)';
@@ -107,17 +109,29 @@ function RootLayoutContent({ loaded, dbInitialized }: { loaded: boolean, dbIniti
     } else if (!isLogin && !inAuthGroup) {
       router.replace('/(auth)/sign-in');
     }
-  }, [isLogin, isLoadingAuth, segments]);
+  }, [isLogin, isLoadingAuth, segments, isSplashAnimationComplete]);
+
+  const isAppReady = loaded && dbInitialized && !isLoadingAuth;
 
   return (
-    <ThemeProvider value={theme}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(home)" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" options={{ headerShown: false }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <View style={{ flex: 1 }}>
+      <ThemeProvider value={theme}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(home)" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" options={{ headerShown: false }} />
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+      
+      {!isSplashAnimationComplete && (
+        <AnimatedSplashScreen 
+          isAppReady={isAppReady} 
+          isDarkMode={isDarkMode}
+          onAnimationComplete={() => setSplashAnimationComplete(true)} 
+        />
+      )}
+    </View>
   );
 }
 
