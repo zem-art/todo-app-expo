@@ -54,7 +54,7 @@ export default function ParallaxFlatList({
   });
 
   return (
-    <ThemedView style={[styles.container]}>
+    <ThemedView style={[styles.container]} isDarkMode={isDarkMode}>
       <Animated.FlatList
         ref={scrollRef}
         scrollEventThrottle={16}
