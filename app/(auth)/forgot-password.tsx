@@ -16,8 +16,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Colors } from '@/constants/Colors';
 import { Link, router } from 'expo-router';
 import { useAuth } from '@/context/auth-provider';
-import { fetchApi } from '@/utils/helpers/fetchApi.utils';
-import { ConfigApiURL } from '@/constants/Config';
+import { authService } from '@/services/auth.service';
 import { FormDataEmailPayload } from '@/interfaces/auth';
 import { validateForm, ValidationSchema } from '@/utils/validators/formData';
 
@@ -40,18 +39,9 @@ export default function ForgotPassword() {
     if (isValid) {
       try {
         setIsLoading(true)
-        let base_url = !!ConfigApiURL.env_url ?
-          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/send_otp_email` :
-          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/send_otp_email`;
-
-        const data = await fetchApi(
-          base_url,
-          'POST',
-          formData,
-        )
+        const data = await authService.forgotPassword(formData.email);
         
-        const response = data.response || data.data || undefined || null
-        if(data.status_code >= 200 && data.status_code <= 204) {
+        if(data.status >= 200 && data.status <= 204) {
           router.push({
             pathname: "/otp-mail",
             params: { email: formData.email }

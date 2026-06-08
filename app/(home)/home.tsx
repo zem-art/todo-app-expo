@@ -12,7 +12,6 @@ import { Link, useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { useBackHandler } from '@/utils/helpers/useBackHandler.utils';
 import { useAuth } from '@/context/auth-provider';
-import { fetchApi } from '@/utils/helpers/fetchApi.utils';
 import { todoService } from '@/services/todo.service';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { ListTodo } from '@/interfaces/home';

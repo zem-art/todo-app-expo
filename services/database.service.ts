@@ -20,9 +20,16 @@ export async function initializeDatabase() {
       description TEXT,
       status TEXT CHECK( status IN ('open','completed') ) DEFAULT 'open',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      deleted_at DATETIME DEFAULT NULL,
       FOREIGN KEY (user_id) REFERENCES users (id)
     );
   `);
+
+  try {
+    await db.execAsync(`ALTER TABLE todos ADD COLUMN deleted_at DATETIME DEFAULT NULL;`);
+  } catch (e) {
+    // Abaikan jika kolom sudah ada
+  }
   
   return db;
 }

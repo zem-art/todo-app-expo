@@ -2,8 +2,7 @@
 import React, { useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
-import { ConfigApiURL } from '@/constants/Config';
-import { fetchApi } from '@/utils/helpers/fetchApi.utils';
+import { authService } from '@/services/auth.service';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { FormDataForgotPasswordPayload } from '@/interfaces/auth';
 import { validateForm, ValidationSchema } from '@/utils/validators/formData';
@@ -48,25 +47,10 @@ export default function PasswordScreenNoAuth() {
     if (isValid) {
       try {
         setIsLoading(true);
-        let base_url = !!ConfigApiURL.env_url ?
-          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/reset_password` :
-          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/reset_password`;
+        const apiResponse = await authService.resetPassword(email as string, formData.password);
 
-        const payload = {
-          email : email,
-          update_password : formData.password,
-        }
-
-        const apiResponse = await fetchApi(
-          base_url,
-          'POST',
-          payload,
-        )
-
-        const response = apiResponse.message || apiResponse.data || undefined || null
-        // console.log('Response api ==> : ', apiResponse);
-        if(apiResponse.status_code >= 200 && apiResponse.status_code <= 204) {
-          ToastAndroid.show(response, ToastAndroid.SHORT);
+        if(apiResponse.status >= 200 && apiResponse.status <= 204) {
+          ToastAndroid.show(apiResponse.message, ToastAndroid.SHORT);
           router.replace('/sign-in')
         } else {
           // console.log('Error Sign ==> : ', response);

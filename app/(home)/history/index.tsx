@@ -11,8 +11,7 @@ import { Link, useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { useBackHandler } from '@/utils/helpers/useBackHandler.utils';
 import { useAuth } from '@/context/auth-provider';
-import { fetchApi } from '@/utils/helpers/fetchApi.utils';
-import { ConfigApiURL } from '@/constants/Config';
+import { todoService } from '@/services/todo.service';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { ListTodoDelete } from '@/interfaces/home';
 
@@ -48,17 +47,7 @@ export default function HistoryScreen() {
     else setLoadingMore(true);
 
     try {
-      const additionalHeaders = { Authorization: `Bearer ${token}` };
-      let base_url = !!ConfigApiURL.env_url ?
-        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?temporary=true&page=${pageNumber}` :
-        `/api/todo/${ConfigApiURL.prefix_url}/list?temporary=true&page=${pageNumber}`;
-      
-      const response = await fetchApi(
-        base_url,
-        "GET",
-        undefined,
-        additionalHeaders
-      );
+      const response = await todoService.getDeletedTodos(token, pageNumber, 10);
   
       const data = response?.response?.data || [];
       const formattedData = data.map((item: any) => ({ ...item, status: item.status || "open" }));
@@ -97,22 +86,9 @@ export default function HistoryScreen() {
   const handleRecoveryTodo = async (params:string) => {
     console.log(params);
     try {
-      const additionalHeaders = {
-        Authorization: `Bearer ${token}`,
-        "Content-Length": "0"
-      };
-
-      let base_url = !!ConfigApiURL.env_url ? 
-        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/recovery/${params}/temporary` :
-        `/api/todo/${ConfigApiURL.prefix_url}/recovery/${params}/temporary`;
-
-      const respons = await fetchApi(
-        base_url,
-        "PATCH",
-        {},
-        additionalHeaders);
+      const respons = await todoService.restoreTodo(params as string);
       console.log(respons)
-      if(respons.status_code >= 200 && respons.status_code <= 204) {
+      if(respons.status >= 200 && respons.status <= 204) {
         ToastAndroid.show('Selamat, Anda telah berhasil restore todo', ToastAndroid.SHORT);
         fetchTodos(1, true)
       }

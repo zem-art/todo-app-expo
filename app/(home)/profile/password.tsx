@@ -3,9 +3,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useSelector } from 'react-redux';
 import { Colors } from '@/constants/Colors';
-import { ConfigApiURL } from '@/constants/Config';
-import { RootState } from '@/redux/reducer-store';
-import { fetchApi } from '@/utils/helpers/fetchApi.utils';
+import { authService } from '@/services/auth.service';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { FormDataForgotPasswordPayload } from '@/interfaces/auth';
 import { validateForm, ValidationSchema } from '@/utils/validators/formData';
@@ -49,25 +47,14 @@ export default function PasswordScreen() {
     if (isValid) {
       try {
         setIsLoading(true)
-        let base_url = !!ConfigApiURL.env_url ?
-          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password` :
-          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/forgot_password`;
+        const apiResponse = await authService.changePassword(
+          data.id,
+          formData.current_password,
+          formData.password
+        );
 
-        const payload = {
-          email : data.email,
-          current_password : formData.current_password,
-          update_password : formData.password,
-        }
-        const apiResponse = await fetchApi(
-          base_url,
-          'POST',
-          payload,
-        )
-
-        const response = apiResponse.message || apiResponse.data || undefined || null
-        // console.log('Response Sign ==> : ', response);
-        if(apiResponse.status_code >= 200 && apiResponse.status_code <= 204) {
-          ToastAndroid.show(response, ToastAndroid.SHORT);
+        if(apiResponse.status >= 200 && apiResponse.status <= 204) {
+          ToastAndroid.show(apiResponse.message, ToastAndroid.SHORT);
           router.push({ pathname : '/settings' });
         } else {
           // console.log('Error Sign ==> : ', response);

@@ -22,8 +22,7 @@ import { useCountdown } from "@/hooks/useCountDown";
 import { useDoubleBackPress } from "@/utils/helpers/useBackHandler.utils";
 import { useIsFocused } from "@react-navigation/native";
 import { validateForm } from "@/utils/validators/formData";
-import { ConfigApiURL } from "@/constants/Config";
-import { fetchApi } from "@/utils/helpers/fetchApi.utils";
+import { authService } from "@/services/auth.service";
 
 export default function OtpForm() {
     const isFocused = useIsFocused();
@@ -71,22 +70,9 @@ export default function OtpForm() {
             setOtpError("");
             // Kirim OTP ke backend untuk verifikasi
 
-            let base_url = !!ConfigApiURL.env_url ?
-                `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/verify_code_otp` :
-                `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/verify_code_otp`;
-            
-            const formData = {
-                email: email,
-                otp_code : code,
-            }
-            const data = await fetchApi(
-                base_url,
-                'POST',
-                formData,
-            )
+            const data = await authService.verifyOtp(email as string, code);
 
-            const response = data.response || data.data || undefined || null
-            if(data.status_code >= 200 && data.status_code <= 204) {
+            if(data.status >= 200 && data.status <= 204) {
                 router.push({
                     pathname: "/password-no-auth",
                     params: {
@@ -118,21 +104,9 @@ export default function OtpForm() {
         // Implement your login logic here
         try {
             setisLoadingSend(true);
-            let base_url = !!ConfigApiURL.env_url ?
-                `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/send_otp_email` :
-                `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/send_otp_email`;
+            const data = await authService.forgotPassword(email as string);
             
-            const formData = {
-                email: email,
-            }
-            const data = await fetchApi(
-                base_url,
-                'POST',
-                formData,
-            )
-            
-            const response = data.response || data.data || undefined || null
-            if(data.status_code >= 200 && data.status_code <= 204) {
+            if(data.status >= 200 && data.status <= 204) {
                 ToastAndroid.show('Successfully sent email back' , ToastAndroid.SHORT);
                 start();
             } else {
