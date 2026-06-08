@@ -1,3 +1,7 @@
+/**
+ * DEPRECATED: This file is no longer used since the app was migrated to a local SQLite database architecture.
+ * Use services/auth.service.ts and services/todo.service.ts instead.
+ */
 import { ConfigApiURL } from "@/constants/Config";
 
 /**

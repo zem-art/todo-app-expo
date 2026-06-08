@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { fetchApi } from "@/utils/helpers/fetchApi.utils";
-import { ConfigApiURL } from "@/constants/Config";
+import { authService } from "@/services/auth.service";
 import { ToastAndroid } from "react-native";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/reducer-store";
@@ -35,19 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           dispatch(setAuthActions("", false));
           return;
         }
-        const additionalHeaders = {
-          Authorization: `Bearer ${token}`,
-        };
-        let base_url = !!ConfigApiURL.env_url ? 
-          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/profile` : 
-          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/profile`;
-        // console.log(base_url)
-        const response = await fetchApi(
-          base_url,
-          "GET",
-          undefined,
-          additionalHeaders,
-        )
+        const response = await authService.getProfile(token);
         // console.log('==>',response.response)
         if (response.response) {
           setIsLogin(true);

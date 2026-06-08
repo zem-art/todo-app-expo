@@ -22,8 +22,7 @@ import { Link } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { useDoubleBackPress } from '@/utils/helpers/useBackHandler.utils';
 import { useAuth } from '@/context/auth-provider';
-import { fetchApi } from '@/utils/helpers/fetchApi.utils';
-import { ConfigApiURL } from '@/constants/Config';
+import { authService } from '@/services/auth.service';
 import { FormDataSignInError, FormDataSignInPayload } from '@/interfaces/auth';
 import { validateForm, ValidationSchema } from '@/utils/validators/formData';
 
@@ -54,18 +53,9 @@ export default function SignIn() {
     if (isValid) {
       try {
         setIsLoading(true)
-        let base_url = !!ConfigApiURL.env_url ?
-          `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in` :
-          `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_in`;
-        const data = await fetchApi(
-          base_url,
-          'POST',
-          formData,
-        )
-
-        const response = data.response || data.data || undefined || null
-        if(data.status_code >= 200 && data.status_code <= 204 && response.token) {
-          setLogin(true, response.token, data.response.data) 
+        const data = await authService.login(formData.email, formData.password);
+        if(data && data.token) {
+          setLogin(true, data.token, data.user) 
           ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
           if(isChecked) {
             saveRememberMe(formData)
@@ -73,8 +63,7 @@ export default function SignIn() {
             await AsyncStorage.removeItem("remember_me");
           }
         } else {
-          // console.log('Error Sign ==> : ', response);
-          ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+          ToastAndroid.show('Login failed', ToastAndroid.SHORT);
         }
       } catch (error:any) {
         // console.log('Erorr Sign ==> : ', error)

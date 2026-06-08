@@ -7,8 +7,7 @@ import { Colors } from "@/constants/Colors";
 import { IconSymbol } from "../ui/IconSymbol";
 import { TodoFormData } from "@/interfaces/todo";
 import { validateForm, ValidationSchema } from "@/utils/validators/formData";
-import { fetchApi } from "@/utils/helpers/fetchApi.utils";
-import { ConfigApiURL } from "@/constants/Config";
+import { todoService } from '@/services/todo.service';
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/reducer-store";
 import { useAuth } from "@/context/auth-provider";
@@ -87,16 +86,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
         };
         const convertDate = formatDateTime(date, "YYYY-MM-DD")
         formData.date = convertDate
-        // console.log('FORM DATA==>', formData)
-        const base_url = !!ConfigApiURL.env_url ?
-          `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/create` :
-          `/api/todo/${ConfigApiURL.prefix_url}/create`
-        const data = await fetchApi(
-          base_url,
-          'POST',
-          formData,
-          additionalHeaders,
-        )
+        const data = await todoService.createTodo(token, formData);
         if(data.status_code >= 200 && data.status_code <= 204) 
           handleCloseModal()
           ToastAndroid.show('Selamat, Anda telah berhasil membuat todo', ToastAndroid.SHORT);

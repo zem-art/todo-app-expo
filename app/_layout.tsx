@@ -16,6 +16,8 @@ import { Colors } from "@/constants/Colors";
 import { Alert } from "react-native";
 import * as Updates from 'expo-updates';
 
+import { initializeDatabase } from "@/services/database.service";
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -23,6 +25,21 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
+
+  const [dbInitialized, setDbInitialized] = useState(false);
+
+  useEffect(() => {
+    const initDb = async () => {
+      try {
+        await initializeDatabase();
+        console.log("Database initialized successfully!");
+        setDbInitialized(true);
+      } catch (e) {
+        console.log("Database init error:", e);
+      }
+    };
+    initDb();
+  }, []);
 
   useEffect(() => {
     const checkForOTAUpdate = async () => {
@@ -53,12 +70,12 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (loaded) {
+    if (loaded && dbInitialized) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, dbInitialized]);
 
-  if (!loaded) {
+  if (!loaded || !dbInitialized) {
     return null;
   }
 

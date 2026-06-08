@@ -62,7 +62,8 @@ export default ({ config }) => {
             ],
             "@react-native-community/datetimepicker",
             "expo-font",
-            "expo-web-browser"
+            "expo-web-browser",
+            "expo-sqlite"
         ],
         experiments: {
             typedRoutes: true

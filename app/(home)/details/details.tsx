@@ -9,7 +9,7 @@ import { ConfigApiURL } from '@/constants/Config';
 import { useAuth } from '@/context/auth-provider';
 import { TodoDetail } from '@/interfaces/home';
 import { RootState } from '@/redux/reducer-store';
-import { fetchApi } from '@/utils/helpers/fetchApi.utils';
+import { todoService } from '@/services/todo.service';
 import { useNavigation } from '@react-navigation/native';
 import { Tooltip } from '@rneui/themed';
 import { useLocalSearchParams, useRouter } from 'expo-router/build/hooks';
@@ -44,17 +44,7 @@ export default function DetailsScreen() {
         const handleDetailTodo = async () => {
             setIsLoading(true)
             try {
-                const additionalHeaders = {
-                    Authorization: `Bearer ${token}`,
-                };
-                let base_url = !!ConfigApiURL.env_url ?
-                    `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/detail/${id_todo}/exist` : 
-                    `/api/todo/${ConfigApiURL.prefix_url}/detail/${id_todo}/exist`;
-                const data = await fetchApi(
-                    base_url,
-                    "GET",
-                    undefined,
-                    additionalHeaders);
+                const data = await todoService.getTodoDetail(id_todo);
                 setStateDetail({...data.response.data})
             } catch (error:any) {
                 // console.error("Error ==>", error?.status);
@@ -72,19 +62,8 @@ export default function DetailsScreen() {
     const handleDeleteTodoTemporary = async (uid:string) => {
         try {
         setIsLoading(true)
-        const additionalHeaders = {
-            Authorization: `Bearer ${token}`,
-        };
-        const base_url = !!ConfigApiURL.env_url ?
-            `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/delete/${uid}/temporary` :
-            `/api/todo/${ConfigApiURL.prefix_url}/delete/${uid}/temporary`
-        const data = await fetchApi(
-            base_url,
-            'DELETE',
-            undefined,
-            additionalHeaders,
-        )
-        if(data.status_code >= 200 && data.status_code <= 204){
+        const data = await todoService.deleteTodo(uid);
+        if(data.status >= 200 && data.status <= 204){
             ToastAndroid.show('Selamat, Anda telah berhasil menghapus todo', ToastAndroid.SHORT);
             router.replace('/(home)/home')
         }

@@ -16,8 +16,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Colors } from '@/constants/Colors';
 import { Link, useRouter } from 'expo-router';
 import { FormDataSignUpError, FormDataSignUpPayload } from '@/interfaces/auth';
-import { ConfigApiURL } from '@/constants/Config';
-import { fetchApi } from '@/utils/helpers/fetchApi.utils';
+import { authService } from '@/services/auth.service';
 
 export default function SignUp() {
   const router = useRouter();
@@ -60,24 +59,9 @@ export default function SignUp() {
 
     try {
       setIsLoading(true)
-      let base_url = !!ConfigApiURL.env_url ? 
-        `/api${ConfigApiURL.env_url}/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_up` : 
-        `/api/auth/${ConfigApiURL.prefix_url}/mobile/user/sign_up`;
-      const data = await fetchApi(
-        base_url,
-        'POST',
-        formData,
-      )
-
-      const response = data.response || data.data || undefined || null
-      // console.log('Sign Up response: ', response);
-      if(data.status_code >= 200 && data.status_code <= 204){
-        router.replace('/(auth)/sign-in')
-        ToastAndroid.show('Berhasil Mendaftar..', ToastAndroid.SHORT);
-      } else {
-        // console.log('Error Sign ==> : ', response);
-        ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
-      }
+      await authService.register(formData.username, formData.email, formData.password);
+      router.replace('/(auth)/sign-in')
+      ToastAndroid.show('Berhasil Mendaftar..', ToastAndroid.SHORT);
     } catch (error:any) {
       // console.log('Erorr ==> : ', error)
       ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);

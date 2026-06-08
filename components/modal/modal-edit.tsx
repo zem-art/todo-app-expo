@@ -7,8 +7,7 @@ import { Colors } from "@/constants/Colors";
 import { IconSymbol } from "../ui/IconSymbol";
 import { TodoFormData } from "@/interfaces/todo";
 import { validateForm, ValidationSchema } from "@/utils/validators/formData";
-import { fetchApi } from "@/utils/helpers/fetchApi.utils";
-import { ConfigApiURL } from "@/constants/Config";
+import { todoService } from '@/services/todo.service';
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/reducer-store";
 import { useAuth } from "@/context/auth-provider";
@@ -92,16 +91,7 @@ const BottomSheetModalEdit: React.FC<BottomSheetModalProps> = ({ isVisible, onCl
         const additionalHeaders = {
           Authorization: `Bearer ${token}`,
         };
-        // console.log(formData)
-        const base_url = !!ConfigApiURL.env_url ?
-          `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/edit/${params?.id_todo}/exist` :
-          `/api/todo/${ConfigApiURL.prefix_url}/edit/${params?.id_todo}/exist`
-        const data = await fetchApi(
-          base_url,
-          'PUT',
-          formData,
-          additionalHeaders,
-        )
+        const data = await todoService.updateTodo(params?.id_todo, formData);
         if(data.status_code >= 200 && data.status_code <= 204) 
           router.replace('/(home)/home')
           ToastAndroid.show('Selamat, Anda telah berhasil update todo', ToastAndroid.SHORT);

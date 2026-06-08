@@ -13,7 +13,7 @@ import { Colors } from '@/constants/Colors';
 import { useBackHandler } from '@/utils/helpers/useBackHandler.utils';
 import { useAuth } from '@/context/auth-provider';
 import { fetchApi } from '@/utils/helpers/fetchApi.utils';
-import { ConfigApiURL } from '@/constants/Config';
+import { todoService } from '@/services/todo.service';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { ListTodo } from '@/interfaces/home';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -74,16 +74,7 @@ export default function HomeScreen() {
     else setLoadingMore(true);
 
     try {
-      const additionalHeaders = { Authorization: `Bearer ${token}` };
-      let base_url = !!ConfigApiURL.env_url ?
-        `/api${ConfigApiURL.env_url}/todo/${ConfigApiURL.prefix_url}/list?page=${pageNumber}` : 
-        `/api/todo/${ConfigApiURL.prefix_url}/list?page=${pageNumber}`;
-      const response = await fetchApi(
-        base_url,
-        "GET",
-        undefined,
-        additionalHeaders
-      );
+      const response = await todoService.getTodos(token, pageNumber, 10);
   
       const data = response?.response?.data || [];
       const formattedData = data.map((item: any) => ({ ...item, status: item.status || "open" }));
