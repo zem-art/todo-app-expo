@@ -1,11 +1,11 @@
 import { getDbConnection } from "./database.service";
 
 export const authService = {
-  async register(name, email, password) {
+  async register(name: string, email: string, password: string) {
     const db = await getDbConnection();
     try {
       // Periksa apakah email sudah digunakan
-      const existingUser = await db.getFirstAsync('SELECT id FROM users WHERE email = ?', [email]);
+      const existingUser = await db.getFirstAsync<{id: number}>('SELECT id FROM users WHERE email = ?', [email]);
       if (existingUser) {
         throw new Error("Email already registered!");
       }
@@ -21,10 +21,10 @@ export const authService = {
     }
   },
 
-  async login(email, password) {
+  async login(email: string, password: string) {
     const db = await getDbConnection();
     try {
-      const user = await db.getFirstAsync(
+      const user = await db.getFirstAsync<{id: number, name: string, email: string}>(
         'SELECT id, name, email FROM users WHERE email = ? AND password = ?',
         [email, password]
       );
@@ -38,12 +38,12 @@ export const authService = {
     }
   },
 
-  async getProfile(userId) {
+  async getProfile(userId: string | number) {
     const db = await getDbConnection();
     try {
-      const user = await db.getFirstAsync(
+      const user = await db.getFirstAsync<{id: number, name: string, email: string}>(
         'SELECT id, name, email FROM users WHERE id = ?',
-        [parseInt(userId)]
+        [typeof userId === 'string' ? parseInt(userId) : userId]
       );
       if (!user) {
         throw new Error("User not found");

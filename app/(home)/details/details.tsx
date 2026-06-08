@@ -44,8 +44,8 @@ export default function DetailsScreen() {
         const handleDetailTodo = async () => {
             setIsLoading(true)
             try {
-                const data = await todoService.getTodoDetail(id_todo);
-                setStateDetail({...data.response.data})
+                const data = await todoService.getTodoDetail(id_todo as string);
+                setStateDetail((data.response.data as any) || {})
             } catch (error:any) {
                 // console.error("Error ==>", error?.status);
                 if (error?.status === 401) {

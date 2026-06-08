@@ -86,8 +86,8 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
         };
         const convertDate = formatDateTime(date, "YYYY-MM-DD")
         formData.date = convertDate
-        const data = await todoService.createTodo(token, formData);
-        if(data.status_code >= 200 && data.status_code <= 204) 
+        const data = await todoService.createTodo(token, formData as any);
+        if(data.status >= 200 && data.status <= 204) 
           handleCloseModal()
           ToastAndroid.show('Selamat, Anda telah berhasil membuat todo', ToastAndroid.SHORT);
       } catch (error:any) {

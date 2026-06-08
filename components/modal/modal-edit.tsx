@@ -91,8 +91,8 @@ const BottomSheetModalEdit: React.FC<BottomSheetModalProps> = ({ isVisible, onCl
         const additionalHeaders = {
           Authorization: `Bearer ${token}`,
         };
-        const data = await todoService.updateTodo(params?.id_todo, formData);
-        if(data.status_code >= 200 && data.status_code <= 204) 
+        const data = await todoService.updateTodo(params?.id_todo as string | number, formData as any);
+        if(data.status >= 200 && data.status <= 204) 
           router.replace('/(home)/home')
           ToastAndroid.show('Selamat, Anda telah berhasil update todo', ToastAndroid.SHORT);
       } catch (error:any) {

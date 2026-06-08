@@ -1,13 +1,13 @@
 import { getDbConnection } from "./database.service";
 
 export const todoService = {
-  async getTodos(userId, page = 1, limit = 10) {
+  async getTodos(userId: string | number, page: number = 1, limit: number = 10) {
     const db = await getDbConnection();
     const offset = (page - 1) * limit;
     try {
       const result = await db.getAllAsync(
         'SELECT * FROM todos WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?',
-        [parseInt(userId), limit, offset]
+        [typeof userId === 'string' ? parseInt(userId) : userId, limit, offset]
       );
       return { status: 200, response: { data: result } };
     } catch (error) {
@@ -15,7 +15,7 @@ export const todoService = {
     }
   },
 
-  async getTodoDetail(todoId) {
+  async getTodoDetail(todoId: string | number) {
     const db = await getDbConnection();
     try {
       const result = await db.getFirstAsync(
@@ -28,12 +28,12 @@ export const todoService = {
     }
   },
 
-  async createTodo(userId, data) {
+  async createTodo(userId: string | number, data: { title: string, description: string, status?: string }) {
     const db = await getDbConnection();
     try {
       const result = await db.runAsync(
         'INSERT INTO todos (user_id, title, description, status) VALUES (?, ?, ?, ?)',
-        [parseInt(userId), data.title, data.description, data.status || 'open']
+        [typeof userId === 'string' ? parseInt(userId) : userId, data.title, data.description, data.status || 'open']
       );
       return { status: 201, message: "Success", response: { data: result } };
     } catch (error) {
@@ -41,12 +41,12 @@ export const todoService = {
     }
   },
 
-  async updateTodo(todoId, data) {
+  async updateTodo(todoId: string | number, data: { title: string, description: string, status?: string }) {
     const db = await getDbConnection();
     try {
       const result = await db.runAsync(
         'UPDATE todos SET title = ?, description = ?, status = ? WHERE id_todo = ?',
-        [data.title, data.description, data.status, todoId]
+        [data.title, data.description, data.status ?? null, todoId]
       );
       return { status: 200, message: "Success", response: { data: result } };
     } catch (error) {
@@ -54,7 +54,7 @@ export const todoService = {
     }
   },
 
-  async deleteTodo(todoId) {
+  async deleteTodo(todoId: string | number) {
     const db = await getDbConnection();
     try {
       const result = await db.runAsync(
