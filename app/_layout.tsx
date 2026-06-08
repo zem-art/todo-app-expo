@@ -9,10 +9,7 @@ import { Provider } from "react-redux";
 import { store } from "@/redux/reducer-store";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider, useAuth } from "@/context/auth-provider";
-import { useNetInfo } from "@react-native-community/netinfo";
-import { useNetworkState } from 'expo-network';
-import LoadingSpinner from "@/components/LoadingSpinner";
-import { Colors } from "@/constants/Colors";
+import { useSegments, useRouter } from 'expo-router';
 import { Alert } from "react-native";
 import * as Updates from 'expo-updates';
 
@@ -69,12 +66,6 @@ export default function RootLayout() {
     checkForOTAUpdate();
   }, []);
 
-  useEffect(() => {
-    if (loaded && dbInitialized) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded, dbInitialized]);
-
   if (!loaded || !dbInitialized) {
     return null;
   }
@@ -83,59 +74,46 @@ export default function RootLayout() {
     <ErrorBoundary>
       <Provider store={store}>
         <AuthProvider>
-          <RootLayoutContent />
+          <RootLayoutContent loaded={loaded} dbInitialized={dbInitialized} />
         </AuthProvider>
       </Provider>
     </ErrorBoundary>
   );
 }
 
-function RootLayoutContent() {
-  const { isLogin } = useAuth();
-  const networkState = useNetworkState();
+function RootLayoutContent({ loaded, dbInitialized }: { loaded: boolean, dbInitialized: boolean }) {
+  const { isLogin, isLoadingAuth } = useAuth();
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  console.log('==>',isLogin);
+  const segments = useSegments();
+  const router = useRouter();
 
+  // Hide splash screen only after everything is loaded including auth state
   useEffect(() => {
-    const checkNetwork = async () => {
-      if (networkState?.isConnected !== null && networkState.isConnected !== undefined) {
-        setIsLoading(false);
-        if (networkState.isConnected) {
-          if (isLogin) {
-            router.replace('/(home)/home');
-          } else {
-            router.replace('/(auth)/sign-in');
-          }
-        } else {
-          router.replace('/network');
-        }
-      }
-    };
-    checkNetwork();
-  }, [
-    isLogin,
-    isLoading,
-    networkState.isConnected,
-  ]);
+    if (loaded && dbInitialized && !isLoadingAuth) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, dbInitialized, isLoadingAuth]);
 
-  if (isLoading) return <LoadingSpinner color={Colors.primary} backgroundColor={Colors.background} />
+  // Handle routing based on auth state
+  useEffect(() => {
+    if (isLoadingAuth) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+    const inHomeGroup = segments[0] === '(home)';
+
+    if (isLogin && !inHomeGroup) {
+      router.replace('/(home)/home');
+    } else if (!isLogin && !inAuthGroup) {
+      router.replace('/(auth)/sign-in');
+    }
+  }, [isLogin, isLoadingAuth, segments]);
 
   return (
     <ThemeProvider value={theme}>
       <Stack screenOptions={{ headerShown: false }}>
-        {networkState?.isConnected ? (
-          <>
-            {isLogin ? (
-              <Stack.Screen name="(home)" options={{ headerShown: false }} />
-            ) : (
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            )}
-          </>
-        ) : (
-          <Stack.Screen name="network" options={{ headerShown: false }} />
-        )}
+        <Stack.Screen name="(home)" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />

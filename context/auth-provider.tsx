@@ -6,10 +6,11 @@ import { ToastAndroid } from "react-native";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/reducer-store";
 import { setAuthActions, setUserActions } from "@/redux/actions";
-import { Colors } from "@/constants/Colors";
+
 interface AuthContextType {
   isLogin: boolean;
-  setLogin: (value: boolean, token:string, data:object) => void;
+  isLoadingAuth: boolean;
+  setLogin: (value: boolean, token: string, data: object) => void;
   logout: () => void;
 }
 
@@ -25,7 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     console.log('== USE EFFECT AUTH PROVIDER ===')
 
     let interval: ReturnType<typeof setInterval> | null = null;
-  
+
     const checkLoginStatus = async () => {
       try {
         const token = await AsyncStorage.getItem("userToken");
@@ -43,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else {
           await logout(); // Jika gagal, logout otomatis
         }
-      } catch (error:any) {
+      } catch (error: any) {
         if (error?.status === 401) {
           ToastAndroid.show("Your session has expired", ToastAndroid.SHORT);
           await logout();
@@ -74,13 +75,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, [isLogin]);
 
-  // Show loading spinner if still loading
-  if (isLoading) {
-    return <LoadingSpinner color={Colors.primary} backgroundColor={Colors.background} />;
-  }
+  // Loading spinner is now handled by splash screen or RootLayoutContent
 
   // Function to set login status and save token
-  const setLogin = async (value: boolean, token:string, data:object) => {
+  const setLogin = async (value: boolean, token: string, data: object) => {
     try {
       if (value) {
         await AsyncStorage.setItem("userToken", token); // Simpan token
@@ -108,7 +106,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Provider to propagate authentication state to child components
   return (
-    <AuthContext.Provider value={{ isLogin, setLogin, logout }}>
+    <AuthContext.Provider value={{ isLogin, isLoadingAuth: isLoading, setLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );
