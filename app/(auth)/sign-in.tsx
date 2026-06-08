@@ -22,9 +22,9 @@ export default function SignIn() {
   const [isChecked, setChecked] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const signInValidationSchema : ValidationSchema<FormDataSignInError> = {
-    email: (value:any) => (!value ? "Email is required" : undefined),
-    password: (value:any) => (!value ? "Password is required" : undefined),
+  const signInValidationSchema: ValidationSchema<FormDataSignInError> = {
+    email: (value: any) => (!value ? "Email is required" : undefined),
+    password: (value: any) => (!value ? "Password is required" : undefined),
   };
 
   const handleLogin = async () => {
@@ -33,10 +33,10 @@ export default function SignIn() {
       try {
         setIsLoading(true)
         const data = await authService.login(formData.email, formData.password);
-        if(data && data.token) {
-          setLogin(true, data.token, data.user) 
+        if (data && data.token) {
+          setLogin(true, data.token, data.user)
           ToastAndroid.show('Selamat, Anda telah berhasil login', ToastAndroid.SHORT);
-          if(isChecked) {
+          if (isChecked) {
             saveRememberMe(formData)
           } else {
             await AsyncStorage.removeItem("remember_me");
@@ -44,7 +44,8 @@ export default function SignIn() {
         } else {
           ToastAndroid.show('Login failed', ToastAndroid.SHORT);
         }
-      } catch (error:any) {
+      } catch (error: any) {
+        console.log('==ERROR =>', error.message)
         ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
       } finally {
         setTimeout(() => setIsLoading(false), 500);
@@ -61,7 +62,7 @@ export default function SignIn() {
     setFormDataError({})
   };
 
-  const saveRememberMe = async (value:any) => {
+  const saveRememberMe = async (value: any) => {
     await AsyncStorage.setItem("remember_me", JSON.stringify(value));
   };
 
@@ -71,7 +72,7 @@ export default function SignIn() {
   };
 
   useEffect(() => {
-    getRememberMe().then((data:any) => {
+    getRememberMe().then((data: any) => {
       try {
         if (data.email && data.password) {
           setFormData(data)
@@ -106,7 +107,7 @@ export default function SignIn() {
 
       <View style={styles.rememberMeForgotPass}>
         <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => setChecked(!isChecked)}>
-          <Checkbox style={styles.checkbox} value={isChecked} onValueChange={() => setChecked(!isChecked)} color={isChecked ? Colors.primary : undefined}/>
+          <Checkbox style={styles.checkbox} value={isChecked} onValueChange={() => setChecked(!isChecked)} color={isChecked ? Colors.primary : undefined} />
           <Text style={styles.forgotPasswordText}>remember me</Text>
         </TouchableOpacity>
 
@@ -132,7 +133,7 @@ export default function SignIn() {
 }
 
 const styles = StyleSheet.create({
-  rememberMeForgotPass: { 
+  rememberMeForgotPass: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,

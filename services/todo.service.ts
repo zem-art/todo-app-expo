@@ -6,8 +6,8 @@ export const todoService = {
     const offset = (page - 1) * limit;
     try {
       const result = await db.getAllAsync(
-        'SELECT * FROM todos WHERE user_id = ? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT ? OFFSET ?',
-        [typeof userId === 'string' ? parseInt(userId) : userId, limit, offset]
+        'SELECT * FROM todos WHERE user_id = $userId AND deleted_at IS NULL ORDER BY created_at DESC LIMIT $limit OFFSET $offset',
+        { $userId: typeof userId === 'string' ? parseInt(userId) : userId, $limit: limit, $offset: offset }
       );
       return { status: 200, response: { data: result } };
     } catch (error) {
@@ -19,8 +19,8 @@ export const todoService = {
     const db = await getDbConnection();
     try {
       const result = await db.getFirstAsync(
-        'SELECT * FROM todos WHERE id_todo = ?',
-        [todoId]
+        'SELECT * FROM todos WHERE id_todo = $todoId',
+        { $todoId: todoId }
       );
       return { status: 200, response: { data: result } };
     } catch (error) {
@@ -32,8 +32,13 @@ export const todoService = {
     const db = await getDbConnection();
     try {
       const result = await db.runAsync(
-        'INSERT INTO todos (user_id, title, description, status) VALUES (?, ?, ?, ?)',
-        [typeof userId === 'string' ? parseInt(userId) : userId, data.title, data.description, data.status || 'open']
+        'INSERT INTO todos (user_id, title, description, status) VALUES ($userId, $title, $description, $status)',
+        {
+          $userId: typeof userId === 'string' ? parseInt(userId) : userId,
+          $title: data.title,
+          $description: data.description,
+          $status: data.status || 'open'
+        }
       );
       return { status: 201, message: "Success", response: { data: result } };
     } catch (error) {
@@ -45,8 +50,13 @@ export const todoService = {
     const db = await getDbConnection();
     try {
       const result = await db.runAsync(
-        'UPDATE todos SET title = ?, description = ?, status = ? WHERE id_todo = ?',
-        [data.title, data.description, data.status ?? null, todoId]
+        'UPDATE todos SET title = $title, description = $description, status = $status WHERE id_todo = $todoId',
+        {
+          $title: data.title,
+          $description: data.description,
+          $status: data.status ?? null,
+          $todoId: todoId
+        }
       );
       return { status: 200, message: "Success", response: { data: result } };
     } catch (error) {
@@ -58,8 +68,8 @@ export const todoService = {
     const db = await getDbConnection();
     try {
       const result = await db.runAsync(
-        'UPDATE todos SET deleted_at = CURRENT_TIMESTAMP WHERE id_todo = ?',
-        [todoId]
+        'UPDATE todos SET deleted_at = CURRENT_TIMESTAMP WHERE id_todo = $todoId',
+        { $todoId: todoId }
       );
       return { status: 200, message: "Deleted successfully" };
     } catch (error) {
@@ -72,8 +82,8 @@ export const todoService = {
     const offset = (page - 1) * limit;
     try {
       const result = await db.getAllAsync(
-        'SELECT * FROM todos WHERE user_id = ? AND deleted_at IS NOT NULL ORDER BY deleted_at DESC LIMIT ? OFFSET ?',
-        [typeof userId === 'string' ? parseInt(userId) : userId, limit, offset]
+        'SELECT * FROM todos WHERE user_id = $userId AND deleted_at IS NOT NULL ORDER BY deleted_at DESC LIMIT $limit OFFSET $offset',
+        { $userId: typeof userId === 'string' ? parseInt(userId) : userId, $limit: limit, $offset: offset }
       );
       return { status: 200, response: { data: result } };
     } catch (error) {
@@ -85,8 +95,8 @@ export const todoService = {
     const db = await getDbConnection();
     try {
       const result = await db.runAsync(
-        'UPDATE todos SET deleted_at = NULL WHERE id_todo = ?',
-        [todoId]
+        'UPDATE todos SET deleted_at = NULL WHERE id_todo = $todoId',
+        { $todoId: todoId }
       );
       return { status: 200, message: "Restored successfully" };
     } catch (error) {

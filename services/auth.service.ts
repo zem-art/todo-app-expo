@@ -11,8 +11,8 @@ export const authService = {
       }
       
       const result = await db.runAsync(
-        'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
-        [name, email, password]
+        'INSERT INTO users (name, email, password) VALUES ($name, $email, $password)',
+        { $name: name, $email: email, $password: password }
       );
       
       return { id: result.lastInsertRowId, name, email };
@@ -25,8 +25,8 @@ export const authService = {
     const db = await getDbConnection();
     try {
       const user = await db.getFirstAsync<{id: number, name: string, email: string}>(
-        'SELECT id, name, email FROM users WHERE email = ? AND password = ?',
-        [email, password]
+        'SELECT id, name, email FROM users WHERE email = $email AND password = $password',
+        { $email: email, $password: password }
       );
       if (!user) {
         throw new Error("Invalid email or password");
@@ -42,8 +42,8 @@ export const authService = {
     const db = await getDbConnection();
     try {
       const user = await db.getFirstAsync<{id: number, name: string, email: string}>(
-        'SELECT id, name, email FROM users WHERE id = ?',
-        [typeof userId === 'string' ? parseInt(userId) : userId]
+        'SELECT id, name, email FROM users WHERE id = $id',
+        { $id: typeof userId === 'string' ? parseInt(userId) : userId }
       );
       if (!user) {
         throw new Error("User not found");
@@ -58,10 +58,16 @@ export const authService = {
     const db = await getDbConnection();
     try {
       // Check current password
-      const user = await db.getFirstAsync('SELECT id FROM users WHERE id = ? AND password = ?', [typeof userId === 'string' ? parseInt(userId) : userId, currentPass]);
+      const user = await db.getFirstAsync('SELECT id FROM users WHERE id = $id AND password = $password', {
+        $id: typeof userId === 'string' ? parseInt(userId) : userId, 
+        $password: currentPass
+      });
       if (!user) throw new Error("Incorrect current password");
       
-      await db.runAsync('UPDATE users SET password = ? WHERE id = ?', [newPass, typeof userId === 'string' ? parseInt(userId) : userId]);
+      await db.runAsync('UPDATE users SET password = $password WHERE id = $id', {
+        $password: newPass,
+        $id: typeof userId === 'string' ? parseInt(userId) : userId
+      });
       return { status: 200, message: "Password changed successfully" };
     } catch (error) {
       throw error;
@@ -84,7 +90,10 @@ export const authService = {
   async resetPassword(email: string, newPass: string) {
     const db = await getDbConnection();
     try {
-      await db.runAsync('UPDATE users SET password = ? WHERE email = ?', [newPass, email]);
+      await db.runAsync('UPDATE users SET password = $password WHERE email = $email', {
+        $password: newPass, 
+        $email: email
+      });
       return { status: 200, message: "Password reset successfully" };
     } catch (error) {
       throw error;
