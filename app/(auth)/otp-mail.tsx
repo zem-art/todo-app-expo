@@ -82,8 +82,8 @@ export default function OtpForm() {
                 // Contoh: await verifyOtp(code);
                 ToastAndroid.show(`OTP Code Successfully Verified : ${code}`, ToastAndroid.SHORT);
             } else {
-                console.log('Error : ', response);
-                ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+                console.log('Error : ', data);
+                ToastAndroid.show(data?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
             }
         } catch (error) {
             ToastAndroid.show("Gagal verifikasi OTP", ToastAndroid.SHORT);
@@ -110,8 +110,8 @@ export default function OtpForm() {
                 ToastAndroid.show('Successfully sent email back' , ToastAndroid.SHORT);
                 start();
             } else {
-                console.log('Error : ', response);
-                ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+                console.log('Error : ', data);
+                ToastAndroid.show(data?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
             }
         } catch (error: any) {
             // console.log('Erorr Sign ==> : ', error)
@@ -158,7 +158,7 @@ export default function OtpForm() {
                         {otp.map((digit, index) => (
                             <TextInput
                                 key={index}
-                                ref={(ref) => (inputsRef.current[index] = ref)}
+                                ref={(ref) => { inputsRef.current[index] = ref; }}
                                 value={otp[index]}
                                 onChangeText={(text) => handleChange(text, index)}
                                 onKeyPress={(e) => handleKeyPress(e, index)}

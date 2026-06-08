@@ -39,7 +39,7 @@ export default function ForgotPassword() {
     if (isValid) {
       try {
         setIsLoading(true)
-        const data = await authService.forgotPassword(formData.email);
+        const data = await authService.forgotPassword(formData.email as string);
         
         if(data.status >= 200 && data.status <= 204) {
           router.push({
@@ -47,8 +47,8 @@ export default function ForgotPassword() {
             params: { email: formData.email }
           });
         } else {
-          console.log('Error : ', response);
-          ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+          console.log('Error : ', data);
+          ToastAndroid.show(data.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
         }
       } catch (error: any) {
         // console.log('Erorr Sign ==> : ', error)

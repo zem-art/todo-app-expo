@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 export const useCountdown = (initialSeconds: number = 300) => {
   const [secondsRemaining, setSecondsRemaining] = useState(initialSeconds);
   const [isActive, setIsActive] = useState(true);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const start = () => {
     setSecondsRemaining(initialSeconds);

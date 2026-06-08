@@ -47,14 +47,14 @@ export default function PasswordScreenNoAuth() {
     if (isValid) {
       try {
         setIsLoading(true);
-        const apiResponse = await authService.resetPassword(email as string, formData.password);
+        const apiResponse = await authService.resetPassword(email as string, formData.password as string);
 
         if(apiResponse.status >= 200 && apiResponse.status <= 204) {
           ToastAndroid.show(apiResponse.message, ToastAndroid.SHORT);
           router.replace('/sign-in')
         } else {
-          // console.log('Error Sign ==> : ', response);
-          ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+          // console.log('Error Sign ==> : ', apiResponse);
+          ToastAndroid.show(apiResponse.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
         }
 
       } catch (error:any) {

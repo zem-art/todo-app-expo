@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/reducer-store';
 import { Colors } from '@/constants/Colors';
 import { authService } from '@/services/auth.service';
 import { IconSymbol } from '@/components/ui/IconSymbol';
@@ -49,16 +50,16 @@ export default function PasswordScreen() {
         setIsLoading(true)
         const apiResponse = await authService.changePassword(
           data.id,
-          formData.current_password,
-          formData.password
+          formData.current_password as string,
+          formData.password as string
         );
 
         if(apiResponse.status >= 200 && apiResponse.status <= 204) {
           ToastAndroid.show(apiResponse.message, ToastAndroid.SHORT);
           router.push({ pathname : '/settings' });
         } else {
-          // console.log('Error Sign ==> : ', response);
-          ToastAndroid.show(response?.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+          // console.log('Error Sign ==> : ', apiResponse);
+          ToastAndroid.show(apiResponse.message || 'Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
         }
       } catch (error:any) {
         // console.log('Erorr Sign ==> : ', error)
