@@ -1,7 +1,7 @@
+import React from 'react';
 import { Stack } from 'expo-router';
 
 export default function HomeLayout() {
-  console.log("Current layout loaded app");
   return (
     <Stack
       screenOptions={{
