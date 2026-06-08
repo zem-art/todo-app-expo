@@ -8,53 +8,6 @@ import Feather from '@expo/vector-icons/Feather';
 import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-// Mapping sederhana untuk icon
-const IconMap = {
-  MaterialIcons: {
-    home: 'home',
-    send: 'send',
-    code: 'code',
-    right: 'chevron-right',
-    darkMode : 'dark-mode',
-    history: 'history',
-  },
-  AntDesign: {
-    up: 'arrowup',
-    down: 'arrowdown',
-    home: 'home',
-    check: 'check',
-    left : 'left',
-    clockcircleo: 'clockcircleo',
-    edit: 'edit',
-    delete: 'delete',
-  },
-  FontAwesome: {
-    like: 'thumbs-o-up',
-    dislike: 'thumbs-o-down',
-    history: 'history',
-  },
-  FontAwesome6: {
-    clock: 'clock',
-    history: 'history',
-  },
-  Feather: {
-    settings: 'settings',
-    plus: 'plus',
-    filter: 'filter',
-  },
-  Entypo : {
-    lightMode : 'light-up'
-  },
-  Ionicons : {
-    checkboxOutline : 'checkbox-outline',
-    eyeOffOutline : 'eye-off-outline',
-    eyeOutline : 'eye-outline',
-    calenderOutline : 'calendar-outline',
-    imageOutline: 'image-outline'
-  }
-} as const;
-
-// Library components
 const Libraries = {
   MaterialIcons,
   AntDesign,
@@ -65,27 +18,23 @@ const Libraries = {
   Ionicons,
 } as const;
 
-type LibraryType = keyof typeof Libraries;
-type IconNameType<T extends LibraryType> = keyof typeof IconMap[T];
+export type LibraryType = keyof typeof Libraries;
 
-interface IconProps<T extends LibraryType> {
-  lib?: T;
+export interface IconProps {
+  lib?: LibraryType;
   name: string;
-  // name: IconNameType<T>;
   size?: number;
   color?: string;
   style?: StyleProp<TextStyle>;
 }
 
-export function IconSymbol<T extends LibraryType = 'MaterialIcons'>({
-  lib = 'MaterialIcons' as T,
+export function IconSymbol({
+  lib = 'MaterialIcons',
   name,
   size = 24,
   color,
   style,
-}: IconProps<T>) {
+}: IconProps) {
   const Component = Libraries[lib];
-  const iconName = IconMap[lib]?.[name as keyof typeof IconMap[typeof lib]] || name;
-
-  return <Component name={iconName} size={size} color={color} style={style} />;
+  return <Component name={name as any} size={size} color={color} style={style} />;
 }

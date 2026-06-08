@@ -95,7 +95,7 @@ export default function PasswordScreen() {
             <Text style={styles.titleText}>T O</Text>
             <Text style={styles.titleText}>D O</Text>
             <Text style={styles.titleText}>L I S T</Text>
-            <IconSymbol lib="Ionicons" name="checkboxOutline" size={24} color={Colors.primary} style={styles.checkIcon}/>
+            <IconSymbol lib="Ionicons" name="checkbox-outline" size={24} color={Colors.primary} style={styles.checkIcon}/>
           </View>
 
           <View style={styles.formContainer}>
@@ -116,7 +116,7 @@ export default function PasswordScreen() {
                 >
                 <IconSymbol 
                 lib="Ionicons"
-                name={showCurrentPassword ? 'eyeOffOutline' : 'eyeOutline'} 
+                name={showCurrentPassword ? 'eye-off-outline' : 'eye-outline'} 
                 size={24} 
                 color={Colors.drakGray}
                 />
@@ -140,7 +140,7 @@ export default function PasswordScreen() {
                 >
                 <IconSymbol 
                 lib="Ionicons"
-                name={showPassword ? 'eyeOffOutline' : 'eyeOutline'} 
+                name={showPassword ? 'eye-off-outline' : 'eye-outline'} 
                 size={24} 
                 color={Colors.drakGray}
                 />
@@ -164,7 +164,7 @@ export default function PasswordScreen() {
                 >
                 <IconSymbol
                   lib="Ionicons"
-                  name={showConfirmPassword ? 'eyeOffOutline' : 'eyeOutline'} 
+                  name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'} 
                   size={24} 
                   color={Colors.drakGray}
                 />
