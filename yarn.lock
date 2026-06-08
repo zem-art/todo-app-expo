@@ -1982,7 +1982,7 @@
   dependencies:
     "@types/react" "^18"
 
-"@types/react@*", "@types/react@~19.2.14":
+"@types/react@*":
   version "19.2.17"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-19.2.17.tgz#dccac365baa0f1734ec270ff4b51c89465e8dc7f"
   integrity sha512-MXfmqaVPEVgkBT/aY0aGCkRWWtByiYQXo3xdQ8r5RzuFrPiRn8Gar2tQdXSUQ2GKV3bkXckek89V8wQBY2Q/Aw==
@@ -1996,6 +1996,13 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.2.2"
+
+"@types/react@~19.1.10":
+  version "19.1.17"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-19.1.17.tgz#8be0b9c546cede389b930a98eb3fad1897f209c3"
+  integrity sha512-Qec1E3mhALmaspIrhWt9jkQMNdw6bReVu64mjvhbhq2NFPftLPVr+l1SZgmw/66WwBNpDh7ao5AT6gF5v41PFA==
+  dependencies:
+    csstype "^3.0.2"
 
 "@types/stack-utils@^2.0.0":
   version "2.0.3"
@@ -2813,7 +2820,7 @@ cssstyle@^2.3.0:
   dependencies:
     cssom "~0.3.6"
 
-csstype@^3.2.2:
+csstype@^3.0.2, csstype@^3.2.2:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.2.3.tgz#ec48c0f3e993e50648c86da559e2610995cf989a"
   integrity sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==
@@ -4061,11 +4068,13 @@ jest-environment-node@^29.7.0:
     jest-mock "^29.7.0"
     jest-util "^29.7.0"
 
-jest-expo@~56.0.4:
-  version "56.0.4"
-  resolved "https://registry.yarnpkg.com/jest-expo/-/jest-expo-56.0.4.tgz#4539af9876229f3f6b8fec1b35cd35f69c41a9f8"
-  integrity sha512-cYPDx2ZgnUfeZ1+q4xF2l4nFf1YFz7uvy8fUf3QfVsekcs29MG2+C0pNzUhtyNVKRb2Q+3UMJuimAIxfUmoDXQ==
+jest-expo@~54.0.17:
+  version "54.0.17"
+  resolved "https://registry.yarnpkg.com/jest-expo/-/jest-expo-54.0.17.tgz#c4b905097889340fe44f868d601c165c113ddc55"
+  integrity sha512-LyIhrsP4xvHEEcR1R024u/LBj3uPpAgB+UljgV+YXWkEHjprnr0KpE4tROsMNYCVTM1pPlAnPuoBmn5gnAN9KA==
   dependencies:
+    "@expo/config" "~12.0.13"
+    "@expo/json-file" "^10.0.8"
     "@jest/create-cache-key-function" "^29.2.1"
     "@jest/globals" "^29.2.1"
     babel-jest "^29.2.1"
@@ -4075,7 +4084,7 @@ jest-expo@~56.0.4:
     jest-watch-typeahead "2.2.1"
     json5 "^2.2.3"
     lodash "^4.17.19"
-    react-test-renderer "19.2.3"
+    react-test-renderer "19.1.0"
     server-only "^0.0.1"
     stacktrace-js "^2.0.2"
 
@@ -5575,7 +5584,7 @@ react-is@^16.13.1, react-is@^16.7.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-is@^19.1.0, react-is@^19.2.3:
+react-is@^19.1.0:
   version "19.2.7"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.2.7.tgz#57668ee86a78574a542b0a539455212b2c086df2"
   integrity sha512-kZFnouyVv7eP/Phmrlo9FK+zcAdriZJvzxXHF1Sl1P377WSGe2G/JxVolhTrB/jeV47lKImhNUsijjHAAbcl/A==
@@ -5761,13 +5770,13 @@ react-test-renderer@18.3.1:
     react-shallow-renderer "^16.15.0"
     scheduler "^0.23.2"
 
-react-test-renderer@19.2.3:
-  version "19.2.3"
-  resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-19.2.3.tgz#d20f5193867c98b2df9e13b4e72bb83f311f6a43"
-  integrity sha512-TMR1LnSFiWZMJkCgNf5ATSvAheTT2NvKIwiVwdBPHxjBI7n/JbWd4gaZ16DVd9foAXdvDz+sB5yxZTwMjPRxpw==
+react-test-renderer@19.1.0:
+  version "19.1.0"
+  resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-19.1.0.tgz#89e1baa9e45a6da064b9760f92251d5b8e1f34ab"
+  integrity sha512-jXkSl3CpvPYEF+p/eGDLB4sPoDX8pKkYvRl9+rR8HxLY0X04vW7hCm1/0zHoUSjPZ3bDa+wXWNTDVIw/R8aDVw==
   dependencies:
-    react-is "^19.2.3"
-    scheduler "^0.27.0"
+    react-is "^19.1.0"
+    scheduler "^0.26.0"
 
 react@19.1.0:
   version "19.1.0"
@@ -5941,11 +5950,6 @@ scheduler@^0.23.2:
   integrity sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==
   dependencies:
     loose-envify "^1.1.0"
-
-scheduler@^0.27.0:
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.27.0.tgz#0c4ef82d67d1e5c1e359e8fc76d3a87f045fe5bd"
-  integrity sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==
 
 semver@^6.3.0, semver@^6.3.1:
   version "6.3.1"
@@ -6455,10 +6459,10 @@ type-fest@^0.7.1:
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.7.1.tgz#8dda65feaf03ed78f0a3f9678f1869147f7c5c48"
   integrity sha512-Ne2YiiGN8bmrmJJEuTWTLJR32nh/JdL1+PSicowtNb0WFpn59GK8/lfD61bVtzguz7b3PBt74nxpv/Pw5po5Rg==
 
-typescript@~6.0.3:
-  version "6.0.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-6.0.3.tgz#90251dc007916e972786cb94d74d15b185577d21"
-  integrity sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==
+typescript@~5.9.2:
+  version "5.9.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.9.3.tgz#5b4f59e15310ab17a216f5d6cf53ee476ede670f"
+  integrity sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==
 
 ua-parser-js@^1.0.35:
   version "1.0.41"
