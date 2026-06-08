@@ -85,8 +85,7 @@ export function IconSymbol<T extends LibraryType = 'MaterialIcons'>({
   style,
 }: IconProps<T>) {
   const Component = Libraries[lib];
-  // const iconName = IconMap[lib][name];
-  const iconName = IconMap[lib]?.[name as keyof typeof IconMap[typeof lib]];
+  const iconName = IconMap[lib]?.[name as keyof typeof IconMap[typeof lib]] || name;
 
   return <Component name={iconName} size={size} color={color} style={style} />;
 }

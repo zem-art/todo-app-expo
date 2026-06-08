@@ -7,7 +7,7 @@ import { Pressable, Text, View, BackHandler, ToastAndroid, FlatList } from 'reac
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/reducer-store';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { useRouter } from 'expo-router';
+import { useRouter, Link } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { useBackHandler } from '@/utils/helpers/useBackHandler.utils';
 import { useAuth } from '@/context/auth-provider';
@@ -27,11 +27,11 @@ export default function HomeScreen() {
   const { logout, isLogin } = useAuth();
   const isFocused = useIsFocused();
   const navigation = useNavigation();
-  
+
   const isDark = useSelector((state: RootState) => state.THEME_REDUCER.isDark);
   const { token } = useSelector((state: RootState) => state.AUTH_REDUCER);
   const { data: user } = useSelector((state: RootState) => state.USER_REDUCER as any);
-  
+
   const [isDarkMode, setIsDarkMode] = useState(isDark);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -70,9 +70,9 @@ export default function HomeScreen() {
       const response = await todoService.getTodos(token, pageNumber, 10);
       const data = response?.response?.data || [];
       const formattedData = data.map((item: any) => ({ ...item, status: item.status || "open" }));
-  
+
       setTodos((prev) => (reset ? formattedData : [...prev, ...formattedData]));
-  
+
       if (formattedData.length === 0) setHasMore(false);
       else setPage(pageNumber + 1);
     } catch (error: any) {
@@ -87,7 +87,7 @@ export default function HomeScreen() {
   };
 
   const fetchData = () => fetchTodos();
-  
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setHasMore(true);
@@ -95,11 +95,11 @@ export default function HomeScreen() {
     fetchTodos(1, true).finally(() => setRefreshing(false));
     setFilter({ status: 'all', order: 'newest' });
   }, []);
-  
+
   const onLoadMore = () => {
     if (!loadingMore && hasMore) fetchTodos(page);
   };
-  
+
   useEffect(() => {
     fetchData();
   }, [token, isLogin]);
@@ -131,9 +131,9 @@ export default function HomeScreen() {
         onLoadMore={onLoadMore}
         loadingMore={loadingMore}
         header={
-          <HomeHeader 
-            isDarkMode={isDarkMode} 
-            userName={userName} 
+          <HomeHeader
+            isDarkMode={isDarkMode}
+            userName={userName}
             activeTodosCount={activeTodosCount}
             filter={filter}
             setFilter={setFilter}
@@ -141,9 +141,31 @@ export default function HomeScreen() {
         }
       >
         <View style={styles.content}>
-          <Text style={[styles.sectionTitle, { color: isDarkMode ? '#FFF' : '#000' }]}>
-            Tugas Terkini
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <IconSymbol lib="Feather" name="list" size={20} color={isDarkMode ? '#FFF' : '#000'} />
+              <Text style={[styles.sectionTitle, { color: isDarkMode ? '#FFF' : '#000', marginBottom: 0, marginLeft: 8 }]}>
+                Tugas Terkini
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ backgroundColor: isDarkMode ? '#2C2C2E' : '#E5E5EA', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12, marginRight: 12 }}>
+                <Text style={{ color: isDarkMode ? '#FFF' : '#000', fontSize: 12, fontWeight: 'bold' }}>
+                  {filteredTodos.length}
+                </Text>
+              </View>
+              <Link href="/history" asChild>
+                <Pressable style={{ backgroundColor: isDarkMode ? '#2C2C2E' : '#E5E5EA', padding: 6, borderRadius: 10, marginRight: 8 }}>
+                  <IconSymbol lib="AntDesign" name="clockcircleo" size={16} color={isDarkMode ? '#FFF' : '#000'} />
+                </Pressable>
+              </Link>
+              <Link href="/(home)/profile/profile" asChild>
+                <Pressable style={{ backgroundColor: isDarkMode ? '#2C2C2E' : '#E5E5EA', padding: 6, borderRadius: 10 }}>
+                  <IconSymbol lib="Ionicons" name="person-outline" size={16} color={isDarkMode ? '#FFF' : '#000'} />
+                </Pressable>
+              </Link>
+            </View>
+          </View>
 
           {isLoading ? (
             <LoadingSpinner color={Colors.primary} backgroundColor="transparent" />
@@ -162,10 +184,10 @@ export default function HomeScreen() {
         </View>
       </ParallaxFlatList>
 
-      <Pressable 
+      <Pressable
         style={({ pressed }) => [
-          styles.fab, 
-          { 
+          styles.fab,
+          {
             backgroundColor: Colors.primary,
             transform: [{ scale: pressed ? 0.92 : 1 }]
           }
@@ -173,7 +195,7 @@ export default function HomeScreen() {
         onPress={() => setModalVisible(true)}>
         <IconSymbol lib="Feather" name="plus" size={28} color="#FFF" />
       </Pressable>
-      
+
       <GestureHandlerRootView style={styles.GesturModal}>
         <BottomSheetModal isVisible={modalVisible} onClose={() => setModalVisible(false)} />
       </GestureHandlerRootView>

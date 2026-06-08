@@ -31,16 +31,6 @@ export const HomeHeader = ({ isDarkMode, userName, activeTodosCount, filter, set
         <GestureHandlerRootView style={{ marginRight: 8 }}>
           <FilterComponent isDarkMode={isDarkMode} filter={filter} setFilter={setFilter} />
         </GestureHandlerRootView>
-        <Link href="/history" asChild>
-          <Pressable style={[styles.buttonSettings, { backgroundColor: isDarkMode ? '#2C2C2E' : '#E5E5EA', marginRight: 8 }]}>
-            <IconSymbol lib="Feather" name="clock" size={20} color={isDarkMode ? '#FFF' : '#000'} />
-          </Pressable>
-        </Link>
-        <Link href="/profile/profile" asChild>
-          <Pressable style={[styles.buttonSettings, { backgroundColor: isDarkMode ? '#2C2C2E' : '#E5E5EA', marginRight: 8 }]}>
-            <IconSymbol lib="Feather" name="user" size={20} color={isDarkMode ? '#FFF' : '#000'} />
-          </Pressable>
-        </Link>
         <Link href="/settings" asChild>
           <Pressable style={[styles.buttonSettings, { backgroundColor: isDarkMode ? '#2C2C2E' : '#E5E5EA' }]}>
             <IconSymbol lib="Feather" name="settings" size={20} color={isDarkMode ? '#FFF' : '#000'} />
