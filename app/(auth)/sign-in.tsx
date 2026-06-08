@@ -46,7 +46,11 @@ export default function SignIn() {
         }
       } catch (error: any) {
         console.log('==ERROR =>', error.message)
-        ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+        if (error.message === "Invalid email or password") {
+          ToastAndroid.show('Email atau Kata Sandi salah!', ToastAndroid.SHORT);
+        } else {
+          ToastAndroid.show('Maaf Terjadi Kesalahan Harap Menunggu Beberapa Saat Lagi', ToastAndroid.SHORT);
+        }
       } finally {
         setTimeout(() => setIsLoading(false), 500);
       }
