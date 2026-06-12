@@ -16,9 +16,10 @@ import { formatDateTime } from "@/utils/date";
 interface BottomSheetModalProps {
   isVisible: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose }) => {
+const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose, onSuccess }) => {
   const { logout } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [date, setDate] = useState<Date>(new Date());
@@ -86,6 +87,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
         if (data.status >= 200 && data.status <= 204) {
           handleCloseModal()
           ToastAndroid.show('Selamat, Anda telah berhasil membuat todo', ToastAndroid.SHORT);
+          if (onSuccess) onSuccess();
         }
       } catch (error: any) {
         if (error?.status === 401) {
@@ -129,7 +131,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
         <PanGestureHandler onGestureEvent={handleGesture}>
           <View style={[styles.modalContent, { backgroundColor: modalBgColor }]}>
             <View style={styles.dragIndicator} />
-            
+
             <View style={styles.headerContainer}>
               <Text style={[styles.headerTitle, { color: textColor }]}>Buat Tugas Baru</Text>
             </View>
@@ -168,7 +170,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
                 <Pressable onPress={() => setShow(true)}>
                   <View style={[styles.inputWithIcon, { backgroundColor: inputBgColor }]}>
                     <IconSymbol
-                      name="calender-outline"
+                      name="calendar-outline"
                       lib="Ionicons"
                       size={20}
                       color={Colors.primary}
@@ -190,13 +192,13 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({ isVisible, onClose 
               </View>
 
               {/* Submit Button */}
-              <TouchableOpacity 
-                disabled={isLoading} 
-                style={[styles.submitButton, { opacity: isLoading ? 0.7 : 1 }]} 
+              <TouchableOpacity
+                disabled={isLoading}
+                style={[styles.submitButton, { opacity: isLoading ? 0.7 : 1 }]}
                 onPress={handleSubmit}
               >
                 {isLoading ? (
-                  <ActivityIndicator size={'small'} color="#FFF" /> 
+                  <ActivityIndicator size={'small'} color="#FFF" />
                 ) : (
                   <Text style={styles.submitText}>Simpan Tugas</Text>
                 )}

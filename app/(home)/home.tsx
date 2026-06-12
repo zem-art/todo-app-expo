@@ -197,7 +197,7 @@ export default function HomeScreen() {
       </Pressable>
 
       <GestureHandlerRootView style={styles.GesturModal}>
-        <BottomSheetModal isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+        <BottomSheetModal isVisible={modalVisible} onClose={() => setModalVisible(false)} onSuccess={onRefresh} />
       </GestureHandlerRootView>
     </Container>
   );
