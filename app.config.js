@@ -6,7 +6,7 @@ export default ({ config }) => {
     
     return {
         ...config,
-        name: "todo-expo-app",
+        name: "",
         slug: "todo-expo-app",
         version,
         orientation: "portrait",
